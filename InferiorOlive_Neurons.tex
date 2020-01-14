@@ -1,0 +1,88 @@
+\chapter{Inferior Olive Neurons (IO neurons)}
+\label{sec:Inferior-Olive-neurons}
+
+The inferior olive neurons are those from inferior olivary nucleus
+(Sect.\ref{sec:inferior-olive-nucleus}), that projects the signal onto Purkinje cell in
+the cerebellum (Sect.\ref{sec:Purkinjie_nerves}).
+Remember that each Purkinje cell receives thousands of parallel fibers input;
+but only 1 climbing fiber input. However, such single input can interrupt the
+rapid spiking behavior of the Purkinje cell as it generates a so-called complex
+spike (CS) after which the PC falls silent for approximately 15 ms.
+As such, the axon of such neurons - called the climbing fiber - spikes lead to
+large all-or-none action potentials in cerebellar Purkinje cells, overriding any
+other ongoing activity and silencing these cells for a brief period of time
+afterwards.
+
+The IO neurons can generate spontaneous action potential (AP)
+and such activation of climbing fibers is generally believed to be related to
+timing of motor commands and/or motor learning.
+
+\section{Schweighofer et al. (1999)}
+\label{sec:Schweighofer-1999}
+
+% \textcolor{red}{The original paper has an error: They used A-type potassium
+% formula ($I_A$) for delayed rectifier potassium current (KDR)}. This need to be
+% fixed.
+
+The two-compartment model represents the known distribution of ionic currents
+across the cell membrane, as well as the dendritic location of the gap junctions
+and synaptic inputs.
+\begin{enumerate}
+  \item somatic compartment:  low-threshold calcium current (\verb!ICa_l!),
+an anomalous inward rectifier current (Ih), a sodium current (INa), and
+a delayed rectifier potassium current (\verb!IK_dr!).
+  
+  \item dendritic compartment:
+  high-threshold calcium current (\verb!ICa_h!), a calcium-dependent
+potassium current (\verb!IK_Ca!), and a current flowing into other cells through
+electrical coupling (Ic).
+
+
+  \item Ih current - adopted from Sect.\ref{sec:Ih-Huguenard-McCormick-1992}
+  %with a modified time constant $\tau_m$ (Sect.\ref{sec:Ih-Schweighofer-1999})
+  
+
+\end{enumerate}
+
+The model used an artificial sodium current to prevent generation of sodium
+spike bursts at the soma.
+
+\section{Van Der Giessen - \ldots - De Zeeuw (2008)}
+\label{sec:VanDerGiessen-DeZeeuw-2008}
+
+\begin{enumerate}
+  \item Ih current - adopted from Sect.\ref{sec:Ih-Huguenard-McCormick-1992}
+  with some modification to make it actives at a more hyperpolarized potential
+  (V$_{1/2} = -80$ mV; and slope is $k=4.0$ mV)
+  
+The Ih current in this model is moved to the dendritic compartment
+
+
+\end{enumerate}
+
+\section{DeGruijl - DeZeeuw (2012)}
+
+\begin{itemize}
+  \item compartment to model the axon hillock of the cell and
+enable the model to generate axonal bursts of sodium spikes
+
+  \item somatic compartment's sodium and potassium currents were reworked
+\end{itemize}
+
+\section{Kozloski et al. (2014)}
+
+
+\citep{kozloski2014} modified Schweighofer's work
+(Sect.\ref{sec:Schweighofer-1999}) with changes to its several channel
+conductances (Na, K, Cah, Cal, KCa, and h) targeted to neuronal branches in
+order to replicate olivary oscillation.
+
+
+Previous work has demonstrated that spike generation and bursting properties of
+olivary neurons depend on axonal lengths, with experimental data only have 0-300
+$\mum$ in slice preparation. The author conducted a more comprehensive study
+using data from real Olivocerebellar axons, and used a 3D mesh of rat cerebellum
+to constrain axonal morphology and length.
+
+The authors demonstrated that the intra-burst spike frequency and number depend
+on these variations in axonal lengths from 1-5 mm.

@@ -1,0 +1,260 @@
+\chapter{Relay Neurons (Interneurons)}
+\label{chap:RelayNeurons}
+\label{chap:interneurons}
+
+Thalamic relay neurons are capable of exhibiting multiple
+distinct firing modes depending on the stimulus
+holding level.
+
+When sufficiently depolarized from rest, a relay neuron shows continuous spiking
+(CS) activity, with with $\Na$-dependent action potentials at high frequencies,
+$>	100$ Hz. 
+
+This response to excitation, the {\bf 'relay mode'}, corresponds to the
+transmission of sensory information through the thalamus to the cortex in the
+awake state (Steriade et al. 1990).
+
+{\bf Low-threshold spike}:
+When the membrane is hyperpolarized, a transient calcium current slowly
+deinactivates (aka $I_h$ current - Sect.\ref{sec:Ih-current}) and, on release
+from this voltage level, mediates a slow depolarizing wave, the low-threshold
+spike (LTS). This rebound excitation frequently exceeds the voltage threshold
+for the generation of sodium action potentials so that a burst of spikes rides
+the crest of the LTS.
+
+Bursting is seen naturally during certain phases of sleep, when neuromodulators
+lead to hyperpolarization in the thalamus, and during absence seizures.
+Other than on release, bursting behavior may occur repetitively (1-10 Hz) for
+maintained hyperpolarizing stimuli in an appropriate range.
+
+
+\section{Hindmarsh-Rush model (bursting) 1984-1989 - thalamic relay neuron}
+\label{sec:Hindmarsh-Rush_model}
+%\section{Rose-Hindmarsh (1989) - thalamic neuron}
+\label{sec:Rose-Hindmarsh-1989}
+
+Hindmarsh-Rush model is the first single cell model to reproduce spike-bursting
+behavior of nerve cell, for thalamic relay neuron
+(Sect.\ref{sec:thalamic-relay-neuron}) \citep{hindmarsh1984}.
+%http://www.math.montana.edu/pernarow/neural_field/HindMarsh_Rose_Model/Hindmarsh_Rose_Model.pdf
+
+
+They developed a model with 4 ionic currents; before the available of
+voltage-clamp data to simulate the response under an applied current $I_\app$
+\begin{enumerate}
+  \item Na-current - Sect.\ref{sec:Ina_Rose-Hindmarsh-1989}
+  \item potassium A-current
+  \item T-type $\Ca$ current
+  \item leak current
+\end{enumerate}
+
+The model, however, is dimensionless, with membrane is represented by $x(t)$,
+the transport of sodium is represented by $y(t)$ - spiking variable; and the
+transport of other ions is made throught the slow channels represented by
+$z(t)$ - bursting variable. \textcolor{red}{IMPORTANT}: The third state variable
+$z(t)$  allows a great variety of dynamic behaviors of the membrane potential,
+including unpredictable behavior, which is referred to as chaotic dynamics.
+
+\begin{equation}
+\begin{split}
+\frac{dx}{dt} &= y + \Phi(x) - z + I_\app \\
+\frac{dy}{dt} &= \Psi(x) - y \\
+\frac{dz}{dt} &= r \times [ s \times (x - x_R) - z]
+\end{split}
+\end{equation}
+with
+\begin{equation}
+\begin{split}
+\Phi(x) = -a x^3 + b x^2 \\
+\Psi(x) = c - d x^2
+\end{split}
+\end{equation}
+Usually the parameter I, which means the current that enters the neuron, is
+taken as a control parameter. 
+\begin{itemize}
+  \item The parameter r is something of the order of $10^{-3}$
+  \item When a, b, c, d are fixed the values given are a = 1, b = 3, c
+= 1, and d = 5. 
+
+  \item Frequently, the parameters held fixed are s = 4 and $x_R$ = -8/5. 
+\end{itemize}
+
+
+The model suggested A-type $\K$ current played an important role in the fast
+spike-generating dynamics, with bursting in particular
+(Sect.\ref{sec:A-type-K+current}).
+However, in a more recent model, Rush-Rinzel (1994) showed that
+the inclusion of a strong A-current in their model can annihilate bursting
+behavior (Sect.\ref{sec:Rush-Rinzel-1994}). 
+
+
+
+\section{Wang et al. (1991) - thalamic relay neuron}
+\label{sec:Wang-1991-thalamic-relay-neuron}
+
+\citep{wang1991} used whole-cell voltage-clamp data to build  transient,
+low-threshold T-type $\Ca$ model. Wang et al. (1991) showed that the transient
+(T-type) calcium current and a passive leakage current are sufficient to
+generate the LTS response (Sect.\ref{sec:thalamic-relay-neuron}).
+They did not include currents for generating fast action potentials, assuming
+these could later be added to mimic bursting activity.
+
+\begin{enumerate}
+  \item leak current
+  \item T-type $\Ca$ current - Sect.\ref{sec:LCC_Wang1991}
+\end{enumerate}
+
+
+
+
+
+\section{McCormick-Huguenard (1992) - thalamocortical relay neurons}
+\label{sec:relay-neuron-McCormick-Huguenard-1992}
+\label{sec:McCormick-Huguenard-1992}
+\label{sec:Huguenard-Mccormick-1992}
+
+This model is pretty much the same as the model published as Huguenard-McCormick
+(1992) \cite{huguenard1992}; except with the addition of sodium conductance.
+
+They found that the transient, A-type $\K$ current, along with other potassium
+current, is dominant in the interval between action potentials, affecting both
+repolarization and spike frequency. 
+ 
+The mathematical model of rodent thalamocortical relay cells
+(Sect.\ref{sec:thalamocortical-neuron}) was proposed with 4 ionic currents
+\begin{enumerate}
+  \item low-threshold T-type $\Ca$ current $I_\CaT$
+  
+  \item hyperpolarization-activated cation current $I_h$:
+  Sect.\ref{sec:Ih-Huguenard-McCormick-1992}.
+  
+  \item transient, depolarization-activated $\K$ current $I_A$:
+  
+  \item slowly inactivating, depolarization-activated $\K$ current $I_{\k2}$
+\end{enumerate}
+
+
+
+\url{http://www.ncbi.nlm.nih.gov/pubmed/1331356}
+
+%\section{Wang et al., 1991 - thalamic neuron}
+\section{Rush - Rinzel (1994) - thalamic relay neuron}
+%\section{Rush-Rinzel (1994) - thalamic neuron}
+\label{sec:Rush-Rinzel-1994}
+
+\citep{rush1994} extended Wang et al. (1991) -
+Sect.\ref{sec:Wang-1991-thalamic-relay-neuron} with adding Hodgkin-Huxley model
+for sodium and potassium currents derived from Hindmarsh-Rush
+(Sect.\ref{sec:Hindmarsh-Rush_model}).
+These currents and the T-type calcium current, are active in different voltage ranges
+\begin{enumerate}
+  \item T-type Ca2+ current (I$_T$): Sect.\ref{sec:T-type-Ca2+-Rush-Rinzel-1994} 
+
+  \item Na-current - Sect.\ref{sec:Ina_Rush-Rinzel1994}
+
+Shifting the currents for sodium action potentials to a higher-voltage regime
+allowed for continuous spiking activity at a depolarized level without
+compromising the I$_T$-mediated excitability in the low-voltage regime.
+   
+  \item delayed rectifier $\K$ current: $g_K$ ($I_K$) -
+  Sect.\ref{sec:KDR-Rush-Rinzel-1994}
+  
+  \item The leak current is composed of two components: INaL, and IKL (sodium
+  and potassium leak)
+
+% TODO: sleep-wake modeling
+The conductance IKL for the latter is treated as neuromodulator-sensitive to
+represent various degrees of the sleepwake status; its resting value is 0.088 mS/cm$^2$.
+\end{enumerate}
+
+The current that generate action potential (AP)
+\def\AP{{\text{AP}}}
+\begin{equation}
+\begin{split}
+I_\AP = g_\na m_{\infty}^3 (0.85 - n) \times (V - E_\na) + \\
+       g_\k n^4 \times (V - E_\k)
+\end{split}
+\end{equation}
+
+NOTE: The model is minimal to reproduce LTS-mediated bursting (based on T-type
+$\Ca$ current) and can produce the continuous spiking and bursting activity
+modes in response to steady stimulus.
+
+Only the gating $h$ is needed to be adjusted to approximate
+body temperature 35$^\circ$C using a Q10 of 2.3 ($\Phi$ = 3).
+
+The model was tuned to achieve total AP current dynamics when testing with
+$I_\app = 14$ pA/cm$^2$.
+
+This shows similar behavior to a previous model by Hindmarsh-Rush
+(Sect.\ref{sec:Hindmarsh-Rush_model}) yet with opposite role of A-type current.
+Here, the A-type $\K$ current can annihilate the bursting behavior.
+The authors proposed that a potassium A-current shifts the threshold for sodium
+spikes (by model the inactivating gating variable $h$ as a function of potassium
+activation variable $n$, i.e. $h=0.85-n$), reducing the number of fast sodium
+spikes in an LTS burst.
+
+
+There are only 3 ODEs: Voltage, gating $n$ for $\K$ current and gating $h$ of
+T-type $\Ca$ current. 
+
+
+\subsection{A-type current effect}
+
+They also studied the effect of potassium A-current (using the voltage-clamp
+data for $I_A$ of Huguenard et al. 1991) to modulate and refine the basic
+voltage patterns of continuous spiking and LTS activity, e.g. to reduce spiking
+in both rebound and periodic burst activity.
+The whole system now has a total 4 ODEs.
+
+There are two formulas for A-type currents
+\begin{enumerate}
+  \item  activation is considered instantaneous
+\begin{equation}
+I_A = g_K \times a_\infty^4(\Vm) \times b \times (\Vm - E_{\rev,K})
+\end{equation}
+
+and
+\begin{equation}
+\frac{db}{dt} = \frac{b_\infty(\Vm)  - b}{\tau_b(\Vm)}
+\end{equation}
+
+  \item  For single rebound LTS study, a different formula for A-type current
+  was used, with the new ODE for $b$ gating variable
+
+
+  
+\end{enumerate}
+
+The role of A-type was previously studied in Huguenard-McCormick (1992) -
+Sect.\ref{sec:Huguenard-Mccormick-1992}; yet the role of A-type in LTS has not
+been done. For LTS generation, the transient A-current, as an outward current
+imposed on the T-current, can decrease the rate of rise of the LTS and decrease
+its peak amplitude.
+
+Here, they studied the effect using fast/slow analysis
+(Sect.\ref{sec:fastslow-analysis}).
+\begin{itemize} 
+  \item  Where the fast sodium spikes are situated in phase space now depends on
+the A-current.
+
+As a consequence, the number of sodium spikes in an LTS burst is modulated; in
+fact, it is possible for no spikes to occur. This contrasts with the Rose and
+Hindmarsh model (1989b) in which the generation of bursting seems to rely on an
+A-current
+
+  \item 
+\end{itemize}
+
+
+
+
+
+% The authors extended the previous work (Sect.\ref{sec:Rose-Hindmarsh-1989})
+% and proposed a simpler model for thalamic activity.
+
+
+
+
+
+

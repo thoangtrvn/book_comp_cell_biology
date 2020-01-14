@@ -1,0 +1,1887 @@
+\chapter{GSL}
+\label{chap:MGS-GSL}
+
+MGS (Model-Graph Simulator) is composed of 2 parts
+\begin{enumerate}
+  \item MDL : the script that helps generating C++ classes that conform to MGS
+  code standard (Chap.\ref{chap:MGS-MDL})
+
+The generated codes include
+(1) the skeleton of the C++ class that can be used inside the GSL script, (2) a
+series of \verb!CG_*! classes that support the calling the above class by the
+framework.
+
+It's important to add the behavior to the C++ class, which requires us to
+understand how to in Sect.\ref{sec:GSL-C++-how-to-get-access-to}.
+
+  
+  \item GSL : the script that helps to connect different C++ classes together in
+  a graph-based simulator system. (Chap.\ref{chap:MGS-GSL})
+\end{enumerate}
+
+
+\section{GSL script: how to use C++ classes generated from MDL}
+\label{sec:GSL-script}
+
+What you need to do in a GSL script
+\begin{enumerate}
+  \item phases - Sect.\ref{sec:MGS-GSL-phases}
+\end{enumerate}
+
+\subsection{a simulation defined as different phases}
+\label{sec:MGS-GSL-phases}
+
+Here, we explain how a typical simulation can be defined
+via the concept of phases.
+
+Define different phases you want 
+\begin{verbatim}
+InitPhases = { initialize1, initialize2, initialize3, initialize4, initialize5, initialize6 };
+
+RuntimePhases = {
+runphase1, runphase2, runphase3,
+}
+
+FinalPhases = { finalize };
+\end{verbatim}
+
+\textcolor{red}{Then the simulation will goes through like this, in sequential
+order}
+\begin{verbatim}
+call any methods as 'initialize1' in parallel
+call any methods as 'initialize2' in parallel
+...
+call any methods as 'initialize6' in parallel
+
+i = 0
+DO
+   call any methods as 'runphase1' in parallel
+   call any methods as 'runphase2' in parallel
+   call any methods as 'runphase3' in parallel
+   
+UNTIL i > NumIteration
+
+call any methods as 'finalize' in parallel
+
+\end{verbatim}
+
+\subsection{add components to a simulation}
+
+Suppose you have the C++ class with the designed behaviors you need. 
+These classes (depending upon how it was declared in MDL) can be used in
+GSL as a different type (NodeType, ConstantType, VariableType, \ldots).
+
+GSL script is a descriptive language, so you don't explicitly specify how many
+instances of a particular \verb!X!Type (with X can be Node, Constant, Variable)
+to be created, i.e. the MGS framework will know and handle that.
+As a class, it has (1) data members, and (2) methods.
+Here, we discuss how
+\begin{itemize}
+  \item initialize the data members
+  
+  \item put the methods into different phases
+\end{itemize}
+
+\begin{itemize}
+  \item declare what \verb!X!Type to use, and maps its method to the proper
+  phase defined above
+
+\begin{verbatim}
+NodeType HodgkinHuxleyVoltage( <
+      Ra= Ra_value,      // Gohm*um
+      Na= Na_i_value,          // mM
+      K= K_i_value,            // mM 
+      E_leak= E_leak_value        // mV
+           >) { initializeCompartmentData->initialize2 };
+\end{verbatim}
+
+  \item Create a Grid, inside we 
+  
+  \begin{itemize}
+    \item put a particular \verb!X!Type node into a Layer:
+    
+    \item Define the connectivity between 
+    \begin{itemize}
+      \item  instances of \verb!X!Type node
+    within one layer or 
+      \item instances of \verb!X!Type node in one layer to 
+      instances of \verb!Y!Type node in another layer
+  \end{itemize}
+  
+\end{itemize}
+
+
+
+\subsection{-- initialize shared data member}
+\label{sec:GSL_initialize-type-shared-data-member}
+
+The data, including shared data defined in MDL
+(Sect.\ref{sec:MDL-shared-members})
+\begin{verbatim}
+Node HodgkinHuxleyVoltage Implements ...
+{
+
+  Shared {
+     dyn_var_t Ra;
+     dyn_var_t Na;
+  }
+}
+\end{verbatim}
+can be initialized when being used in GSL in the form of name-data pair list
+at the time of declaring the NodeType and its kernel mapping to different
+phases.
+
+Example: just declare the class type and pass the in the form of 
+\begin{verbatim}
+InitPhases {initialize1, initialize2};
+RuntimePhases {runtime1, runtime2};
+
+NodeType  HodgkinHuxleyVoltage(
+    < Ra=0.015,
+      Na=70,
+    >
+    ){ kernel1 -> initialize1, kernel2 -> runtime2};
+\end{verbatim}
+REMEMBER: If 'kernel1' and 'runtime2' are of the same name, we don't need to do
+mapping.
+
+The generated C++ code is a C++ class with suffix \verb!SharedMembers!
+(Sect.\ref{sec:MDL-generated-classes})
+
+
+\subsection{-- initialize data member}
+\label{sec:GSL_initialize-type-data-member}
+
+Private data member for a NodeType can be initialized when being used in GSL 
+by calling to \verb!InitNode! statements (Sect.\ref{sec:InitNodes}), after
+declaring the give NodeType and its kernel mapping as given in
+Sect.\ref{sec:GSL_initialize-type-shared-data-member}.
+
+\begin{verbatim}
+InitNodes (.[].Layer(Layer-Name-Here), ...);
+\end{verbatim}
+
+
+At the code level, the inputs are treated as a \verb!ParameterSet*!
+(Sect.\ref{sec:ParameterSet}), and then casted to the right datatype
+\begin{verbatim}
+void CG_HodgkinHuxleyVoltage::initialize(ParameterSet* CG_initPset)
+{
+   CG_HodgkinHuxleyVoltagePSet* CG_pset = dynamic_cast<CG_HodgkinHuxleyVoltagePSet*>(CG_initPSet);
+   dimensions = CG_pset->dimensions;
+   branchData = CG_pset->branchData;
+   //...
+   Vcur = CG_pset->Vcur;
+   Vnew = CG_pset->Vnew;
+   
+}
+\end{verbatim}
+
+
+\subsection{-- map methods to phases}
+\label{sec:GSL_assign-MDL-component-methods-to-GSL-phases}
+\label{sec:GSL-RuntimePhases}
+
+When we declare the nodetype, we use \verb!->! operator to redirect to a given
+phase name
+\begin{verbatim}
+InitPhases = { initialize1, initialize2, initialize3, initialize4, initialize5, initialize6 };
+RuntimePhases = {updateNMDADepPlasticity, solveChannels, predictJunction,
+#if MAX_COMPUTE_ORDER>6
+      forwardSolve7,
+#endif
+}
+
+NodeType BackwardSolvePoint0 { produceInitialState->initialize1,
+        produceBackwardSolution->solve };
+
+NodeType ChannelHayNat { computeE->initialize2, initialize->initialize3, update->solveChannels };
+\end{verbatim}
+
+\subsection{stop/pause the simulation}
+
+First, you need to understand how a Trigger-able object work
+(Sect.\ref{sec:Triggerable-MGS}). Define the criteria for 
+  \begin{itemize}
+    \item pausing the simulation (Sect.\ref{sec:GSL-when-to-pause})
+    \item stopping the simulation (Sect.\ref{sec:GSL-when-to-stop})
+  \end{itemize}
+  \end{itemize}
+  
+\subsection{-- Pause on}
+\label{sec:GSL-when-to-pause}
+
+\begin{verbatim}
+Pause on <instance-Trigger>
+\end{verbatim}
+
+Sect.\ref{sec:Trigger} describes how to create an instance of a particular
+Trigger.
+
+\subsection{-- Stop on}
+\label{sec:GSL-when-to-stop}
+\label{sec:GSL-Stop}
+
+GSL
+\begin{verbatim}
+Stop on <some-trigger>;
+\end{verbatim}
+
+In GSL, the \verb!Trigger! keyword is used to define a Triggerable nodetype
+(Sect.\ref{sec:trigger-define-in-GSL}). First we need to declare the prototype
+of the \verb!Trigger!-type class (Sect.\ref{sec:Trigger}). 
+
+\begin{verbatim}
+
+  // a trigger for calling a RuntimePhase
+// We use modulo operator (!%) to determine when it is triggered 
+UnsignedTrigger recOn ("Iteration Trigger : !%" STR(RecordInterval),
+                         ::Iteration, "!%", RecordInterval, 0, solveChannels);
+
+  // a trigger for calling a FinalizePhase
+UnsignedTrigger endTrig("Iteration Trigger to end or stop",
+                         ::Iteration, "==", 10, 0, lastPhase);
+
+Stop on endTrig;
+\end{verbatim}
+
+\subsection{SeparationConstraint}
+\label{sec:GSL-SeparationConstraint}
+
+\begin{verbatim}
+SeparationConstraint (  separation_constraint_list ) ;
+
+separation_constraint_list  is a comma-separated list of
+              separation_constraint
+              
+
+separation_constraint : declarator | nodeset 
+
+declarator = SOME_NAME
+
+nodeset = gridset | gridset nodeset_extension |
+          declarator DOT declarator |
+          declarator_nodeset_extension
+          
+declarator_nodeset_extension : declarator nodeset_extension
+
+nodeset_extension: node_type_set_specifier node_index_set_specifier
+
+node_type_set_specifier: DOT LAYER ( node_type_set_specifier_clause )
+\end{verbatim}
+
+nodeset - Sect.\ref{sec:NodeSet-GSL}
+
+\subsection{access to a set of nodes}
+\label{sec:NodeSet-GSL}
+
+
+A set of node instances can be access (at the GSL level) using
+\begin{verbatim}
+instance-composite '/' instance-grid[].Layers(layer-name)[]
+
+instance-composite '/' instance-grid[].Layers(layer-name)[node-indices]
+\end{verbatim} 
+To access nodes at C++ code level, read Sect.\ref{sec:doNodeInit-TissueFunctor}.
+
+To access node set in GSL: follow the following examples.
+
+Example: take the nodeset in one layer from the current grid
+\begin{verbatim}
+Grid MYGRID{
+  Layer(branches, ...) ; 
+  
+   //to access all node sets in that layer
+  .[].Layer(branches)
+}
+\end{verbatim}
+with \verb!branches! is the layer-name defined in one \verb!Layer! statement
+(Sect.\ref{sec:Layer-as-Branch}).
+
+Example: take the nodeset in one layer (in the current grid) with a given
+criteria in region
+\begin{verbatim}
+// Suppose the grid is defined with 2D dimension
+// Dimension(100, 100)
+
+  // to access only nodes in that layer and fall within the given range 
+.[25:75, 25:75].Layer(branches)
+\end{verbatim}
+This is the example being used in Game of Life
+(Sect.\ref{sec:GameofLife-GSL-InitNodes}).
+
+Example: we can define a name to represent that set of nodes (to be easily
+reused in GSL)
+\begin{verbatim}
+NodeSet myNodes(.[25:75, 25:75].Layer(branches));
+
+NodeSet all(.[].Layer(branches));
+\end{verbatim}
+
+
+Example: the set of nodes can comprise nodes from different Layers. 
+\begin{verbatim}
+NodeSet all(.[].Layer(branches), .[].Layer(layer2))
+\end{verbatim}
+
+Example: use Composite (Sect.\ref{sec:Composite})
+\begin{verbatim}
+Grid GridA{
+};
+
+Grid GridB{
+};
+
+Composite World{
+
+  GridA grida;
+  GridB gridb;
+  
+  NodeSet all(grida[].Layer(layer_inA))
+};
+
+Composite Universe{
+   World world;
+   GridA grida;
+   
+   NodeSet all(world/grida[].Layer(layer_inA), grida[].Layer(layer_inA));
+}
+\end{verbatim}
+
+\subsection{define a trigger}
+\label{sec:trigger-define-in-GSL}
+
+A trigger is some event (i.e. function) that get called
+at a criteria is met. Such criteria is checked at a certain runtime phase
+\begin{verbatim}
+// We use modulo operator (!%) to determine the operator
+//  and the criterio  is checked whenever the 'solveChannels' 
+//              phase is evoked
+UnsignedTrigger recOn ("Iteration Trigger : !%" STR(RecordInterval),
+                         ::Iteration, "!%", RecordInterval, 0, solveChannels);
+                         
+// the event which is evoking 'somaVoltageDisplay.dataCollection()' method
+// is now associated with this trigger 'recOn'
+//  .. we can add as many events as we want to a single trigger
+//  .. they are stored in the std::vector<TriggerableCaller*>
+                         
+VoltageDisplay somaVoltageDisplay<fileName= PathFileCombine("somaV.dat")>;
+somaVoltageDisplay.dataCollection(<>) on recOn;  
+
+CalciumDisplay somaCalciumDisplay<fileName= PathFileCombine("somaCa.dat")>;
+somaCalciumDisplay.dataCollection(<>) on recOn;
+
+\end{verbatim}
+Check TriggerableCaller - Sect.\ref{sec:TriggerableCaller}.
+
+Here, 2 Triggerable nodetypes are declared
+\begin{verbatim}
+  // 
+Trigger UnsignedTrigger(string description, Service svc, string operator, 
+                    int criterion, int delay, string PhaseName);
+
+Trigger CompositeTrigger(string description, Trigger triggerA, int critA, 
+                         string operator, Trigger triggerB, int critB, 
+                         int delay, string phaseName);
+
+\end{verbatim}
+It means that if 
+\begin{itemize}
+  \item the comparison of a given Service
+\verb!svc! which returns a data of given type (e.g. unsigned int for UnsignedTrigger)
+to a \verb!criterion! value using the operator defined via the string
+\verb!operator! (e.g. ``==``, ``<=``, \ldots) returns TRUE
+\end{itemize}
+then some-event (which is the method given via the string \verb!PhaseName! to be
+invoked) will be triggered, after a certain delay (in terms of number of
+iterations) \verb!delay!.
+
+See the example of using \verb!::Iterator! (Sect.\ref{sec:Iteration})
+
+Once a Triggerable nodetype is declared, we now can define a object of that
+nodetype. NOTE: We can combine multiple condition using \verb!||! (OR),
+\verb!^^! (XOR), \verb!&&! (AND). Remember to pass information based upon the
+order
+\begin{enumerate}
+  \item a string telling some descriptive information about the triggerable
+object 
+
+  \item a service (Sect.\ref{sec:Service} that returns a value to be used as the
+  left-hand side operand of the below operator
+  
+NOTE: \verb!::! (two colons) means queriable path at the Simulation level.
+
+  
+Example: \verb!::Iteration! is a special service that returns the current number
+of iteration (check SimulationPublisher.C file).
+\begin{lstlisting}
+Service * s = new GenericService<unsigned>(_ptrPublishable, &(_sim._iteration));
+_services.push_back(s);
+
+_name = 
+\end{lstlisting}
+This is mapped to the \verb!Simulation::getServiceName(void* data)! method
+- Sect.\ref{sec:Simulation-class-GSL}.
+  
+  
+  \item the string representing the operator, e.g. \verb!==!, \ldots
+  
+  \item the right-hand-side operand of the operator above
+  
+  \item the name of the RuntimePhase to be evoked before the simulation stops.
+\end{enumerate}
+
+
+
+\subsection{record data}
+\label{sec:TriggerFunction-define-in-GSL}
+
+Data can be recorded by defining the recording protocol as a Variable type,
+and connect to the Node type. Then, we connect them together.
+
+This Variable type must have a TriggeredFunction method
+(Sect.\ref{sec:TriggeredFunction}), that only called at a certain time
+instance based on a given condition; and once is called, it performs the writing
+data to buffer/file. Then the important step is to tell the system, when to call
+this method, which is achieved by mapping it to a given Trigger
+(Sect.\ref{sec:trigger-define-in-GSL}).
+
+Example: in MDL 
+\begin{verbatim}
+Variable VoltageDisplay
+{
+
+  TriggeredFunction dataCollection();
+  
+}
+\end{verbatim}
+
+Example:
+\begin{verbatim}
+#define _STR(x) #x
+#define STR(x) _STR(x)
+#define RecordInterval 10 // every 10 time-steps
+
+// We use modulo operator (!%) to determine when it is triggered 
+UnsignedTrigger recOn ("Iteration Trigger : !%" STR(RecordInterval),
+                         ::Iteration, "!%", RecordInterval, 0, solveChannels);
+
+ //declare variable type
+VariableType  VoltageDisplay { initialize -> initialize1};
+
+  // define the object
+VoltageDisplay vmDisplay<fileName = "out/somaV.dat">;
+  // define when the method is called
+vmDisplay.dataCollection(<>) on recOn;
+\end{verbatim}
+We can define it to run at every given number iterations. 
+Here, the criterion is checked after the RuntimePhase \verb!solveChannels! is
+called; and if the criteria is met; then vmDisplay.dataCollection is called.
+
+
+\subsection{create a service and connect to the simulation}
+\label{sec:service-how-to-declare-in-GSL}
+
+First we need to understand what is a service (Sect.\ref{sec:Service}).
+A service is mainly used with a Trigger (Sect.\ref{sec:Trigger}).
+
+A service is declared in GSL with or without a name. With a name, it can be
+reused any many location. Example of using without a name that is
+\verb!::Iteration! service. Here, \verb!Iteration! is a 'declarator', and
+\verb!::! (double colon) refers to the scope of the declarator which is inside
+the current Simulation object - Sect.\ref{sec:Simulation-MGS} (See above).
+
+The GSL grammar for defining a named service
+
+\begin{verbatim}
+SERVICE declarator '(' service ')'
+
+// with token SERVICE = 'Service'
+// and declarator is any name we want to use
+// example:
+Service CurrentIteration = ( ::Iteration )
+\end{verbatim}
+
+which (at the C++ parser level) 
+\begin{enumerate}
+  \item  creates a \verb!C_declaration_service!
+  (Sect.\ref{sec:C_declaration_service}).
+  
+  \item mapping to {\it service} 
+
+The grammar on how to access to a \verb!service!
+\begin{verbatim}
+service := query_path_product 
+         | declarator ',' string_literal_list
+
+\end{verbatim}
+
+In either way, a \verb!C_service! object is created (Sect.\ref{sec:C_service}),
+with 
+\begin{enumerate}
+  \item  \textcolor{red}{case 1}
+  
+\begin{verbatim}
+service := query_path_product
+
+query_path_product --> is stored as --> C_query_path_product* _queryPathProduct
+\end{verbatim}  
+Sect.\ref{sec:C_query_path_product}, and it returns a service indirectly when
+\verb!internalExecute()! of \verb!C_service! is evoked by the system.
+
+The method \verb!internalExecute(LensContext* c)! generate the \verb!_service!
+pointer
+\begin{verbatim}
+if (_queryPathProduct)
+{
+  _queryPathProduct(c);
+  _service = _queryPathProduct->getService();
+}
+\end{verbatim}
+
+Example: 
+\begin{verbatim}
+
+//NOTE: The use of '::' refers to the current Simulation object
+// then ::somename call the service with name 'somename'
+query_path_product := query_path DOUBLE_COLON declarator 
+                   | DOUBLE_COLON declarator
+//NOTE: declarator := IDENTIFIER 
+//       which is interpreted as the service name
+
+query_path  := query_list
+             | repname   query_list
+//NOTE: a list is elements separated by COLON (:)
+
+query_list := COLON query
+           | query_list : query
+query := query_field_entry
+      |  'string_literal_list'
+      |  constant
+      |  declarator
+query_field_entry := ( name=data)
+           
+           
+// NOTE: 
+//  IDENTIFIER can be instance of a 'Composite' or 'Grid'
+//  repname = representative name
+repname := preamble IDENTIFIER
+         | DOT IDENTIFIER  (e.g. .identifier)
+         | IDENTIFIER
+preamble := DOT SLASH
+         | IDENTIFIER SLASH
+         | preamble IDENTIFIER SLASH 
+
+
+repname_query_list := 
+
+query_list :=                    
+\end{verbatim}
+
+  
+  \item \textcolor{red}{\bf case 2}: a service reference to a data member from
+  another Graph-component, e.g. Variable.
+   
+\begin{verbatim}
+service := declarator ',' string_literal_list
+
+
+declarator --> is stored as --> C_declarator* _declarator
+string_literal_list --> is stored as --> a service descriptor 
+\end{verbatim}
+
+
+Example: define a service name 'someName' which references to data member
+'currentTime' in the object 'simInfo' which is of Variable type SimulationInfo
+- Sect.\ref{sec:SimulationInfo}.
+
+\begin{verbatim}
+Variable SimulationInfo < recordIntervalInTime=20.0>; //ms
+//or Variable SimulationInfo < recordIntervalInIterations=20>; //iteration count
+
+Service someName ( simInfo, "currentTime");
+
+// NOTE: We define Variable 'SimulationInfo',
+//    with data member 'currentTime'
+//    get updated at every iteration
+//    and returns the current time of the simulation 
+//     (based on the time-step) 
+//     (not the computer-running time)
+\end{verbatim}
+ 
+
+\end{enumerate}
+
+SUMMARY:
+\begin{verbatim}
+declarator --> is stored as --> C_declarator* _declarator
+service    --> is stored as --> C_service*    _service
+\end{verbatim} 
+after that statement in GSL, everytime we use the named service 'declarator',
+its \verb!internalExecute()! method is evoked.
+
+
+NOTE: Sect.\ref{sec:NodeSet-GSL} discuss nodeSet
+\begin{verbatim}
+//NOTE: declarator := IDENTIFIER (represents either 
+            a nodeSet, 
+            an edgeSet, 
+            a variableSet)
+//NOTE: string_literal_list := a space-separated set of strings
+//       whose combination (single string) is interpreted as 
+         the name of service (or indeed the name of the data member)
+\end{verbatim}
+
+
+The method \verb!internalExecute(LensContext* c)! generate the \verb!_service!
+pointer
+\begin{verbatim}
+{
+  _declarator->execute(c);
+  DataItem* di = const_case<DataItem*>
+      (c->symTable.getEntry(_declarator->getName()))
+  
+  NodeSetDataItem* nsdi = dynamic_cast<NodeSetDataItem*>(di);
+  ...
+}
+\end{verbatim} 
+
+
+\end{enumerate}
+
+
+
+A service can be connected to any Type using the functor
+\verb!ServiceConnectorFunctor()! - Sect.\ref{sec:ServiceConnectorFunctor}.
+
+
+\subsection{what to do inside Layers}
+
+Sect.\ref{sec:layer-gsl-script}
+
+\subsection{-- get the nodeset}
+\label{sec:lenscontext-get-nodeset}
+
+Inside the function that handle the Layer statement, we can get access to the
+set of node using
+\begin{verbatim}
+LensContext *c;
+
+NodeSet *nodeset = c->layerContext->nodeset;
+\end{verbatim}
+Sect.\ref{sec:NodeSet}
+
+
+\subsection{what to do inside NodeInit}
+\label{sec:doNodeInit-TissueFunctor}
+\label{sec:TissueFunctor-doNodeInit}
+
+REMEMBER the Syntax of InideNodes - Sect.\ref{sec:InitNodes}.
+
+\begin{verbatim}
+	InitNodes ( .[].Layer(branches), tissueFunctor("NodeInit", <
+				compartmentalize = { "Vnew", 
+				"Vcur", 
+				"Aii", 
+				"Aim", 
+				"Aip", 
+				"RHS", 
+				},
+				Vnew = {-85.00}//-64.1235}
+				> ) );
+
+\end{verbatim}
+
+
+In the context of \verb!NodeInits! statement (in GSL), the function to
+handle that task in the C++ code can access to the node-instances using
+
+\begin{lstlisting}
+void SomeFunctor::doNodeInit(LensContext * lc) 
+{
+ assert(_params.get());
+ 
+  //1. get the 'set' of nodes to be initialized
+  NodeSet* nodeset = lc->layerContext->nodeset;
+
+  // REMEMBER: this set of nodes can come from different layers
+  // we need to work with nodes in a particular at a time
+  
+  //2. get to the handle of the layer (e.g. gld)
+  //get to the layer data
+  std::vector<GridLayerDescriptor*> const& layers = nodeset->getLayers();
+  assert(layers.size() == 1);  //we just want to limit only 1 layer is accepted
+  std::vector<GridLayerDescriptor*>::const_iterator gld = layers.begin();
+  
+  //4. extract the nodes, in the form of a vector of nodes, for that given layer
+  std::vector<NodeDescriptor*> nodes;
+  nodes.clear(); //to be safe
+  nodeset->getNodes(nodes, *gld);
+ 
+ 
+  // 5. then we can traverse
+  std::vector<NodeDescriptor*>::iterator node, nodeEnd;
+  node = nodes.begin();
+  nodeEnd = nodes.end();
+  
+  std::auto_ptr<ParameterSet> initPset;
+}
+\end{lstlisting}
+
+What we want can do in C++
+\begin{enumerate}
+  \item get to the list of all nodes to be initialized (first argument of
+  InitNodes statement)
+  
+  \item 
+\end{enumerate}
+
+\section{GSL (*.gsl) - LENS}
+\label{sec:GSL}
+\label{sec:nts-graph}
+
+GSL is the new name for LENS framework.
+The complete code structure in the form of folder organization is discussed in
+Sect.\ref{sec:GSL-code-folder}. 
+
+%\subsection{????Graph in Grid}
+
+A graph is put inside the world in the form of a Grid. In other words, we have a
+single Grid in a simulation.
+
+
+\subsection{How to write script}
+\label{sec:GSL-script-structure}
+
+
+The *.gsl file is a script written using the context-dependent language defined
+in \verb!./gsl/framework/parser/flex/speclang.l! file (Sect.\ref{sec:speclang.l}).
+
+It contains
+\begin{enumerate}
+  \item Comments use C/C++ - style. 
+  
+  \item definition - Sect.\ref{sec:gsl-definition-section}
+
+  the definition in a hierarchical manner to help defining 
+  one or more repertoire (Sect.\ref{sec:GSL-repertoire})
+  
+  definition of functor (Sect.\ref{sec:GSL-script-functor}) or type
+  
+  \item declaration - Sect.\ref{sec:gsl-declaration-section}
+  
+  \item directive - Sect.\ref{sec:gsl-direftive-section}
+  
+  (optional) include codes defined in external file
+  
+We can use the C macro-preprocessor commands. Thus, it will be possible to
+include other files, have conditional specifications, etc. All preprocessor
+commands are preceded by a \verb!#!). 
+  
+\end{enumerate}
+
+
+Complete keywords:
+\begin{verbatim}
+int
+string
+float
+list
+Complex
+
+Type
+RefPointGen
+
+SamplingFctr1
+SamplingFctr2
+SubNodeSetFctr
+
+Layout
+
+
+NodeInitializer
+InitNodes
+EdgeInitializer     (obsolete)
+InAttrInitializer
+
+
+NDPairListFunctor
+NDPairList
+NDPair
+
+Pset
+
+Grid
+Composite
+
+Connector
+
+ConnectionScript
+
+GridCoord
+
+RepName
+
+NodeSet
+
+ConstantType
+
+VariableType
+
+NodeType
+
+NodeTypeSet
+
+EdgeType
+
+ToolType
+
+Struct
+
+Member
+TypeDef
+
+Initialize
+
+Function
+
+Functor
+
+Dimension
+
+NodeIndex
+
+EdgeIndex
+
+Default
+
+NodeInit
+
+Out
+
+EdgeInit
+EdgeSet
+
+Port
+
+system
+
+Pause
+
+Stop
+
+InitPhases
+
+RuntimePhases
+
+LoadPhases
+
+FinalPhases
+
+SeparationConstraint
+
+on
+
+In
+
+Matrix
+
+Layer
+
+Trigger
+
+GranuleMapper
+
+
+/     (SLASH)
+.     (DOT)
+...   (ELLIPSIS)
+
+||      (or)
+^^      (XOR)
+&&      (and)
+==      (test equivalent)
+!=      (test not equivalent)
+
+->
+:
+::
+:::
+
+-        (minus)
++
+
+\end{verbatim}
+
+\begin{enumerate}
+  \item Stop - Sect.\ref{sec:GSL-Stop}
+  \item SeparationConstraint - Sect.\ref{sec:GSL-SeparationConstraint}
+\end{enumerate}
+
+\subsection{(1) Definition: define a new type or a new functor}
+\label{sec:gsl-definition-section}
+
+\subsection{ * Type: Grid or Composite}
+
+A type here can be a Grid or a Composite repertoire
+
+\begin{verbatim}
+type_definition: GRID declarator '{' grid_definition_body '}'  
+	| GRID declarator '{' grid_definition_body '}' declarator 
+    | COMPOSITE  declarator '{' composite_definition_body '}' 
+    | COMPOSITE  declarator '{' composite_definition_body '}' declarator;
+\end{verbatim}
+Grid: Sect.\ref{sec:GSL-repertoire-grid}, and Composite:
+Sect.\ref{sec:GSL-repertoire-composite}
+
+\subsection{ * Functor}
+\label{sec:GSL-script-functor}
+\label{sec:functor-using-functor-in-GSL}
+
+A functor can be defined in a few different ways
+\begin{verbatim}
+functor_definition: functor_category declarator ;
+            | functor_category declarator '(' parameter_type_list ')' ';'
+        	| complex_functor_definition   ';'
+        	| connection_script_definition ';'
+;
+\end{verbatim}
+With \verb!functor_category! must be one of the 11 names defined in
+Sect.\ref{sec:functors-in-MGS-framework}.
+
+\subsection{ * -- functor-categories}
+
+Example: first case of definition
+\begin{verbatim}
+<Category>   Functor_Class_Name();
+\end{verbatim}
+with \verb!<Category>! can be one of the 11 different categories (or basic
+functor class) - Sect.\ref{sec:functors-in-MGS-framework}), depending on how
+\verb!Functor_Class_Name! class was derived which basic functor class.
+
+Example: in std.gsl file (if the functor can accept more than one way to create instances, we need to use one or many \verb!Initialize! statememts)
+\begin{verbatim}
+NDPairListFunctor BindName
+{
+	Initialize(string  name, Functor value);
+	Initialize(string name, float value);
+};
+
+Functor Print;
+\end{verbatim}
+Here, we signal that we will use BindName functor - Sect.\ref{sec:BindNameFunctor}, and Print functor (Sect.\ref{sec:PrintFunctor}).
+
+Once a functor is declared, i.e. giving its category and its interface (i.e. how
+to use it), we can use it as a type to create as many instances as we need, e.g.
+\verb!IN! instance of BindName type, and \verb!print! of Print type.
+\begin{verbatim}
+BindName IN("weight", UniformDist(1.0, 2.0));
+
+Print print();
+\end{verbatim}
+An instance of a functor, can be used as a function at different location, i.e. we can pass argument when calling that instance.
+
+Once an instance to that functor is defined, we can use that at different locations in the GSL file
+\begin{verbatim}
+print("Hello world");
+
+print("an error at this location");
+\end{verbatim}
+
+
+\subsection{ * -- connection-script}
+\label{sec:connection-script}
+
+Remember that we can connect two node sets, using directly a connection functor,
+in that we need to use explicitly the different arguments (Sect.\ref{sec:connector-functor}).
+
+However, we can also parameterize these arguments, in the form of a connection
+script, so that we can reuse again this connection statement, each time with
+possibly using a different argument's value.
+
+\begin{verbatim}
+connection_script_definition:  CONNECTIONSCRIPT declarator '(' parameter_type_list ')' '{' connection_script_definition_body '}' 
+;
+
+
+connection_script_definition_body:  connection_script_declaration 
+        | connection_script_definition_body  connection_script_declaration 
+        |
+
+connection_script_declaration: declaration 
+        | directive
+        | RETURN  directive
+\end{verbatim}
+
+
+\subsection{BindName}
+\label{sec:BindNameFunctor}
+
+BindName functor is defined inside \verb!gsl/framework/functors/src/!, with sources
+\begin{verbatim}
+BindNameFunctor.C
+BindNameFunctorFactor.C
+BindNameFunctorType.C
+\end{verbatim}
+As part of the framework, so there is no need to write MDL for the Functor.
+
+Example:
+\begin{verbatim}
+NDPairListFunctor BindName
+{
+	Initialize(string  name, Functor value);
+	Initialize(string name, float value);
+}
+\end{verbatim}
+This functor bind the name to a value, which can be a \verb!float! value or a value as 
+returned from a functor.
+
+\begin{verbatim}
+ BindName branchInit(    "compartmentalize", { "Vnew",
+           "Vcur",
+           "Aii",
+           "Aim",
+           "Aip",
+           "RHS",
+           },
+           //"Vnew" , FloatArrayMaker(UniformDist(-80.0, -40.0),1),
+           //"Vnew" , FloatArrayMaker(UniformDist(Vrest_value, Vrest_value),1),
+           "Vnew" , {Vrest_value},
+           "Cm", V_CM,             // pF/um^2
+           "gLeak",V_GLEAK         // nS/um^2, Hines used 0.0003 S/cm^2
+      );
+
+BindName junctionInit(  "Vnew" , FloatArrayMaker(UniformDist(-80.0, -40.0),1));
+\end{verbatim}
+
+
+% Sect.\ref{sec:Functor-MGS}
+% describes how a 
+
+%Functor refers to function object and is widely used in NTS. 
+\subsection{Accessing a functor via C++ code}
+\label{sec:functor-access-via-C++-code}
+
+A functor is represented as \verb!FunctorDataItem! in GSL framework. Then to get
+the functor
+\begin{verbatim}
+FunctorDataItem *fdi = ...;
+Functor* functor = fdi->getFunctor();
+\end{verbatim}
+
+IMPORTANT: There are different types of Functor, each type is designed to be
+used for a certain purpose only (sect.\ref{sec:Functor-MGS}).
+% \begin{verbatim}
+% NodeInitializerFunctor
+% LayoutFunctor
+% \end{verbatim}
+
+Some built-in functors are defined in Sect.\ref{sec:functors-in-MGS-framework}. 
+User can define new functor by writing C++ class as a derived class from one of
+these class. User can define new functor in MDL, and the mdlparser will help
+generate the C++ class (stored in framework/extension/functor) from that user
+can add the body implementation.
+
+
+\subsection{(2) Declaration: declare an identifier}
+\label{sec:MGS-grammar-keywords}
+\label{sec:gsl-declaration-section}
+
+\begin{verbatim}
+declaration: INT declarator '(' INT_CONSTANT ')'  
+    | INT declarator '=' INT_CONSTANT         
+    | FLOAT declarator '('constant ')'   
+    | FLOAT declarator '=' constant
+    | PSET '<' parameter_type_pair '>' declarator '(' nvpair_clause_list ')' 
+    | PSET '<' parameter_type_pair '>' declarator '(' declarator DOT set_operation '('  nvpair_clause_list ')' ')'
+    | NVPAIR '(' nvpair_clause ')'
+	| NVPAIRLIST declarator '(' nvpair_clause_list ')'
+    | LIST '<' list_parameter_type '>' declarator '(' '{' argument_list '}' ')'
+    | NODESET nodeset_declarator '(' nodeset ')'
+	| NODETYPESET declarator '(' node_type_set_specifier_clause ')'
+    | RELNODESET relnodeset_declarator '(' relative_nodeset ')'
+    | GRIDCOORD declarator '(' gridset ')'
+    | REPNAME declarator '(' repname ')'
+    | NODETYPE declarator
+    | EDGETYPE declarator
+    | INDEXSET declarator '(' index_set ')'
+    | matrix_type_specifier matrix_init_declarator
+    | typedef_declaration
+    | functor_declaration
+	| set_operation_declaration
+    | STRIDE declarator '(' stride_list ')'
+	| repertoire_declaration;
+
+
+functor_declaration: declarator functor_declarator '(' argument_list ')'
+	| FUNCTOR functor_declarator '(' parameter_type_list ')';
+
+declarator: IDENTIFIER;
+functor_declarator: IDENTIFIER;
+
+\end{verbatim}
+
+Example:
+\begin{verbatim}
+int x(5);
+float y = 5.5;
+Pset<  ???   >   z ( ??? );
+
+\end{verbatim}
+
+
+\subsection{(3) Directive: functor or function}
+\label{sec:gsl-direftive-section}
+
+\begin{verbatim}
+functor_specifier:   functor_declarator '(' argument_list ')';
+function_specifier:  function_name '(' argument_list ')';
+\end{verbatim}
+
+Example:
+\begin{verbatim}
+
+\end{verbatim}
+
+
+\subsection{(4) Error}
+\label{sec:gsl-error-section}
+
+If non of the above (e.g. definition, directive, declaration) matches, then an error occurs.
+In that case, it is put in this category
+\begin{verbatim}
+| error ';' {
+  // same as below
+}
+| error {
+       LensLexer *l = ((LensContext *) parm)->lexer;
+
+       cerr << "Error at file:" << l->currentFileName << ", line:"
+            << l->lineCount<< ", " << "unexpected token: "
+            << l->getToken() << endl << endl;
+
+       CONTEXT->setError();
+}
+;
+\end{verbatim}
+%What is the language grammar for this???
+
+\subsection{Data types}
+\subsection{ * Primitive data types}
+
+\begin{verbatim}
+int
+string
+float
+list
+\end{verbatim}
+
+\subsection{* Pair: NVPair or NDPair ?}
+\label{sec:NDPair}
+
+number-value pair NVPair is no longer used.
+
+
+number-data pair NDPair is used in GSL in the form of 
+\begin{verbatim}
+ some_name '=' {somevalue[, somevalue2 [,...]}
+\end{verbatim}
+
+For a single value, we don't need \verb!{ }! (curly braces).
+
+E.g.:
+\begin{verbatim}
+nodekind="CompartmentVariables[Voltage]"
+\end{verbatim}
+
+\subsection{* Set: PSet, NodeSet, NodeTypeSet, RelNodeSet ?}
+\label{sec:PSet}
+
+We use these keywords to define a group of something, e.g. 
+\begin{verbatim}
+PSet
+NodeSet
+
+NodeTypeSet
+
+RelNodeSet
+\end{verbatim}
+
+\begin{itemize}
+  \item \verb!PSet! is a keyword that indicate that it expects a
+  ParameterSet - Sect.\ref{sec:ParameterSet} for assigning values to a node
+  (Sect.\ref{sec:InitNodes}).
+
+\begin{verbatim}
+PSet(<param-type-pair>) identifier (NVPair-clause-list);
+
+PSet(<param-type-pair>) identifier (identifier.set_operation(NVPair-clause-list);
+
+    | PSET '<' parameter_type_pair '>' declarator '(' nvpair_clause_list ')' 
+    | PSET '<' parameter_type_pair '>' declarator '(' declarator DOT set_operation '('  nvpair_clause_list ')' ')'
+
+parameter_type_pair := declarator ','  init_attr_type_node
+
+init_attr_type_node := IN | OUT | NODEINIT
+\end{verbatim}  
+Sect.\ref{sec:MGS-grammar-keywords}
+
+
+  \item \verb!NodeSet! give a name for a set of nodes, so that we can
+  conveniently use them everywhere
+  
+SYNTAX:
+\begin{verbatim}
+'NodeSet'  the-name '(' definition-node-set  ')'
+\end{verbatim}  
+
+Example:
+\begin{verbatim}
+Layer(nodes, ...) 
+
+NodeSet all(.[].Layers(nodes);
+\end{verbatim}
+It means \verb!all! name refers to all nodes in the layer name \verb!nodes! in
+the current Grid (Sect.\ref{sec:Grid}) (first dot '.' refers to the current
+grid, then [] refers to )
+
+ 
+  \item \verb!NVPair!: What is this?
+
+\begin{verbatim}
+NVPair(NVPair-clause)
+\end{verbatim}
+
+%  \item 
+\end{itemize}
+
+
+\subsection{* List?}
+\label{sec:list-GSL}
+
+A list is \verb!list<!typename\verb!>!.
+
+A list in GSL is a comma-saparated list of NDPair.
+
+\begin{enumerate}
+  \item \verb!NVPairList!: What is this?
+
+\end{enumerate}
+
+\subsection{* Matrix?}
+
+What dimension?
+
+\begin{verbatim}
+MATRIX '<' type_specifier '>'  identifier;
+\end{verbatim}
+with MATRIX maps to \verb!Matrix! keyword.
+
+Example:
+\begin{verbatim}
+Matrix < int >   x;
+\end{verbatim}
+
+\subsection{Default value}
+
+In GSL, any values undefined get zero by default.
+
+
+\subsection{Identifier}
+
+An identifier in *.gsl script is any thing start with a letter (L) and then with
+one of the following forms
+\begin{verbatim}
+{L}{A}*
+
+{L}[_]{A}*
+
+{L}{A}*[_]{A}*
+
+{L}{A}*{U}*
+
+{D}{A}*{L}{A}*
+\end{verbatim}
+
+NOTE:
+\begin{verbatim}
+/* Digits, letters and alphanums */
+D       [0-9]
+L       [a-zA-Z]
+A       [a-zA-Z0-9]
+U       [a-zA-Z0-9_]
+\end{verbatim}
+
+\subsection{String literal}
+
+Any thing wrapped by double quotes
+\verb!''some string''!.
+
+\subsection{Constant (integer, float)}
+
+Integer constant, with/without a minus sign and digits after it.
+\begin{verbatim}
+\-?{D}+
+\end{verbatim}
+
+Float constant, can be in regular decimal form or scientific form
+\begin{verbatim}
+[+\-]?{D}+\.{D}* 
+
+[+\-]?{D}+\.?{D}*[eE][+\-]?{D}+
+\end{verbatim}
+
+\subsection{Comment}
+
+Use C/C++ style, \verb!#!
+
+\subsection{Function}
+
+A function is defined using \verb!Function! keyword, and can return some value
+using \verb!Return! keyword.
+
+\subsection{NodeType vs. Variable}
+\label{sec:NodeType-GSL}
+\label{sec:Variable-GSL}
+
+A Variable is like a NodeType which can also goes through different phases, but
+does not live in a grid. A Variable is a loner, i.e. come in and connect to a
+specific set of NodeTypes instances to do (1) data I/O, (2) electrical
+stimulation.
+
+
+The difference between a NodeType and a Variable is that a NodeType is part of
+the graph in the beginning, and a Variable is used to connected to one or more
+Nodes in order to perform certain action, e.g. current stimulus, recording data
+for I/O purpose, during a certain time period.
+
+
+\subsection{Operators}
+
+\begin{verbatim}
+||      (or)
+^^      (XOR)
+&&      (and)
+==      (test equivalent)
+!=      (test not equivalent)
+
+\end{verbatim}
+
+
+\subsection{Repetoire: Grid + Composite}
+\label{sec:GSL-repertoire}
+
+A backbone of a GSL (*.gsl) script is defining the repetoire
+which can be a Grid (Sect.\ref{sec:GSL-repertoire-grid}) or, for more complex system
+simulation, a Composite (Sect.\ref{sec:GSL-script-Composite}).
+
+The concatenated repertoire names will be delimited with the \verb!/! token.
+Unix-style \verb!'.'! addressing will also be supported to allow relative
+addressing. All repertoire names must begin with the delimiter, \verb!'.'!.
+
+A fully qualified repertoire name can, therefore, be specified in three ways:
+\begin{verbatim}
+1)	A concatenation of repertoire names, according to the hierarchy structure,
+starting with the root repertoire. 
+
+Example: /Network/VOR/4Calpha
+
+2)	A concatenation of repertoire names, according to the hierarchy structure,
+starting with a named repertoire name specification that is globally accessible. 
+
+Example: RepName VOR(/Network/VOR);
+
+
+3)	A concatenation of repertoire names, according to the hierarchy structure,
+starting with the repertoire in the current scope. 
+
+Example: VOR/4Calpha
+\end{verbatim}
+
+NOTE: \verb!RepName!
+
+\subsection{* Grid}
+\label{sec:GSL-repertoire-grid}
+
+\begin{verbatim}
+type_definition: GRID declarator '{' grid_definition_body '}'  
+	| GRID declarator '{' grid_definition_body '}' declarator 
+    | COMPOSITE  declarator '{' composite_definition_body '}' 
+    | COMPOSITE  declarator '{' composite_definition_body '}' declarator;
+
+grid_definition_body: dim_declaration ';'
+    | dim_declaration ';' grid_translation_unit;
+\end{verbatim}
+with \verb!dim_declaration! (Sect.\ref{sec:GSL-grid-dimension}),
+\verb!grid_translation_unit! (Sect.\ref{sec:GSL-grid-body})
+
+\subsection{ ** Grid dimension}
+\label{sec:GSL-grid-dimension}
+
+
+A dimension: a comma-separated list of constant integer value
+  (typically 3D is used)
+  
+\begin{verbatim}
+dim_declaration: DIMENSION '(' int_constant_list ')';
+int_constant_list: INT_CONSTANT 
+     | int_constant_list ',' INT_CONSTANT;
+\end{verbatim}
+with \verb!INT_CONSTANT! is a constant integer value.
+
+Example:
+\begin{verbatim}
+#define _X_ 16
+#define _Y_ 16
+#define _Z_ 16
+
+Grid Tissue {
+   Dimension (_X_, _Y_, _Z_);
+
+   ... // main body
+}
+\end{verbatim}
+
+
+\subsection{ ** Grid main body}
+\label{sec:GSL-grid-body}
+
+Grammar:
+\begin{verbatim}
+grid_translation_unit: grid_translation_declaration_list;
+
+grid_translation_declaration_list: 
+      grid_translation_declaration
+	| grid_translation_declaration_list  grid_translation_declaration;
+	
+grid_translation_declaration: 
+      declaration ';'
+    | grid_function_specifier ';';
+    
+grid_function_specifier: function_specifier
+    | grid_function_name;
+    
+grid_function_name: 
+      INITNODES '(' argument_list ')'
+    | LAYER '(' argument_list ')';
+\end{verbatim}
+
+A Grid is defined with
+\begin{enumerate}
+  \item initialize nodes in the grid - Sect.\ref{sec:InitNodes}
+  
+
+  \item define one or more layers mapping to the grid: imagine it's like layers
+  concept in Photoshop or GIMP, but the layer here has the same dimension of the
+  grid. - Sect.\ref{sec:nts-layer}
+
+\end{enumerate}
+
+\subsection{*** InitNodes}
+\label{sec:InitNodes}
+
+In *.gsl script, we can have as many InitNodes statement as we want, each
+statement initialize the values for a set of nodes.
+{\small
+\begin{verbatim}
+// SYNTAX: 2 stages (create instance + use it) - InitNodes and NodeInitializer keywords.
+// stage 1
+NodeInitializer functor-of-NodeInitializer-category();
+functor-of-NodeInitializer-category functor_instance();
+// stage 2
+InitNodes ( node-set, functor_instance)
+\end{verbatim}
+}
+The C++ code that handles this statement is
+\verb!C_grid_function_name::initNodes()! - Sect.\ref{sec:C_grid_function_name}
+
+
+\textcolor{red}{InitNodes} statement in GSL requires minimum 2 arguments
+\begin{enumerate}
+  \item NodeSet = a set of Nodes to be initialized
+ 
+There are different way to define a nodeset (Sect.\ref{sec:NodeSet-GSL}). 
+We can define the border for a given layer within which the nodes should be set.  
+  
+  \item Subsequent arguments are functor instance of category
+  \verb!NODEINITIALIZER! (i.e. derived from \verb!NodeInitializerFunctor!
+  class), minimum one functor (Sect.\ref{sec:NodeInitializer-functors})
+  
+  Each functor does initialization on each Node in the NodeSet
+\end{enumerate}
+
+If a node is modified by two different InitNodes statement, then the last write
+is kept.
+ 
+Example: SameFunctor - Sect.\ref{sec:Same-functor}
+\begin{verbatim}
+NodeInitializer Same(Pset);  // functor that just provides parameter set
+                             // argument
+
+Grid grid_name{
+   InitNodes ( .[25:75, 25:75].Layer(nodes), Same( Pset<LifeNode, NodeInit> ( <value = 1> ) ) );
+   InitNodes ( .[40:60, 40:60].Layer(nodes), Same( Pset<LifeNode, NodeInit> (
+   <value = 0> ) ) );
+}
+\end{verbatim}  
+
+
+
+\subsection{*** Layers}
+\label{sec:nts-layer}
+\label{sec:layer-gsl-script}
+
+
+You can also use condition \verb!#if! \ldots \verb!#endif! to  conditionally
+choose to add more or less layers in a grid, i.e grid is a vector of layers.
+Check Sect.\ref{sec:layers} for the  statement below allows us to add a layer
+to a grid (Sect.\ref{sec:Grid}), underlying C++ implementation.
+
+Example 1:
+\begin{verbatim}
+Layer(MegaSynapticClefts, MegaSynapticCleft, UniformLayout(1), 
+          <nodekind = "MegaSC">);
+\end{verbatim}
+
+Example 2:
+{\small
+\begin{verbatim}
+#define MAX_COMPUTE_ORDER 0
+
+Grid Tissue {
+   Layer(branches, HodgkinHuxleyBranch, tissueFunctor("Layout", <nodekind="Branches">), 
+         <nodekind="Branches">, 
+         tissueGM);
+   Layer(endPoints, EndPoint, tissueFunctor("Layout", <nodekind="EndPoints">), 
+         <nodekind="EndPoints">, 
+         tissueGM);
+#if MAX_COMPUTE_ORDER>0
+   Layer(fwdSolvePoints1, ForwardSolvePoint1, 
+          tissueFunctor("Layout", <nodekind="ForwardSolvePoints">), 
+          <nodekind="ForwardSolvePoints">, tissueGM);
+   Layer(bwdSolvePoints0, BackwardSolvePoint0, 
+          tissueFunctor("Layout", <nodekind="BackwardSolvePoints">), 
+          <nodekind="BackwardSolvePoints">, tissueGM);
+#endif
+}
+\end{verbatim}
+}
+
+The \verb!Layer( )! statement in GSL is handled by the function
+\verb!C_grid_function_name::layers()! (Sect.\ref{sec:C_grid_function_name::layers}).
+
+, as represented by GridLayerDescriptor
+(Sect.\ref{sec:GridLayerDescriptor}) at the code level, requires 4 or 5
+arguments
+\begin{enumerate}
+  \item 1st = the name of the layer, any name defined by the user and must be
+  unique in the simulation as it is used to retrieve the layer.
+  
+  This name provides an abstract representation to a set of instances, e.g.
+  LifeNode (as provided by the 2nd argument), from a given CompCategory, e.g.
+  LifeNodeCompCategory. The creation of such instances on the grid, is
+  determined by the 3rd argument (a layout functor).
+  
+  Also, this name can be used to retrieve the reference to such layer -
+  Sect.\ref{sec:get-to-layer-C++}.
+  
+  \item 2nd = the name of the NodeType (the name comes after NodeType keyword),
+  each layer contains nodes from only one NodeType.
+  
+  \item 3rd = the layout functor (Sect.\ref{sec:functor-layout}) that 
+  determine the densities, i.e. how many node instances to be created, on each
+  grid element. NOTICE the dimension of the grid is determined by the
+  \verb!Dimension! clause. 
+  
+%  Then,  of the given NodeType to each Granule.
+  
+  NOTE: On a multi-process (i.e. MPI implementation), the partition of the grid 
+  depends on the type of Granule Mapper being used on the fifth argument.
+  % what coordinate in the grid
+  
+  \item 4rd = a NDPairList - Sect.\ref{sec:NDPairList}
+
+NOTE: A functor can accept one or many input via the form of a list of
+(name=data), known as {\bf NDPairList} (NameDataPair-List)
+
+  \begin{verbatim}
+< nodekind = "Branches">
+
+< nodekind = "Branches", someName = 10>
+
+< nodekind = "Compartmental[Voltage][1]">
+\end{verbatim}
+
+To extract the information from a given 'name', e.d. \verb!nodekind!, we need to
+write such function, e.g. in NTS we use 
+\begin{verbatim}
+TissueFunctor::getNodekind(const NDPairList* ndpl, 
+       std::vector< std::string >& nodekind);kj
+\end{verbatim}
+Remember that here we define TissueFunctor (Sect.\ref{sec:TissueFunctor.mdl})
+with the second argument is NDPairList. 
+
+
+  \item 5th argument (optional) a granulemapper (Sect.\ref{sec:GranuleMapper}) -
+  that decide how to partition the node instances for that layer into different
+  MPI processes.
+  
+  \textcolor{red}{The default is VolumeGranuleMapper} -
+  Sect.\ref{sec:VolumeGranuleMapper}
+  
+Check \verb!C_grid_function_name.C!
+\begin{verbatim}
+GranuleMapper * granuleMapper;
+
+// c = LensContext
+GranuleMapperType* gt = c->sim->getGranuleMapperType("VolumeGranuleMapper");
+
+std::auto_ptr<GranuleMapper> apgm;
+gt->getGranuleMapper(gmargs, apgm);
+granuleMapper = apgm.get();
+
+granuleMapper->setIndex(c->sim->getGranuleMapperCount());
+c->sim->addGranuleMapper(apgm);
+\end{verbatim}  
+
+  Example: a GridGranuleMapper instance - Sect.\ref{sec:GridGranuleMapper}
+  
+%  Example: a TissueGranuleMapper instance - Sect.\ref{sec:TissueGranuleMapper}
+\end{enumerate}
+
+
+% On a layer, we can have one or more models (Sect.\ref{sec:Node-MDL}) connected
+%to each other. 
+% 
+GRAMMAR:
+\begin{verbatim}
+Layer ( NodeTypeSetSpecifierClause );
+
+
+primary_expression: MEMBER  '(' layer_set ')';
+node_type_set_specifier: DOT TYPE '(' node_type_set_specifier_clause ')';
+node_type_set_specifier_clause: layer_set
+        	| logical_OR_expression;
+layer_set: layer_entry
+        	| layer_set ',' layer_entry;
+layer_entry: layer_name
+        	| name_range;
+name_range: layer_name MINUS  layer_name;
+layer_name: IDENTIFIER;
+
+
+
+
+layer_entry :=
+layer_name := STRING;
+\end{verbatim}
+
+Example:
+\begin{verbatim}
+ //define a particular NodeType, with its initialization  
+NodeType LifeNode(< habitable=2, tooSparse=1, tooCrowded=4 >);
+
+/*1. layer-name (anything)
+  2. particular-NodeType-class-that-has-been-initialized 
+      [NOTE: one layer only contains one NodeType
+  3. a 'LAYOUT' functor that returns the density of 
+      NodeTypes instances to each volume in the grid
+  4. <nodekind = "">
+  5. tisseGM (optional)? 
+*/ 
+Layer(nodes, LifeNode, UniformLayout(1), < nodekind="Nodes" >);
+\end{verbatim}
+
+Example:
+\begin{verbatim}
+InitPhase  = { method_name_in_GSL_1, method_name_in_GSL_2 }
+
+NodeType HodgkinHuxleyVoltage (< some input argument >); 
+{ method_name_C++_HodgkinHuxleyVoltage_class -> method_name_in_GSL_1 }
+
+Layer(branches, HodgkinHuxleyVoltage, 
+      tissueFunctor("Layout", <nodekind="CompartmentVariables[Voltage]">),
+      <nodekind="CompartmentVariables[Voltage]">, 
+      tissueGM
+     );
+
+\end{verbatim}
+
+
+\subsection{* Composite}
+\label{sec:GSL-script-Composite}
+\label{sec:GSL-repertoire-composite}
+
+
+\subsection{QueryPathProduct}
+
+%TODO: ask James what is QueryPathProduct
+
+
+
+
+\section{Error handling}
+
+\begin{verbatim}
+std::string mes = "Some error message";
+
+throwError(mes);
+\end{verbatim}
+
+\section{I/O }
+\label{sec:NTS-IO-classes}
+\label{sec:GSL-IO-classes}
+
+To provide convenient I/O for a class using \verb!std::cout!, we implement
+\begin{verbatim}
+ // header file
+#include <iostream>
+std::ostream & operator<<(std::ostream&,GridSet const&);
+
+class GridSet{
+public:
+  // 1. make sure we implement this
+ virtual std::ostream& print(std::ostream &os, GridSet const &gs) const;
+
+
+}
+
+  // source file
+  // 2. make sure we 
+std::ostream & operator<<(std::ostream& os,GridSet const& gs)
+{
+   return gs.print(os,gs);
+}
+
+  // 3. and implement GridSet::print() 
+std::ostream & GridSet::print(std::ostream & os, GridSet const& gs);
+{
+  // add output to 'os'
+  os << something;
+  
+  os << someotherthing;
+
+  return os;
+}
+\end{verbatim}
+
+\section{RNG (Random Number Generator)}
+\label{sec:RNG}
+
+Reference: \url{http://www.stat.osu.edu/~herbei/GPU/RNG.pdf}
+
+
+\subsection{RNG.h}
+\label{sec:RNG.h}
+
+This header contains the static object which is used for generating random
+numbers. The methods to generate random numbers are in a different header file -
+Sect.\ref{sec:rndm.h}.
+
+
+\begin{verbatim}
+./gsl/utils/std/include/RNG.h
+\end{verbatim}
+which currently uses
+\begin{lstlisting}
+typedef MRG32k3a RNG;
+//typedef MersenneTwister RNG;
+
+
+static RNG Rangen;
+static RNG SharedRangen;
+static RNG& getRangen() {
+      return Rangen;
+};
+static RNG& getSharedRangen() {
+      return SharedRangen;
+}
+\end{lstlisting}
+
+
+\subsection{-- MerseneTwister}
+\label{sec:MerseneTwister}
+
+It provides 2 methods
+\begin{itemize}
+  \item \verb!irandom32! : return unsigned long
+  
+  \item \verb!drandom32! : return double
+\end{itemize}
+
+\subsection{Multiple Recursive Generator: MRG32k3a}
+\label{sec:MRG32k3a}
+
+\url{https://software.intel.com/en-us/node/590402}
+
+\url{http://simul.iro.umontreal.ca/rng/MRG32k3a.c}
+
+
+\subsection{rndm.h}
+\label{sec:rndm.h}
+
+
+These APIs accepts an object of type \verb!RNG! (Sect.\ref{sec:RNG}), and
+return a random number following different distribution
+
+\begin{enumerate}
+  \item \verb!drandom()!: floating-point uniform
+  
+  \item \verb!lrandom()!: long uniform
+  
+  \item \verb!irandom()!: integer uniform
+  
+  \item \verb!gaussian()!: Gaussian with mean 0 and std = 1
+  
+  \item \verb!gaussian(mean,std)!: 
+  
+  \item \verb!expondev()!: exponential distribution
+  
+  \item \verb!expondev(g)!: normalized to $g$
+  \item 
+\end{enumerate}
+
+\section{Environment variables}
+
+\begin{verbatim}
+LENSROOT
+\end{verbatim}
+
+
+\section{Macro testing}
+
+\begin{verbatim}
+#ifdef USING_BLUEGENE
+ //code specific for BlueGene
+#endif
+
+#ifdef HAVE_MPI
+ // MPI-code
+#endif
+
+#ifdef INFERIOR_OLIVE
+
+#endif
+
+#ifdef SYNAPSE_PARAMS_TOUCH_DETECT
+
+#endif
+
+#ifdef USING_CVC
+
+#endif
+
+#ifdef DEBUG_ASSERT
+
+#endif
+
+#ifdef DEBUG
+
+#endif
+
+#ifdef VELOCITY_DAMPING_FACTOR
+  VELOCITY_DAMPING_FACTOR = 0.9 
+#endif
+\end{verbatim}
+
+

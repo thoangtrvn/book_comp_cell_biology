@@ -1,0 +1,136 @@
+ 
+\chapter{Alternans}
+\label{chap:alternans}
+
+
+\section{Introductions}
+\label{sec:introductions}
+
+% Intracellular calcium transient alternans (CTA) is ...
+
+A brief introduction of alternans is given in
+Sect.~\ref{sec:card-cell-altern}. Markers for detecting increased risk of
+sudden cardiac death (SCD) due to calcium transient alternans (CTA) are
+ {\bf T-wave alternans} (TWA) and {\bf pulsus alternans}. It has been  studied
+ for years; however, the underlying mechanism remains  controversial and thus
+ the origins is not yet fully understood. CTA  was thought to be caused
+ primarily by the alternations of the duration  of cardiac AP (a
+ review:~\citep{myles2008}).  However, the \ce{Ca^2+}  handling has
+ instabilities on its own that can result in CTA  independently of APD
+ alternans~\citep{chudin1999icd} which promotes  {\bf ventricular fibrillation}
+(VF)~\citep{adam1984,smith1988,nearing1991}.  We will use
+computational model to study how randomly occurring \ce{Ca^2+} sparks
+interact collectively to result in whole-cell \ce{Ca^2} alternans.
+
+Early models hypothesized the mechanism of \ce{Ca^2+} alternans is
+based on the CICR mechanism, i.e.
+\textcolor{red}{the models replicates the steep relation showing the
+  dependence of} \ce{Ca^2+} release to the SR \ce{Ca^2+} load before
+  release.
+Here, the luminal \ce{Ca^2+} overload is the proposed mechanism of
+CTA~\citep{diaz2004src}. In other words, luminal \ce{Ca^2+} regulates
+the sensitivities of RyRs by the interactions of the auxiliary
+proteins (triadin-1/junctin, T/J) with the luminal \ce{Ca^2+} buffer
+CASQN~\citep{terentyev2003cdf,Gyorke2004,knollmann2006cdc}
+(Sect.\ref{sec:RyR_luminal_Calcium}).
+\begin{itemize}
+\item CSQN and T/J complex regulates luminal \ce{Ca^2+} release
+\item In transgenic mouse, the over(under)-expressed CSQN show
+  longer(shorter) refractory periods. 
+\end{itemize}
+At low luminal concentration, CSQN binds to T/J and this complex
+inhibit the opening rate of RyRs. The underlying mechanism is that in
+high luminal \ce{Ca^2+} concentration, CSQN is unbound from T/J and
+then mostly bound to luminal \ce{Ca^2+}.  This makes RyR sensitivity
+to \ce{Ca^2+} in the luminal is higher, i.e. its transition from close
+to open state is higher.
+
+Based on nanoscopic of imaging, \citep{restrepo2008cmm} created a
+model to test two hypothesises:
+\begin{itemize}
+\item refractoriness can also cause the alternans: the refractoriness
+  of RyRs associated with the delay in unbinding of CSQN from T/J, can
+  also cause CTA; independently whether or not SR load is
+  alternating. 
+\item the \ce{Ca^2+} concentration dependence of CSQN
+  binding/unbinding kinetics can explain the non-linear steepness of
+  the SR release-load relationship at high load.
+\end{itemize}
+
+\citep{rovetti2010sis} induced three critical properties to lead to
+\ce{Ca^2+} alternans are:
+\begin{enumerate}
+\item randomness (of \ce{Ca^2+} spark)
+\item refractoriness (of
+ RyRs in calcium-release unit (CRU) after
+  \ce{Ca^2+} sparks)
+\item recruitment (\ce{Ca^2+} sparks in one CRU may trigger \ce{Ca^2+}
+  sparks in neighboring CRUs).
+\end{enumerate}
+
+\ce{Ca^2+} sparks can be triggered by one of the three ways
+\begin{enumerate}
+\item the opening of one or more DHPRs, during an AP through the CICR process
+\item the spontaneous opening of RyRs, especially when SR \ce{Ca^2+}
+  load is high, e.g. due to \ce{Ca^2+} leak
+\item \ce{Ca^2+} diffusion from nearby CRU that have just released
+  \ce{Ca^2+} from SR via CICR process. 
+\end{enumerate}
+The first two mechanisms are well-documented experimentally. However,
+the third one, {\bf spark-induced sparks},q is often overlooked during
+normal ECC. Recent experimental data showed that the transition from
+\ce{Ca^2+} spark to \ce{Ca^2+} waves occur in normal ECC. This turns
+spark-induced sparks to be important; and
+\textcolor{red}{the sequential sparks often occur along the Z-line}.
+
+\section{T-wave alternans}
+\label{sec:t-wave-alternans}
+
+T-wave alternans (TWA) is an electrocardiolographic (ECG) finding of
+alternating T-wave morphology (amplitude and shape). This was first
+discovered a hundred years ago~\citep{herring1909}.  With the new ECG
+technology to detect microvolt (change in) T-wave amplitude (MTWA),
+these small changes has been associated with the onset of
+{\bf ventricular arrhythmias}, leading to sudden cardiac death. In
+addition, several clinical trials have revealed that T-wave alternans
+is a marker of susceptibility to ventricular arrhythmias in
+humans~\citep{kavesh1998,ikeda2000,klingenheben2000}, with a greater
+predictive accuracy than other factors.
+
+\begin{framed}
+  If the linking between microvolt T-wave alternans and ventricular
+  arrhythmias can be confirmed, a noninvasively method then can be
+  used to identify patients who may suffers sudden cardiac
+  deaths~\citep{rosenbaum2001}.
+\end{framed}
+
+\begin{verbatim}
+Pastore, J. M., S. D. Girouard, K. R. Laurita, F. G. Akar, and
+D. S. Rosenbaum. 1999. Mechanism linking T-wave alternans to the
+genesis of cardiac fibrillation. Circulation. 99:1385-1394.
+
+Estes, N. A. M., G. Michaud, D. P. Zipes, N. ElSherif, F. J. Venditti,
+D. S. Rosenbaum, P. Albrecht, P. J. Wang, and
+R. J. Cohen. 1997. Electrical alternans during rest and exercise as
+predictors of vulnera- bility to ventricular
+arrhythmias. Am. J. Cardiol. 80:1314-1318.
+
+Rosenbaum, D. S., L. E. Jackson, J. M. Smith, H. Garan, J. N. Ruskin,
+and R. J. Cohen. 1994. Electrical alternans and vulnerability to
+ventricular arrhythmias. N. Engl. J. Med. 330:235-241.
+
+Pruvot, E. J., and D. S. Rosenbaum. 2003. T-wave alternans for risk
+stratification and prevention of sudden cardiac
+death. Curr. Cardiol. Rep. 5:350-357.
+\end{verbatim}
+
+\section{Pulsus alternans}
+\label{sec:pulsus-alternans}
+
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "mainfile"
+%%% End: 

@@ -1,0 +1,147 @@
+\chapter{AMPAR Model}
+\label{chap:AMPAR-models}
+
+\def\decay{{\text{decay}}}
+\def\rise{{\text{rise}}}
+\def\AMPA{{\text{AMPA}}}
+\def\post{{\text{post}}}
+
+
+AMPAR (Sect.\ref{sec:AMPAR}) is a non-NMDA glutamate receptor
+(Sect.\ref{sec:glutamate_receptor}) that is specifically activated by AMPA. Upon
+binding of AMPA, such molecules can produce a desensitizing response of AMPAR in
+mouse hippocampal neurons (Sect.\ref{sec:desensitizing-response}). 
+
+Another member of non-NMDA receptor is kainate-receptor
+(Sect.\ref{sec:kainate_receptor}); though AMPAR and kainate-receptor have
+different relative affinity to AMPA and kainate.
+
+\section{Introduction}
+\label{sec:AMPAR-kinetics}
+
+The  AMPA  synapses  can  be  very  fast.  For  example  in  some  auditory 
+nuclei,  they  have  sub-millisecond  rise  and  decay  times.  In  typical 
+cortical  cells,  the  rise  time is about 0.4 ms to 0.8ms. 
+
+AMPA receptors onto inhibitory interneurons are about twice as fast in rise and
+fall times.
+
+\subsection{AMPAR conductance}
+\label{sec:AMPAR-conductance}
+
+
+AMPA receptors (Sect.\ref{sec:AMPA/Kainate-receptor}) mediate EPSCs in most CNS
+neurons, so the single-channel properties of these receptors can affect
+information processing in neurons by influencing the amplitude and kinetics of
+synaptic currents.
+
+\begin{enumerate}
+  
+  \item Both AMPA and NMDA receptors, however, have an equilibrium potential near 0 mV
+  
+  \item The principal ions gated by AMPARs are sodium and potassium (i.e.
+  GluR2-expressed AMPAR), distinguishing AMPARs from NMDA receptors (the other
+  main ionotropic glutamate receptors in the brain), which also permit calcium influx.
+  
+  \item   apparent unitary conductances of <1 pS in patches from both migrating
+  and mature granule cells in acute cerebellar slices (Smith et al., 2000)
+  
+NOTE: Granule cells begin to express AMPA receptors before they arrive in the
+internal granule cell layer and receive synaptic input. 
+
+They found individual AMPAR exhibits as many as 4 distinguishable conductance
+levels, i.e. suggesting the granule cells express a heterogeneous
+population of AMPA receptors, with average is unitary conductances
+estimated previously for synaptic AMPA receptors
+%   Heterogeneous Conductance Levels of Native AMPA Receptors
+% T. Caitlin Smith,1 Lu-Yang Wang,2 and James R. Howe1,2
+
+NOTE: The AMPAR is a tetramer with 4 subunits, i.e. 4 ligand binding sites.
+The receptor opens when two sites are occupied, and increases its current as
+more binding sites are occupied. This may explain the multi-conductance level
+observed.
+
+  \item estimates for Schaffer collateral-commissural fiber synapses onto
+  hippocampal CA1 pyramidal cells range from 1.5 to 22.3 pS (Benke et al., 1998).
+\end{enumerate}
+
+AMPA and NMDA receptors are evenly distributed in the dendritic membrane before
+synaptogenesis with an estimated density of 3 receptors/$\mu^2$
+\begin{itemize}
+  
+  \item Following synaptogenesis, in hippocampal neuron, functional AMPA and
+  NMDA receptors are clustered at synapses with a density estimated to be on the
+  order of $10^4$ receptors/$\mum^2$, which corresponds to about 400
+  receptors/synapse (Cottrell et al., 2000).
+  
+ It means about 400 pS  
+\end{itemize}
+
+
+\subsection{Experimental studies}
+
+To study the kinetics of AMPAR, photolysis of caged glutamate is used
+(Sect.\ref{sec:two-photon-uncaging}).
+
+\begin{enumerate}
+  \item current response after 0.3$\pm$ 0.1 ms after flashing the light to
+  uncage glutamate.
+  
+  The inward is composed of 2 components: one through AMPAR (which is blocked
+  by 5$\muM$ CNQX) and one through NMDAR (which is blocked by 50$\muM$ APV)
+  
+  \item amplitude of inward current depends upon caged glutamate concentration
+  and light energy.
+  
+  \item peak current achieved at 2-9ms from the onset of uncaging
+  
+  \item Once open, the channel may undergo rapid desensitization, stopping the
+  current. The channel  close quickly (1ms).
+\end{enumerate}
+
+A recent in vivo study with 2P uncaging showed structure-functional relationship
+in pyramidal cell of adult mice neocortex \citep{noguchi2011}.
+\begin{itemize}
+  \item  functional AMPAR expression was stable andproportional
+to spine volume
+
+  \item glutamate-induced Ca2+ transients were inversely proportional to spine
+  volume
+\end{itemize}
+%No current was generated when the spot was moved 5-10 mm away from a cell
+
+
+
+\section{Two-state}
+
+%1msec pulse of 1mM 
+
+The gating of AMPAR is modeled using 
+\begin{equation}
+\ce{ C <=>[\alpha.\text{[NT]}][\beta] O}
+\end{equation}
+with [NT] is concentration of neuro-transmitters, which can also be represented
+as the pre-$\Vm$ as an alternate option.
+
+Suppose $r$ is the fraction of AMPAR in the current synapse in the open-state,
+then
+\begin{equation}
+\frac{dr}{dt} = \alpha \times [NT] \times (1-r) - r \times \beta
+\end{equation}
+with the function for [NT] is given Sect.\ref{sec:neurotransmitter-time-course}.
+
+and AMPAR current is
+\begin{equation}
+I_\AMPA = \bar{g_\AMPA} \times r \times (\Vm_\post - E_{\rev,\AMPA})
+\end{equation}
+
+The time course of $r(t)$ is important to model the current that appears on the
+postsynaptic side. 
+
+\section{Destexhe, Mainen, Sejnowski (1994)}
+
+
+\section{Hausser, Roth (1997)}
+
+
+\section{Koike, Ozawa (2000)}

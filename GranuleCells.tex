@@ -1,0 +1,89 @@
+\chapter{Granule cells}
+\label{chap:granule-cell-models}
+
+Granule cells is discussed in Sect.\ref{sec:granule_cells}.
+In this chapter, we focus on models for granule cells.
+
+Synaptic currents induced by mossy-fiber stimulation in rat
+granule cells are mediated by ar-amino-3-hydroxy-5-methyl-4-
+isoxazolepropionoc acid (AMPA) as well as by NMDA receptor.
+
+
+\section{cerebellar granule neurons (CGNs)}
+\label{sec:cerebellar-granule-neuron}
+\label{sec:CGN}
+
+The cerebellum (Sect.\ref{sec:cerebellum}) plays an important role in motor
+control, motor skill acquisition, memory and learning among other brain
+functions. In rodents, cerebellar development continues after birth,
+characterized by the maturation of granule neurons.
+
+Cerebellar granule neurons (CGNs) are the most abundant neuronal type in the
+central nervous system, and they provide an excellent model  for investigating
+molecular, cellular, and physiological mechanisms underlying neuronal
+development as well as neural circuitry linked to behavior (Selvakumar,
+Kilpatrick, 2013).
+%https://link.springer.com/protocol/10.1007%2F978-1-62703-444-9_5
+
+CNGs can fire action potentials (APs) at high frequencies during sustained
+depolarization.
+\begin{itemize}
+  \item background $\K$ current in CNG correlate with strong expression of 5
+  $\KtwoP$ genes: TWIK-1, TREK-2c, THIK-2, TASK-1, and TASK-3
+  
+  It is likely that TASK-1/TASK-3 heterodimers are a prominent combination
+in adult CGNs (Aller et al., 2005).  At physiological pH, TASK-3- containing
+channels (homodimers or heterodimers) will increase potassium permeability to a
+greater extent than TASK-1 homodimeric channels. 
+
+Previous evidences: genetic deletion of TASK-1 (i.e. TASK-1 KO neurons) does not
+alter the leak conductance, the RMP, or AP firing in adult CGNs (Aller et al.,
+2005).
+
+Now: TASK-3 KO neurons show a significant depolarization of the RMP in CNGs
+(Brickley et al., 2007).
+
+
+\end{itemize}
+
+
+\section{Gabbiani-Midtgaard-Knopfel (1994)}
+\label{sec:granule-cell-Gabbiani-1994}
+
+\citep{gabbiani1994} developed a compartmental model for turtle cerebellar
+granule cells (13 compartments: soma + 4 dendrites).
+
+They used the model to study synaptic input via mossy fiber to granule cell.
+
+\subsection{Assumption}
+
+The strength of the synaptic input was adjusted at the most distal compartment
+of the dendrite so that the synchronous activation of 2 mossy fiber synapses
+is enough to trigger the AP in the soma.
+
+
+
+\subsection{Mathematical models}
+
+6 ionic currents for soma
+\begin{enumerate}
+  \item Nat: fast activation and fast inactivation
+  
+  \item Ca(HVA):  high-Vm activated $\Ca$ current
+  
+  \item K(DR): delayed rectifier $\K$ current (Sect.\ref{sec:delay-rectifier})
+  
+  \item Na/K exchanger: activated at hyperpolarized Vm
+  
+  \item K(Ca): $\Ca$-dependent and Vm-dependent $\K$ current
+\end{enumerate}
+whose kinetics were derived from rat and turtle granule cells.
+
+NCX model is discussed in Sect.\ref{sec:NCX-Gabbiani-1994}.
+
+\subsection{Ca2+ dynamics in soma}
+
+$\Ca$ in the soma was modeled with radial diffusion, controlled by NCX, buffers.
+
+
+

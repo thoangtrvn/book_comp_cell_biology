@@ -1,0 +1,368 @@
+\chapter{Steps to build a model}
+
+There are different scale/level of modeling
+\begin{itemize}
+  \item single-cell level
+  \begin{enumerate}
+    \item point neuron, 
+    
+    \item multi-compartmental single-branch neuron, or 
+    
+    \item multi-compartmental branched neuron.
+  \end{enumerate}  
+  in a well-mixed system, or spatially system in 1D, 2D or 3D.
+
+  \item network-level: what is the details of the representation for a single
+  element in the network, e.g. 
+  \begin{enumerate}
+    
+    \item intracellular reaction network
+  
+    \item voltage dynamics that involve ion channels
+  
+    \item voltage dynamics and intracellular ion concentration dynamics 
+  \end{enumerate}
+  
+\end{itemize}
+
+A major problem with models of intracellular reaction networks is the overall
+lack of comprehensive quantitative data, be it kinetic constants of molecular
+interactions, or spatially resolved concentration distributions of the molecular
+species involved.
+
+Typically, it initially involves considerable effort to fine-tune the model to
+fit certain experimental results, before being able to use simulations to
+explore the predicted behavior of the system.
+
+There are different softwares we can use (Part.\ref{part:Modeling-Software}).
+
+\section{Workflow}
+
+There are 4 main steps to perform in order to build a realistic model neuron,
+and to connect it to others in biologically realistic network.
+\begin{enumerate}
+  \item create morphological reconstruction of the cell 
+  
+REMEMBER: To model a multi-compartmental cell model on a computer, we need to
+numerically solve the following equation for each compartment
+\begin{equation}
+\Cm \frac{d\Vm}{dt} = \frac{E_m - \Vm}{R_m} - \sum_k g_k \times (\Vm - E_k) 
+     +  \frac{\Vm(left) - \Vm - }{R'_a} + \frac{\Vm(right) - \Vm}{R_a} +
+     I_\inj
+\end{equation}  
+with 
+\begin{itemize}
+  \item  $R_m$ is membrane resistance (which can be used to infer $g_\leak$ -
+  Sect.\ref{sec:leak-current}) - Sect.\ref{sec:membrane-resistance}.
+  
+  \item the equilibrium potential $E_m$ (or $E_\leak$) is typically closed
+  to the resting membrane potential (or V$_\text{rest}$)
+  
+  In some cases, it is given a slightly different value, Eleak, in order to
+  reduce the net channel current to zero when $\Vm = E_\rest$
+
+  \item with $\Vm(left), \Vm(right)$ are the membrane potential value at the two
+  adjacent compartments; and $R'_a$, $R''_a$ are the axial resistance between
+  the current compartment to each of the two adjacent ones.
+\end{itemize}
+
+
+
+  \item build a suitably realistic passive compartmental model, without the
+  ion channels (i.e. those with variable conductances)
+  
+We we need to calculate $\Cm, R_m, R_a$ for each compartments. NOTE
+\begin{itemize}
+  \item $R_m$ is measured experimentally 
+  
+  \item $C_m$
+  
+  \item $R_a$
+\end{itemize}  
+  The hyperpolarizing current is applied, i.e. to disable ionic channels
+  (typically agonists are also used to create completely block), and the $\Vm$
+  changes can be used to estimate passive membrane properties.
+  
+There are three things that can be measured experimentally and are related to
+the parameters that we need for a model
+\begin{enumerate}
+  \item space constant or length constant: show the attenuation of $\Vm$ over
+  distance from the injection site.
+  \item input resistance (measured at soma) - Sect.\ref{sec:input-resistance}
+  \item membrane time constant  $\tau_m$
+  
+\begin{equation}
+\tau_m = R_m C_m = R_M C_M
+\end{equation}
+This is a function of the cell surface area; but not the dimension of the
+section/compartment.
+
+The value is importance for determining the time that it takes for ionic
+currents to produce changes in the membrane potential, and can be used to
+estimate $R_M$. 
+
+We can estimate from $\Vm$ recording at soma, if we assume single-compartment
+then fit the change of $\Vm$ as an exponential fit
+\begin{equation}
+\Vm(t) = \Vm(0) \times \exp\left( \frac{-t}{\tau_m} \right)
+\end{equation}
+NOTE: We can apply the log operator and find the coefficient $\tau_m$ from the
+straight line.
+\end{enumerate}
+
+  
+  \item add appropriate variable conductances to compartments that correspond to
+  the part of the cell 
+\end{enumerate}
+\url{http://www.genesis-sim.org/cnslecs/cns2a.html}
+\url{http://www.genesis-sim.org/GENESIS/iBoG/iBoGpdf/chapt2.pdf}
+
+A good common workflow
+\begin{enumerate}
+  
+  \item  first develop and analyze a compartmental model (one or many
+  compartments): zero-dimensional model where a well-mixed compartment
+  approximation is being used - essentially assuming infinitely fast diffusion
+  rates
+
+This is an ODE-only mathematical only system.
+
+
+  \item more complicated model
+  
+The single cell modelling workflow comprises various steps
+\begin{enumerate}
+  \item curate morphologies
+  
+  \item  extraction   and   definition   of   electrical   features,   
+  
+ To automatically extract these data from time-series data (both in vitro and
+ in silico) to compare them, \verb!eFEL! library can be used
+ (Sect.\ref{sec:eFEL})
+  
+  \item search   for   optimal parameters,
+  
+NOTE:    when building neuron models for other brain  regions it  is sometimes
+necessary to define novel electrical features (e.g. complex dendritic features)
+or to constrain the parameters with additional knowledge (e.g. make        
+certain parameters dependent on each other)
+
+The optimizer framework in Python called {\bf BluePyOpt}
+(Sect.\ref{sec:BluePyOpt}) that utilize NEURON simulator, and parameter
+extraction eFEL library, based on some parameter search method (can be chosen).
+
+
+  \item model  selection  and  inspection
+\end{enumerate}
+
+\end{enumerate}
+
+\begin{enumerate}
+  \item Perform a sweep protocol of series of voltage steps, find the I-V curve
+  (Sect.\ref{sec:I-V-curve}) and try to fit with the experimental data
+  
+This I-V curve can be measured under whole-cell condition; or the condition in
+which certain channel is enabled; but all the others are blocked to study the
+kinetics for that single channel only
+\begin{itemize}
+  \item NCX - Sect.\ref{sec:I-V-curve-NCX}
+  
+\end{itemize}
+  
+  \item 
+\end{enumerate}
+
+
+The modeling study of excitable cells is conducted based on the electricical
+representation of the transmembrane protein to model the current flow $I$.
+The Ohm's law for an electric circuit: $I=V/R$ is often written in the form
+$I=g(V_m-E_\rev)$ in cellular electrophysiology (Sect.\ref{sec:ohms-law}) under
+the assumption that the ionic current, at an instantaneous of time, is linearly
+dependent upon the membrane potential. 
+
+The above equation is then extended for an equivalent circuit of the region of
+plasma membrane of isopotential, first presented by Hodgkin-Huxley in their
+landmark model (Sect.\ref{sec:leaky_integrate-and-fire_model}):
+\begin{equation}
+\Csc \frac{dV_m}{dt} = \sum_\ion g_\ion (V_m - E_\ion) + I_\app
+\end{equation}
+Of course, we will learn that there are certain ionic channels whose ionic
+current (e.g. Calcium channels) is better modeled as a non-linear function of
+membrane potential, using GHK equation (Sect.\ref{sec:GHK_voltage}).
+
+When the isopotential assumption is relaxed, the formula that incorporate the
+voltage change over the length of the neuron (soma, dendrite, axon) needs to use
+the formula (Sect.\ref{sec:Hodgkin-Huxley-1952-model-of-propagation})
+\begin{equation}
+\Csc \frac{dV_m}{dt} = \frac{d}{4R_a}\nabla^2 V_m + \sum_\ion g_\ion (V_m - E_\ion) + I_\app
+\end{equation}
+
+\section{Modeling approaches}
+
+\subsection{deterministic/stochastic 3D/2D/1D/0D}
+
+\begin{enumerate}
+  \item deterministic
+  
+  \item stochastic
+\end{enumerate}
+which can be 3D, 2D, 1D, or 0D (well-mixed (non-diffusional) compartmental
+models).
+
+\subsection{-- Gibson-Bruck Next Reaction method}
+\label{sec:Gibson-Bruck-Next-Reaction-method}
+
+Gibson-Bruck Next Reaction method [13], an optimized version of one of the
+Gillespie algorithms, which interprets reactions as Poisson processes.
+
+% Gibson M, Bruck J. Efficient exact stochastic simulation of chemical systems with many species and
+% channels. J Phys Chem A 2000;104:1876-1889
+
+ 
+\subsection{mechanical force}
+
+Modeling with mechanical force to accounting for diffusion in crowded spaces.
+
+
+\subsection{Rule-based modeling}
+\label{sec:Rule-based-modeling}
+
+Rule-based modeling is invaluable when the number of possible species and
+reactions in a model become too large to allow convenient manual specification.
+
+Models accounting for hundreds of species and reactions are no longer rare [17].
+This is a typical situation when protein complexes and phosphoforms are included
+into a model, e.g. a receptor with 10 tyrosine phosphorylation sites can exist
+in $2^{10}=1024$ different phosphoforms.
+Many or all of these phosphoforms have to be accounted for individually to
+simulate and predict the time course for receptor-mediated signaling (Blinov et
+al., 2006).  Manually specifying a list of species and reactions becomes
+error-prone and slow.
+Furthermore, when potential protein complexes are being included, the size of
+reaction network can easily increase by a few orders of magnitude, e.g. In a
+system where A, B, C interact with each other needs to include AB, AC, BC, ABC.
+The cost of many commonly used methods for simulating network dynamics is a
+function of network size.
+
+A solution for this combinatorial complexity challenge is provided by a
+rule-based approach, in which a model is specified in the form of bio-molecular
+interaction rules (Sect.\ref{sec:BioNetGen}).
+
+
+The system-level dynamics of many molecular interactions, particularly
+protein-protein interactions, can be conveniently represented using reaction
+rules, which can be specified using model-specification languages, such as the
+BioNetGen language (BNGL) - Sect.\ref{sec:BNGL}.
+
+
+Several methods for simulating rule-based models have been developed that avoid
+the expensive step of network generation. The cost of these " network-free "
+simulation methods is independent of the number of reactions implied by rules
+
+
+\begin{enumerate}
+  \item BioNetGen: define model-specification language (BNGL) -
+  Sect.\ref{sec:BioNetGen}
+  
+  \item NFSim: stochastic 
+  
+  \item RuleMonkey: network-free software for stochastic simulation (similar to
+  Gillespie' s method) of
+  rule-based models - Sect.\ref{sec:RuleMonkey}
+  
+  \item DYNSTOC, another BNGL-compliant tool for network-free simulation
+  
+  \item VCell - Sect.\ref{sec:VirtualCell-Rule-based}
+\end{enumerate}
+
+
+\section{Cell to cell variations}
+
+
+One of the challenging problem when modeling a given cell type is the variation
+between cells, e.g. morphology (somatic size, branching of dendrites in
+neurons, cell sizes in cardiac myocytes), expression levels of proteins. 
+Recent studies in mammalian cells and lower eukaryotes
+showed a significant variation in the expression level of individual
+proteins between genetically identical cells (Niepel et al., 2009).
+
+Thus, it has long been recognized that differences from one cell to the next can
+arise through variation in the extracellular environment (e.g. morphogen
+gradients during embryogenesis) or from genomic alteration (e.g. genetic
+heterogeneity within a tumor). Only recently has it become clear that
+intracellular biochemical fluctuations can also have profound effects on
+phenotype.
+
+Even members of a genetically identical group of cells or organisms in identical
+environments can exhibit variability in drug sensitivity, cellular response, and
+phenotype. Underlying much of this variability is stochasticity in gene
+expression, which can produce unique proteomes even in genetically identical
+cells (Niepel et al., 2008).
+\begin{enumerate}
+  \item covariance of two proteins (CD8 and SHP-1)  in T-cell reduces the
+  diversity of T-cel response (Feinerman et al., 2008 - Science)
+\end{enumerate}
+
+
+These variations - often exceeding a factor of 2 - likely reflect noise in
+transcription, mRNA turnover, translation, and protein degradation.
+
+\subsection{cellular mechanism}
+
+The puzzling question is how signal transmission processes can tolerate large
+variations in the expression level of the underlying signaling components.
+
+As $\Ca$ signals regulate fundamental eukaryotic processes that range from
+secretion, muscle contraction, and memory formation to activation and
+differentiation of immune cells, it is hypothersized that additional control
+principles must exist and involve Ca2+ signaling system to avoids failure and
+copes with large cell-to-cell variations in protein expression.
+
+To keep cells in a signaling-competent state, the Ca2+ signaling system employs
+a system of pumps and channels to tightly balance Ca2+ fluxes across the
+endoplasmic reticulum (ER) and plasma membrane (PM).
+
+It also raises the questions of whether the pumps and channels are always
+expressed at the correct numbers by using shared promoters or coupled protein
+stability in a forward regulation strategy or, alternatively, whether cells
+monitor the output of a pathway and use a feedback strategy to adjust the
+concentrations of individual signaling components (Abell et al., 2009).
+
+
+
+
+
+\subsection{modeling}
+To consider this variation:
+\begin{enumerate}
+  
+  \item The simplest models are conceptual or diagrammatic and attempt to
+  account for the mean values of key variables (e.g. rates of physiological
+  processes) and their dispersion about the mean
+
+  \item More rigorous are methods based on stochastic differential equations (SDEs) or the
+Langevin approach (Sect.\ref{sec:Langevin-approach})
+
+\end{enumerate}
+
+Finally, the chemical master equation, which describes the probability that
+individual molecules will collide and react in a given time interval, can be
+approximated numerically using the Stochastic Simulation Algorithm (SSA) or
+Gillespie Algorithm (Sect.\ref{sec:Gillespie-method})
+
+
+\section{Log-normal distribution}
+\label{sec:Log-normal-distribution}
+
+
+Log-normal distribution are long-tailed so that even a tight distribution (e.g.
+CV=0.25) contains individuals (e.g. cells) in the 95-th percentile that have
+(e.g. 2.5-fold) many times the abundance of a particular proteins than
+individuals in the 5-th percentile. This spread increase dramatically with the
+increase of CV. 
+
+Many biological phenomenon follow log-normal distribution
+\begin{enumerate}
+  \item concentration distribution for many proteins across a clonial population
+  of mammalian cells
+\end{enumerate}

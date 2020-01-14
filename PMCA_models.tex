@@ -1,0 +1,137 @@
+\chapter{Plasma $\Ca$-ATPase (PMCA) models}
+\label{chap:PMCA}
+
+% \section{PMCA pump}
+% \label{sec:pmca-pump}
+
+
+The plasma membrane $\ca$-ATPase pump (PMCA) is ATP-driven pump to expell $\ca$
+out of the cell. It was discovered in 1966 by Schatzmann (Sect.\ref{sec:PMCA}).
+For many eukaryotic cells, PMCA is the only mechanism to export $\Ca$ out of the cell. In some cell
+types (e.g. neurons and cardiac cells), PMCA is the secondary mechanism, after
+Na/Ca exchanger (NCX) (Chap.\ref{chap:NCX}).
+\begin{itemize}
+  \item NCX is a low $\Ca$ affinity, yet with high capacity
+  
+  \item PMCA is high $\Ca$ affinity ($\Km = 0.2-1.0 \muM$), yet with low
+  capacity (30Hz, or pumping 30 ions/sec per PMCA molecule)
+  
+The energy cost is 1ATP for 1$\Ca$ transport; though some data showed 2$\Ca$
+transport. 
+\end{itemize}
+
+
+
+% \begin{framed}
+%   PMCA pump is inhibited by \ce{La^3+} and vanadate. 
+% \end{framed}
+
+\section{Introduction}
+
+
+Most model of the PMCA use Michaelis-Menten formula of the rate or current
+(Sect.\ref{sec:Michaelis-Menten-modified}) due to the small contribution of
+PMCA compared to NCX.
+
+
+
+\section{Simple model}
+
+
+\subsection{Constant clearance (Traub, Llinas - 1997)}
+\label{sec:PMCA-Traub-Llinas-1997}
+\label{sec:PMCA-constant-clearance}
+
+The ATP-driven PMCA is modeled using (Traub, LLinas, 1997)
+
+\def\equil{{\text{equil}}}
+\def\msec{{\text{msec}}}
+\begin{equation}
+\frac{d[\Ca]}{dt} = \frac{[\Ca]_\equil - [\Ca]_i}{\tau}
+\end{equation}
+with $\tau=0.9-2.0$ ([msec]).
+
+\subsection{Vm-dependency clearance (Zador, Koch, Brown - 1990)}
+\label{sec:PMCA-Vm-dependent-clearance-rate}
+
+The ATP-driven PMCA is modeled using (Zador, Koch, Brown, 1990)
+\def\equil{{\text{equil}}}
+\def\msec{{\text{msec}}}
+\begin{equation}
+\frac{d[\Ca]}{dt} = \frac{[\Ca]_\equil - [\Ca]_i}{\tau(\Vm)}
+\end{equation}
+with
+\begin{equation}
+\tau(\Vm) = 17.7 \exp (\Vm/35) \qquad ([\msec])
+\end{equation}
+
+The appropriate ODE
+\begin{equation}
+\frac{[\Ca]_{n,t+\Delta t} - [\Ca]_{n,t}}{\Delta t} = 
+\frac{[\Ca]_\equil}{\tau(\Vm)} - 
+\frac{[\Ca]_{n,t+\Delta t} + [\Ca]_{n,t}}{2.\tau(\Vm)}
+\end{equation}
+
+These membrane-bound pump proteins have to move Ca2+ against an extremely large
+calcium gradient (five orders of magnitude).
+
+\begin{equation}
+I_\pmca = 
+\end{equation}
+
+\section{Michaelis-Menten formula of PMCA}
+
+Under optimal conditions, Michaelis constant $K_m$ of the pump for $\Ca$ drops
+from 10-30$\mu$M range (at rest) to 0.2-0.5$\mu$M range.
+\textcolor{red}{It also operates as a $\ca$/H$^+$ exchanger, but the
+stoichiometry is neutral, i.e. Ca:H=1:2}.
+
+\subsection{Jafri et al. (1998)}
+\label{sec:winslow-et-al-1}
+
+~\citep{jafri1998cad,winslow1999} modeled the sarcolemmal $\Ca$-ATPase pump
+using the Michaelis-Menten formula
+\begin{equation}
+  \label{eq:1250}
+  I_{p(\ca)} =
+  \overline{I_{p(\ca)}}\frac{([\Ca]_i)^\eta}{(K_{m,p(\ca)})^\eta + ([\Ca]_i)^\eta}
+\end{equation}
+with $K_{m,p(\ca)}=0.5$ ($\muM$) is half-saturation constant, and Hill
+coefficient $\eta = 1$, and $\overline{I_{p(\ca)}}=0.05\mu$A/cm$^2$.
+
+As the pump takes 2 $\H$ inside for each $\Ca$ ion pumping out, there is no net
+charge change in PMCA for this model.
+
+\subsection{Greenstein-et-al-2002}
+
+Later,~\citep{greenstein2002} modified it with $\eta =2$ with the fact that
+every 2 $\Ca$ ions are extruded.
+As the pump takes 2 $\H$ inside for each $\Ca$ ion pumping out, so the net
+charge change in PMCA for this model is also $I_{p(\ca)}$.
+\begin{equation}
+  \label{eq:1250}
+  I_{p(\ca)} =
+  \overline{I_{p(\ca)}}\frac{([\Ca]_i)^\eta}{(K_{m,p(\ca)})^\eta + ([\Ca]_i)^\eta}
+\end{equation}
+with $\eta=2$.
+
+
+% \subsection{Inhibitors}
+% \label{sec:inhibitors}
+
+% We created a first order kinetics model of the PMCA
+% that mimics its activation and recovery as function of [Ca2+] i (Vmax increased
+% from 30 to 60 nM s
+% 
+% 1 , Km decreased from 500 to 400 nM when fully activated) and incor- porated
+% into a mathematical description of Ca2+ signaling in T cells (Lympho- LAB).
+% Our results indicate that modulation of the PMCA activity improves the stability
+% of Ca2+ signaling by adjusting the pump rate to Ca2+ influx even at high [Ca
+%2+ ] i levels (preventing a harmful Ca2+ overload). Moreover the delay in
+% modulation permits small Ca2+ fluxes to increase transiently enhancing Ca2+
+% signaling dynamic
+
+\section{Caride et al. (2001)}
+
+
+\section{Graupner et al. (2005)}

@@ -1,0 +1,517 @@
+\chapter{NMDAR models}
+\label{chap:NMDAR_models}
+
+\def\syn{{\text{syn}}}
+\def\decay{{\text{decay}}}
+\def\rise{{\text{rise}}}
+\def\nonNMDA{{\text{non-NMDA}}}
+\def\NMDA{{\text{NMDAR}}}
+\def\on{{\text{on}}}
+\def\off{{\text{off}}}
+\def\slope{{\text{slope}}}
+
+NMDAR is discussed in Sect.\ref{sec:NMDAR}.
+Functional mapping of neurotransmitter receptors requires rapid and localized
+application of transmitter (Sect.\ref{sec:two-photon-uncaging}).
+
+The current via NMDAR is often expressed in the form
+\begin{equation}
+I_\NMDA = g_\NMDA  \times F(V_\post,[\Mg]) \times r_\NMDA
+  \times \left( V_\post - E_\rev \right)
+\end{equation}
+with $F(V_\post, [\Mg])$ is the $\Mg$-block function (e.g.
+Sect.\ref{sec:NMDAR-Mg-block}), $r_\NMDA$ is the function reflecting the
+activation caused by pre-synaptic neurotransmitter release, as in the
+form of presynaptic potential depolarization (Sect.\ref{sec:synaptic-efficacy-post-synaptic-factors}).
+
+The fact that $I_\NMDA$ is only large if both $r$ is activated and the
+post-synaptic membrane potential $V_\post$ is depolarized simultaneously.
+\url{http://www.johndmurray.org/materials/teaching/tutorial_synapse.pdf}
+
+
+\section{Scheme: 1 agonist T of two binding sites}
+
+Several kinetic schemes are based on the following state diagram, with a single
+agonist T but two different binding sites following sequential binding strategy:
+
+\begin{equation}
+\begin{split}
+\ce{ C_0 <=>[R_bT][R_u] C_1 <=>[R_bT][R_u] C_2 <=>[R_o][R_c] O} \\
+\ce{ C_2 <=>[R_r][R_d] D}
+\end{split}
+\end{equation}
+
+\begin{itemize}
+  \item D = desensitized form of the receptor
+  
+  \item single unbinding rate $R_u$
+\end{itemize}
+
+The whole-cell recorded NMDAR current, in free $\Mg$ condition, suggested:
+$R_b = 5$ (1/($\muM$.sec)), $R_u = 12.9$ (1/sec); $R_d = 8.4$ (1/sec), 
+$R_o = 46.5$ (1/sec) and $R_c = 73.8$ (1/sec).
+
+The ionic current
+\begin{equation}
+I_\NMDA = \bar{g_\NMDA} \times B(\Vm) \times f_{[O]} \times (\Vm - E_\NMDA)
+\end{equation}
+with $\bar{g_\NMDA}$ for single-channel suggested to be in the 
+range 0.01-0.6 nS (based on the assumption that conductance of dendritic NMDAR
+is between 3\% to 62\% of AMPAR (Zhang-Trussell, 1994; Spurston, JOnas, and
+Sakmann, 1994)).
+
+
+In cortical pyramidal neurons, NMDAR is found; and they are quite slow with rise
+time of 20 ms  and  decay  times  of 25 to 120 ms; compared to AMPAR
+(Sect.\ref{sec:AMPAR-kinetics}). Here, $f_{[O]}$ is also modeled as a difference
+of exponentials (Sect.\ref{sec:difference-exponentials}).
+
+%\section{$\Mg$ block}
+
+
+\section{Mg-depenent block}
+\label{sec:NMDAR-Mg-block}
+
+\begin{enumerate}
+  \item Jahr-Stevens (1990) - Sect.\ref{sec:NMDAR-Mg-block-Jahr-Stevens-1990}
+  
+  \item Ascher, Nowak (1988) - Sect.\ref{sec:NMDAR-Mg-block-Ascher-Nowak-1988}
+  
+  \item Major-Tank (2008) - Sect.\ref{sec:NMDAR-Mg-block-Major-Tank-2008}
+\end{enumerate}
+
+\citep{fino2010} showed that (in MSN at least) it needs 30ms of suprathreshold
+depolarization of current injection for removing $\Mg$ block.
+They tested with 5ms suprathreshold depolarization (Fig.3D,E) it is not enough
+to generate LTP. To remove $\Mg$ block , we need either longer suprathreshold
+depolarization or subthreshold depolarization long  enough (Fino et al.
+2009b). In vivo, cortical or thalamic activity can induce a spike in MSN (Stern,
+Jaeger, Wilson 1998).
+
+
+\begin{equation}
+I_{NMDAR} = B(V) \times I_{whatever formula}
+\end{equation}
+
+example:
+\begin{equation}
+I_{whatever formula} = \bar{g_z} (h - m) (V_m - E_z)
+\end{equation}
+with $z$ is the ion species permeated through NMDA (which can be $\Ca$ or $\K$).
+
+% \begin{equation}
+% B(\Vm) = \frac{1}{1 + \frac{[\Mg]_o}{3.57 \text{mM}} \times \exp(-\Vm \times
+% 0.062 \text{mV}^{-1})}
+% \end{equation}
+% NOTE: $[\Mg]_o$ has to be in mM unit, and $\Vm$ has to be in mV.
+
+\section{Ascher, Nowak (1988)}
+\label{sec:NMDAR-Mg-block-Ascher-Nowak-1988}
+
+The $\Mg$ block is modeled with forward and backward rate constants based on
+Ascher, Nowak (1988) - Sect.\ref{sec:NMDAR-Mg-block}
+
+The given rates were designed at 22$^\circ$C:
+
+\def\ms{{{\text{ms}}}}
+\def\mV{{{\text{mV}}}}
+\begin{equation}
+\begin{split}
+\alpha &= A_\alpha \times e^{\frac{\Vm}{V_\text{spread,$\alpha$}}} \qquad \;
+A_\alpha = 5.4 \ms^{-1}; V_\text{spread,$\alpha$} = 47 \mV  \\
+\beta &= A_\beta [\Mg] \times e^{\frac{\Vm}{V_\text{spread,$\beta$}}} \qquad \;
+A_\beta = 0.61 \ms^{-1}; V_\text{spread,$\beta$} = 17 \mV 
+\end{split} 
+\end{equation}
+
+\section{Jahr-Stevens (1990)}
+\label{sec:NMDAR_Jahr-Stevens-1990}
+
+\citep{jahr1990b} first developed a single channel scheme, and then
+\citep{jahr1990} used this model to predict the macroscopic current of NMDAR at
+different $V_m$ and $[\Mg]_o$ concentrations.
+
+\citep{jahr1990}  studied the $V_m-$dependence of NMDAR in the presence of
+different concentration of $[\Mg]_o$ (from 1$\muM$ to 10 mM).
+\begin{enumerate}
+  \item The physiological $[\Mg]_o$ is near 1 mM.
+
+  At this condition: NMDAR is not opening if post-synaptic $V_m$ is more
+  negative than -80 mV; and open if $V_m = +20$ mV.
+
+
+\end{enumerate}
+At the single-channel level, the addition of external Mg alters single-channel
+openings from long-lived events to many very short events grouped into bursts of
+openings. These bursts apparently result from short interruptions of current
+flow during periods when the channel is in the open configuration.
+The frequency of these interruptions is directly related to Mg concentration.
+
+
+At single-channel behavior, \citep{jahr1990b} showed that
+a model of NMDAR of 3 or 4-state can accurately model the behavior
+\begin{itemize}
+  \item 1 open state
+  \item 1 closed state
+  \item 1 or 2 'blocked' state
+
+  The first 'blocked' state is $\Mg$-dependent.
+  The second 'blocked' state is $V_m$-dependent and $\Mg$-independent that is
+  required to explain short closed state (especially at low $[\Mg]$).
+
+\end{itemize}
+
+Scheme 1: fails (1) (expected to, but did not work) to show open burst (state
+transition between O and B) lengthen in proportion to Mg concentration, (2)
+to predict $V_m$-dependent of macroscopic currents.
+
+\begin{equation}
+\ce{C <=>[\text{neurotransmitter-bound}] O <=>[\text{binding of Mg}][V_m
+\text{ depolarize}] B}
+\end{equation}
+
+\textcolor{red}{\bf Scheme 2}: 4 states with two Blocking states B1
+($V_m$-dependent), B2 ($\Mg$-dependent)
+\begin{verbatim}
+     a1           a2
+B1------\ O -----------\ B2
+ \  b1     \    b2      /
+  \___      \         /
+      \     A\       /B2
+     B1\     _\    /
+        \_____  C
+\end{verbatim}
+\begin{itemize}
+  \item a1 = independent of $[\Mg]_o$
+
+  \item a2 = linearly dependent of $[\Mg]_o$
+\end{itemize}
+
+\begin{eqnarray}
+a_1 = \exp \left( -0.016 V_m - 2.91 \right)  \;\;\;\text{ms}^{-1} \\
+a_2 = C \exp \left( -0.045 V_m - 6.97 \right) \;\;\;\muM^{-1}\text{ms}^{-1}\\
+b_1 = \exp \left( 0.009 V_m + 1.22 \right) \;\;\;\text{ms}^{-1}\\
+b_2 = \exp \left( 0.017 V_m + 0.96 \right) \;\;\;\text{ms}^{-1}\\
+A   = \exp \left( -2.847 \right) \;\;\;\text{ms}^{-1}\\
+B_1  = \exp \left( -0.693\right) \;\;\;\text{ms}^{-1}\\
+B_2 = \exp \left( -3.101 \right) \;\;\;\text{ms}^{-1}
+\end{eqnarray}
+NOTE: For microscopic reversibility, the rate $\ce{C ->O}$ are updated
+accordinly.
+
+
+Input for parameter estimations
+\begin{enumerate}
+  \item mean open time
+
+  \item mean interruption time
+
+As $V_m$ becomes more positive, the rate of $a_1$ and $a_2$ for entering the
+blocked states must become smaller, i.e. approaching zero.
+
+
+  \item mean number of interruptions per burst: $n$
+
+As $V_m$ becomes large and positive, then the number of interruption per burst
+become smaller, i.e. $n$ approaches zero.
+
+\end{enumerate}
+The gating function $g(V_m)$ is the conductance contributed per channel burst
+relative to the amount of conductance that a burst would give at very positive
+$V_m$ (where very few interruptions occur). Then the number of opening in a
+burst is (n+1), and the mean dwell time in the O state each time the NMDAR
+enter is denoted as $t_O$. So, for a single burst, the total time NMDAR in the O
+state is
+\begin{equation}
+(n+1) \times t_O
+\end{equation}
+So
+\begin{equation}
+g(V_m) = \frac{(n+1)\times t_O }{\text{ open time per burst for large} V_m}
+\end{equation}
+NOTE: Both $n(V_m)$ and $t_O(V_m)$ are functions of $V_m$.
+
+When $V_m$ becomes very large and positive, i.e. $\ce{n -> 0}$, so the total
+time in O state approaches $t_O(V_m)$, and the mean open time is
+\begin{equation}
+t_O = \frac{1}{\text{sum of out-going rates}} = \frac{1}{a_1 + a_2 + A}
+\end{equation}
+
+
+\subsection{Mg-block}
+\label{sec:NMDAR-Mg-block-Jahr-Stevens-1990}
+
+\begin{equation}
+I_{NMDAR} = B(V) \times I_{whatever formula}
+\end{equation}
+with $B(V)$ is $\Mg$ block factor.
+
+The blocking of $\Mg$ is extremely fast compared to other processes, and thus
+can be modeled using instantaneous function of $\Vm$ as a sigmoid function, i.e.
+$B(\Vm)$ increases from 0 to 1 when $\Vm$ depolarize.
+
+NOTE: $[\Mg]_o$ has to be in mM unit, and $\Vm$ has to be in mV.
+\begin{equation}
+B(\Vm) = \frac{1}{1 + \exp\left( -0.062 \Vm \right) \frac{[\Mg]_o}{K_p}}
+\end{equation}
+with $[\Mg]_o$ is in the range 1-2 mM (physiological conditions); and
+$K_p=3.57$ (mM). 
+
+
+\subsection{technical issue}
+
+As the transition C-O (from Closed to Open) is technically difficult to study,
+they assumed that theses rates are not significantly influenced by $V_m$. So
+for a fixed agonist concentration, the entire gating function depends only on
+the fraction of time channels spend in the O rather than B states.
+
+\section{Silver et al. (1992): mossy fiber-granule cell synapse}
+\label{sec:mEPSC-mossy-fiber-granule-cell}
+
+The mossy fiber-granule cell synaptic transmission (Sect.\ref{sec:mossy-fiber})
+generates a mEPSC with 2 components: fast and slow. Spontaneous mEPSC occurs
+with low frequency: 0.21$\pm 0.05$ Hz in unstimulated cells bathed in 0.5$\muM$
+TTX (blocking Na+ current).
+
+The authors \citep{silver1992} recorded cerebellar synapses and found that
+\begin{itemize}
+  \item time courses of miniature EPSC and evoked EPSC (Sect.\ref{sec:EPSC}) are
+  the same
+  
+  \item mEPSC has an exceptionally fast non-MNDA component: rise time 200 $\mus$
+  (with pre-filtered rise time < 100 $\mus$); and decay time constant
+  $\tau=1.3\pm 0.1$ms.
+  
+This rise/decay times are in constrast to that of non-NMDAR component in
+synapses in other brain regions of $9\pm 1$ msec; and decay time $\tau = 52\pm 5$ msec.
+  
+The fast non-NMDAR component has 180$\pm$30 pS conductance. 
+After that is NMDAR current with $\sim$ 50pS  conductance.
+
+  \item the fast non-NMDA component has a skewed amplitude distribution; and is
+  blocked by non-NMDAR receptor antagonist CNQX and NBQX
+  (Sect.\ref{sec:AMPAR-antagonist})
+  
+  \item the slow component is blocked by NMDAR antagonist APV (10-20$\muM$), or
+  $\Mg$ (1mM) or 7-chlorokynurenate (5-10$\muM$)
+  (Sect.\ref{sec:NMDAR-antagonist})
+  
+  \item the time-couse of slow AMDAR component is $\tau = 37\pm 10$ msec;
+  
+  
+  \item the time-course in these synapses are different form synapse in other
+  regions
+  
+\end{itemize}
+
+
+The AMPA receptor-mediated synaptic currents were modeled by a dual exponential
+function, one for the fast non-NMDAR component and one for slow NMDAR component
+\begin{itemize}
+  \item whole-cell recording: $\tau_\nonNMDA = 1.5$ms; $\tau_\NMDA = 52\pm 5$
+  (ms); curren amplitude ratio: $A_\NMDA/A_\nonNMDA = 0.12 \pm0.01$
+  
+  \item perforated patch-clamp: $\tau_\nonNMDA = 2.0$ms; $\tau_\NMDA = 49\pm 5$
+  (ms); curren amplitude ratio: $A_\NMDA/A_\nonNMDA = 0.15 \pm0.02$
+\end{itemize}
+
+Final result:
+\begin{itemize}
+  \item $\tau_\nonNMDA = 1.1 $ms; $\tau_\NMDA = 26$ ms;
+  
+  \item $A_\nonNMDA = 12.6$ (pA); $A_\NMDA = 2.7$ pA
+  
+  \item mEPSC has a bimodal distribution with 2 peaks: one at 12 pA (for
+  non-NMDA component); and one at 22 pA (for both NMDAR + AMPAR components)
+\end{itemize}
+
+As NMDA current has exponentially rise time and a slower exponentially decay
+time, using the formula in
+Sect.\ref{sec:exponentially-rise-exponentially-decay}, we have: 
+\begin{equation}
+g_\NMDA = \bar{g_\NMDA} \times 1.273 \times (e^{-t/\tau_\decay} - 
+   e^{-t/\tau_\rise}) \times g_\infty(\Vm, [\Mg]_o)
+\end{equation}
+with $\tau_\rise = 0.09$ (msec); $\tau_\decay = 1.5$ (msec).
+
+Based on the measurement at synapse of mossy fiber to cerebellar granule cells, 
+the synaptic peak conductance is 270 $\mu S$ after activation at the synapse.
+
+\section{Koch-Segev (1998)}
+\label{sec:NMDAR_Koch-Segev-1998}
+
+The current via NMDAR is modeled with one gating variable $u$
+\begin{equation}
+I_\NMDAR = \bar{g}_\NMDAR	B(V_m)u(V_m - E_\NMDAR)
+\end{equation}
+with $B(V_m)$ is used to model the non-linearity from $\Mg$ block
+\begin{equation}
+B(V_m) = \frac{1}{1 + \exp\left( -0.062 V_m \right)\frac{[\Mg]_o}{3.57}}
+\end{equation}
+
+The gating variable $u$ is in first-order kinetic equation
+
+\begin{equation}
+\frac{du}{dt} = \alpha_u (1-u) - \beta_u u
+\end{equation}
+with $V_p$ is pre-synaptic voltage, and the rate constants ([sec]$^{-1}$)
+\begin{equation}
+\begin{split}
+\alpha_u &= T_\Glu(V_p) \times c_u \\
+\beta_u &= 6.6
+\end{split}
+\end{equation} 
+with $c_u = 7.2\times 10^4$ (1/(M.s)) and 
+\begin{equation*}
+T_\Glu(V_p) = \frac{180}{1+\exp\left(-(V_p-2)/5\right)}
+\end{equation*}
+
+\section{Major - \ldots - Tank (2008)}
+\label{sec:NMDAR-Major-Tank-2008}
+
+The synapse input is modeled with double exponentials with
+\begin{itemize}
+  \item $\tau_\on$  = 0.2 msec
+  
+  \item $\tau_\off$ = 2 msec
+\end{itemize}
+
+NMDAR current was modeled with triple-exponential time course; and a sigmoidal
+voltage dependency
+
+\def\slope{{{\text{slope}}}}
+\def\fast{{{\text{fast}}}}
+\begin{equation}
+\begin{split}
+g_\NMDA &= \bar{g_\NMDA} \left[ -e ^{-t/\tau_\on} + f_\fast e^{-t/\tau_{\off1}}
++ (1-f_\fast) e^{-t/\tau_{\off2}} p
+\right]  \\
+f_\fast &= f_0 + f_\slope \Vm \\
+f_0 &= 0.515 \\
+f_\slope &= -0.003125 \qquad \text{1/mV}
+\end{split}
+\end{equation}
+
+Reversal potential at 0mV; and peak NMDAR conductance
+0.875nS.
+
+\subsection{Mg-dependent block}
+\label{sec:NMDAR-Mg-block-Major-Tank-2008}
+
+
+The $\Mg$ block is modeled with forward and backward rate constants based on
+Ascher, Nowak (1988) - Sect.\ref{sec:NMDAR-Mg-block-Ascher-Nowak-1988} with 
+fixed value for $\Mg$ = 1.8 (mM); the given parameters was adjusted from
+20$^\circ$C to 35$^\circ$C using Q10=3, i.e. rates were multiplied by 5.196.
+
+So, the sigmoidal steady-state voltage dependency formula is
+\begin{equation}
+B(V) = \frac{1}{1+ \exp^{-\frac{V-V_{1/2}}{V_\text{spread}}}}
+\end{equation}
+with $V_{1/2} = -19.9$ (mV); and $V_\text{spreak}$ = 12.48 (mV)
+
+
+\section{Shouval (2002)}
+\label{sec:NMDAR-Shouval (2002)}
+
+This is from \citep{shouval2002} (Sect.\ref{sec:Shouval-2002}).
+
+NMDAR $\Ca$ current is assumed to have 2 components (fast $I_f$ + slow $I_s$:
+$\tau_f = 50$ ms, $\tau_s = 200$ ms) following a single exponential form and
+both are $V_m$-dependent as a function of $H(V_m)$ based on Jahr-Stevens
+(Sect.\ref{sec:NMDAR_Jahr-Stevens-1990})
+
+
+\begin{equation}
+I_\NMDA(t) = P_o \bar{G}_\NMDA \left[   I_f \theta(t) e^{-t/\tau_f} +   I_s
+\theta(t) e^{-t/\tau_s}\right] H(V_m)
+\end{equation}
+\begin{itemize}
+  \item $P_o$ is the fraction of NMDAR from Closed state switching to Open state after
+each presynaptic spike (to account for the saturation of NMDAR current. Here,
+they chose $P_o$ as a constant value $P_o=0.5$).
+
+  \item $\bar{G}_\NMDA = \frac{-1}{500} [\muM/(\text{ms.mV})]$ (negative sign
+  because of influx current) (they also used $\frac{-1}{1350}$ value in one simulation).
+
+  \item $I_f,I_s$ are the relative magnitude of the fast and slow component of
+NMDAR $\Ca$ current (the authors assumed $I_f + I_s = 1$). 
+The time $t=0$ is the time at which glutamate binding, so when $t<0$ there is no
+glutamate binding and thus there is no current. This is expressed via the theta
+function $\theta(t)$
+\begin{equation}
+\theta(t) = \left\{ \begin{array}{lc}
+0 & \text{ if } t< 0 \\
+1 & \text{ if } t\ge 0 
+\end{array} \right.
+\end{equation}
+
+Assumption: two components have the same magnitude, only different decay time.
+
+  \item $H(V_m)$ summarizes the $V_m$-dependence as the driving force via
+  $(V_m-E_\rev)$ and incorporate the effect of $\Mg$-blocking via $B(V_m)$
+\begin{equation}
+H(V_m) = B(V_m) \times \left( V_m - E_\rev \right)
+\end{equation}
+with $E_\rev=130 $(mV) as reversal potential for $\Ca$.
+\begin{equation}
+B(V_m) = \frac{1}{1+\exp(-0.062 V_m)\frac{[\Mg]}{3.57}}
+\end{equation}
+
+NOTE: $[\Mg]$ is assumed to be fixed and set to 1.0.
+
+\end{itemize}
+
+\section{Jadi et al. (2012)}
+\label{sec:NMDAR-Jadi-2012}
+
+\begin{equation}
+I_{NMDAR} = B(V) \times I_{whatever formula}
+\end{equation}
+
+
+with number of NMDAR is $N_\syn$; and maximum single channel conductance is
+$\bar{g}_\NMDA$ with opening probability $p(t)$
+\begin{equation}
+I_{formula} = \bar{g}_\NMDA \times p(t) \times N_\syn
+\end{equation}
+with
+\begin{equation}
+p(t) = \frac{e^{-at} - e^{-bt}}{\left(a/b\right)^{\frac{-a}{a-b}} -
+\left(a/b\right)^{\frac{-b}{a-b}}}
+\end{equation}
+with $a=0.02; b=0.3$.
+
+
+and $\Mg$ block is (whose suppress most current flow at negative potential) -
+based on Major et al. (2008) - Sect.\ref{sec:NMDAR-Major-Tank-2008}
+\begin{equation}
+B(V) = \frac{1}{1 + \exp^{-(\Vm + 7)/12.5}}
+\end{equation}
+
+\section{Rui-Kozloski (2013)}
+\label{sec:NMDAR-Rui-Kozloski-2013}
+
+They used the formula from Sect.\ref{sec:NMDAR_Koch-Segev-1998}, yet they
+assumed the ions is $\Ca$ based on the experiment of Mayer-Westbook (1987).
+
+\begin{equation}
+I_\Ca= \bar{g}_\Ca	B(V_m)u(V_m - E_\Ca)
+\end{equation}
+with $g_\Ca=\frac{1}{10}\bar{g}_\NMDA$, and 
+\begin{equation*}
+E_\Ca	= 0.04343 \times T \times \log\left( \frac{[\Ca]_o}{[\Ca]_i}\right)
+\end{equation*}
+with $[\Ca]_o=750 $mM (keep constant).
+
+They also incorporate the effect of Ketamine on NMDAR by assuming (1)
+steady-state, (2) uniform distribution. The effect is modeled simply a linear
+change in conductance of the NMDAR
+\begin{equation}
+\begin{split}
+\bar{g'}_\NMDAR &= (1-[\Ketamine]_o) \bar{g}_\NMDAR \\
+\bar{g'}_\Ca &= (1-[\Ketamine]_o) \bar{g}_\Ca
+\end{split} 
+\end{equation}
+with $[\Ketamine]_o$ is extracellular Ketamine dose.
+

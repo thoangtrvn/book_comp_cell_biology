@@ -1,0 +1,784 @@
+\chapter{Neuron Morphology}
+\label{chap:neuron-morphology}
+
+
+Cell morphology: cell body size, number of neurites, number of branching
+points, total length, thickness, area covered.
+
+The three-dimensional shape of a neuron plays a major role in determining its
+connectivity, integration of synaptic inputs and cellular firing properties, and
+also changes dynamically with its activity and the state of the organism.
+Analyzing the three-dimensional shape of neurons in an unbiased way is critical
+to understanding how neurons function and developing applications to model
+neural circuitry.
+
+\begin{itemize}
+  \item Input format: See Sect.\ref{sec:NeuroLand} for tools to convert between
+  formats
+  
+  \item Intermediate format (for visualization purpose)
+  
+  Tool: Vaa3D (Sect.\ref{sec:Vaa3D})
+  
+  \item Output format:
+
+\end{itemize}
+\begin{verbatim}
+Input format: image data (raw 3D image stacks, each contains
+    a single neuron or disconnected multiple neurons)
+    3D *.TIFF (single color, (X,Y,Z) voxel storage)
+    
+Intermediate: 8-bit 
+    V3DPBD (compressed Vaa3D raw file format)
+       used in Janelia's FlyWorkstation and 
+       Allen Institute's In Vitro Single Cell Characterization pipeline,
+    --> can be visualized using Vaa3D
+    
+Output format: .SWC file
+\end{verbatim}
+Sect.\ref{sec:SWC-format}.
+
+There are tools that help to create morphology data from raw stacked images
+\citep{myatt2012}.
+\begin{enumerate}
+  \item manual:
+  \begin{itemize}
+    \item free:
+    
+    \item commercial: Camera lucida (2D or 3D)
+  \end{itemize}
+  
+  \item semi-automatic: users need  to define the basic morphology, such as
+  identifying the tree root and terminations, but branch paths are traced by the computer
+  \begin{itemize}
+    \item free: NeuroMantic (free academic use),  NeuronJ (2D reconstruction), 
+    
+    \item commercial: Imaris (3D reconstruction)
+    
+  \end{itemize}
+   
+  \item automatic: 
+  \begin{itemize}
+    \item free: NeuronStudio
+    \item commercial: Imaris, AutoNeuron add-on for Neurolucida 
+  \end{itemize}
+\end{enumerate}
+
+Here, we describe different efforts to define and advance state-of-the-art of
+single neuron reconstruction: an essential unsolved challenge in brain science.
+\begin{enumerate}
+  \item NeuroMorph.org: from GMU
+  
+  \item BigNeuron: from Allen Brain Science
+\end{enumerate}
+
+
+
+
+\section{Introduction}
+
+{\it Polarized protein trafficking} is a crucial determinant of
+neuronal morphogenesis and synaptic function which in
+turn govern connectivity and information processing.
+At the single neuron level, this assymmetry starts with 
+neurites grow at different rates \citep{ramirez2011}.
+\begin{enumerate}
+  \item the neurite with faster growth rate develop into the axons
+  
+  \item the remaining neurites develop into a complex and diverse dendritic
+  arbor
+\end{enumerate}
+
+
+
+\subsection{Morphology recording}
+
+\begin{enumerate}
+
+  \item Electron microscopy offers the highest precision of cellular morphology, but due
+to the method's practical constraints, is only applicable to fixed tissue and is
+restricted to subvolumes of neurons. 
+  
+  \item  Confocal or two-photon microscopy offer excellent
+possibilities for monitoring the growth in situ and in vivo of
+fluorescent-stained neuronal structures at high resolution in three dimensions,
+while the neuron is in its natural environment
+\end{enumerate}
+
+\subsection{Morphology reconstruction}
+
+Volume reconstructions, which provide surface and volume
+measures, are a commonly available method for the automatic
+reconstruction of neural morphology from confocal image
+stacks, but information about branching number, diameter, and
+length must still be determined.
+
+For tools, both manual or automatic, see
+Sect.\ref{sec:tracing-software-neuron-morphology}
+
+\section{Experiment}
+
+
+To visualize dendritic and axonal arbors neurons are typically labeled with
+markers (e.g. biocytin (neurobiotin 0.125\%) or GFP) and imaged using
+brightfield or fluorescence microscopy.
+\url{http://diademchallenge.org/challenge.html}
+
+\begin{enumerate}
+  \item animal selection
+  
+Example: p21-25 Drd1a eGFP Swiss Webster mice
+  
+  \item slice preparation
+  
+Example: 300$\mum$ thickness acute corticalstriatal slice 
+  
+  \item fill a neuron with marker
+  
+Example: a neuron is filled with biocytin  through a patch pipette and tagged
+with Alexa 488.
+Biocytin (Sigma) at 5 mg/ml was dissolved into the patch-clamp pipette solution,
+and cells were filled during at least 20 min of recording (performed at 32$^\circ$C).
+Subsequently, slices were fixed overnight in 2\% paraformaldehyde at 4$^\circ$C.
+Biocytinfilled cells were visualized using the avidin- biotin- horseradish
+peroxidase reaction (ABC Elite peroxidase kit; Vector Laboratories) according to
+the instructions of the manufacturer.
+  
+  \item the image is captured:
+  
+Example: using infrared differential interference contrast video microscopy.
+  
+  \item a tracing tool is used to analyze the captured image
+  
+Example: Neurolucidia (Sect.\ref{sec:Neurolucidia}) is used to manually traced
+the neuron. The trace data include the length and diameter of the dendrites
+
+\url{http://diademchallenge.org/metric.html}
+
+  \item converted to a morphological data format: Sect.\ref{sec:NeuroLand}
+ \begin{itemize}
+   \item .SWC file
+   
+   \item NEURON hoc file: using NLMorphologyViewer and NLMorphologyConverter
+   software. Here, all spines are ignored.
+   
+ \end{itemize} 
+  
+\end{enumerate}
+
+\section{Morphology viewer}
+\label{sec:morphology-viewers}
+
+\begin{enumerate}
+  \item NLMorphologyViewer - Sect.\ref{sec:NLMorphologyViewer}
+
+  \item SharkViewer - Sect.\ref{sec:SharkViewer}
+  
+  \item cvApp - Sect.\ref{sec:CVapp}
+  
+  \item Cvapp-neuroMorpho - Sect.\ref{sec:Cvapp-neuroMorpho}
+  
+  \item L-viewer - Sect.\ref{sec:L-viewer}
+  
+  \item Dendro1 - Sect.\ref{sec:Dendro1}
+\end{enumerate}
+
+\subsection{SharkViewer}
+\label{sec:SharkViewer}
+
+A javascript-based tool to view 3D of single neuron in SWC file.
+
+\url{https://github.com/JaneliaSciComp/SharkViewer}
+
+\subsection{Cvapp}
+\label{sec:CVapp}
+
+CVAPP was originally written by Cannon et al. (1998) in Java that can display
+.SWC file, NL and NL3 format.
+
+
+\subsection{Cvapp-neuroMorpho.org}
+\label{sec:Cvapp-neuroMorpho}
+
+This is the trimmed version of Cvapp (Sect.\ref{sec:CVapp}) that enables
+displaying and convert the .SWC file to some other formats, call
+Cvapp-NeuroMorpho.org
+
+
+
+\subsection{L-viewer}
+\label{sec:L-viewer}
+
+L-viewer is the viewer associated with L-neuron project
+(Sect.\ref{sec:L-neuron}).
+
+
+\subsection{Dendro1}
+\label{sec:Dendro1}
+
+Dendro1 converts morphological files in their dendrograms.
+It is written in Java and runs in DOS. 
+
+Input: SWC, Output: SWC.
+
+Dendro1 reduces each branch to a single segment while conserving its total
+length, beginning and ending diameter values. The result will be a 2D
+representation of each tree in the neuron, i.e. all angle information is
+removed.
+
+
+
+\section{Morphology file format}
+
+\subsection{ASC file format (Neurolucidia)}
+\label{sec:ASC-file-format}
+
+This is text-file format for representing morphology from Neurolucidia.
+Neurolucidia also has its proprietary binary format (.DAT). To convert to a
+different format, use NLMorphologyConverter -
+Sect.\ref{sec:NLMorphologyConverter}.
+
+\subsection{NineML file format}
+\label{sec:NineML-file-format}
+
+NineML (Raikov et al., 2011)
+
+\subsection{NeuroML file format}
+\label{sec:NeuroML-file-format}
+
+NeuroML is an XML based model description language (Gleeson et al., 2010).
+The focus of NeuroML is on models which are based on the biophysical and
+anatomical properties of real neurons.
+
+The initial idea started in 2001 at Edinburg. Neosim (2003)  was developed
+based on this goal, that can load a range of plugin components  to handle different aspects of
+a simulation problem.
+
+A software library - NeuroML Development Kit (NDK) - was developed by Howell and
+Cannon to simplify the process of serializing models in XML.
+Developers of plug-ins for Neosim were free to invent their own structures and
+serialize them via the NDK, in the hope that some consensus would emerge around
+the most useful ones. As no other users, except those from Edinburg, the
+project ended in 2005.
+
+A different effort to develop a language for describing neuronal morphologies -
+called {\bf MorphML} - that would include all of the necessary components to
+serve as a common data format with the added advantages of XML.
+
+The effort for NeurophML was then merged with the effort in neuroConstruct
+(Sect.\ref{sec:neuroConstruct}) to develop {\bf NeuroML}. The schema was divided
+into levels (e.g. MorphML, ChannelML, and NetworkML) to allow different
+applications to support different part of the language
+
+\subsection{-- Level 1: MorphML}
+
+Level 1 focuses on the anatomical aspects of cells.
+
+
+\subsection{-- ChannelML}
+
+
+\subsection{-- NeuroML}
+
+\subsection{-- Nodes, Segments, Sections}
+
+
+
+
+\subsection{SWC file format}
+\label{sec:SWC-format}
+
+Each row
+\begin{verbatim}
+row-index, branch-type-index, X, Y, Z, radius, parent-row
+\end{verbatim}
+Columns 1, 2 and 7 are always integer. Columns 3,4,5, and 6 represent whatever
+units were used in the reconstructions process (e.g. pixels, micometers, etc.) and can have decimal points.
+Row 1 has a parent = -1, which means that this row does not have a parent and is
+thus the root of the reconstruction.
+
+
+with 
+\begin{verbatim}
+branch-type-index 
+    
+    0 = undefined
+    1 = soma
+    2 = axon
+    3 = dendrite (basal)
+    4 = apical dendrite
+    5 = fork point
+    6 = end point
+    7 = custom
+X,Y,Z
+    Cartesian coordinate of the given node
+radius
+    the radius of the given node    
+parent-row
+    if -1, then this is the first point (the soma)
+    
+\end{verbatim}
+\url{http://diademchallenge.org/faq.html#faq02}
+
+\url{http://research.mssm.edu/cnic/swc.html}
+
+\section{Soma surface area and volume}
+
+Soma can be a single point or more than one point. When the soma is encoded as
+one line in the SWC, it is interpreted as a "sphere". When it is encoded by more
+than 1 line, it could be a set of tapering cylinders (as in some pyramidal
+cells) or even a 2D projected contour ("circumference").
+
+
+If the soma is represented as a single point in SWC file format, then 
+the soma is treated as a sphere, with volume and surface area calculated
+following the ones for the sphere.
+
+If the soma is represented based on morphometric data with multiple points
+forming a polygon, calculating the surface area and volume in 3D is more
+complicated, and depending on the formula being used.
+\begin{enumerate}
+  \item if they represent a set of tapering cylinders: 
+  
+  
+  \item if they represent 2D projected contour (circumference): 
+\end{enumerate} 
+
+Another way that people some time use is that operator interrupts a sequence of
+somatic measurements with measurements of axons and dendrites that are attached
+to the soma. Total soma area would then be the sum of the areas of each of the
+soma sections.
+
+\begin{mdframed}
+
+In NEURON software, everything, including the soma, is treated as a
+single/multiple-compartment section. So, the software itself cannot tell which
+part is a soma or not-soma. 
+
+With a single-point soma, NEURON's response by find the point connect
+to the soma, e.g. the axon on the second line, and reassign it to the soma
+so that it defines a cylinder.
+
+If a section with 1 $\mu$m diam and 1000 $\mu$m length that you call "soma",
+then NEURON can tell that the "soma" has an area of 1000*PI
+square microns. To calculate the surface area in NEURON, users are
+recommended to write code as given
+\begin{verbatim}
+func secarea() { local x, sum
+  sum = 0
+  for (x,0) sum += area(x)
+  return sum
+}
+
+secname A = secarea()
+\end{verbatim}
+
+Import3D feature of NEURON enable importing a morphology into the system for
+building the sections. In the case of pyramidal cell morphologies, shape plots
+will appear most natural if the root branches of apical trees are attached to soma(1) and the root
+branches of basal trees are attached to soma(0); a few trees of either class
+might arise from soma(0.5) without damaging the appearance. This strategy favors
+making soma(0) the reference point for distance measurements.
+
+\end{mdframed}
+
+Ref
+\begin{itemize}
+  \item \url{https://www.neuron.yale.edu/phpBB/viewtopic.php?f=13&t=2161}
+  
+  \item \url{http://www.neuron.yale.edu/phpbb/viewtopic.php?f=8&t=858}
+  
+\end{itemize}
+
+\section{Data-source}
+
+\subsection{NeuroMorph.org}
+\label{sec:NeuroMorpho.org}
+
+\url{http://neuromorpho.org/neuroMorpho/bycell.jsp}
+
+
+\subsection{BigNeuron}
+\label{sec:BigNeuron}
+
+\url{http://alleninstitute.org/bigneuron/about/}
+
+
+\section{Tracing}
+\label{sec:tracing-software-neuron-morphology}
+
+GOAL: to detect, visualize and measure branched structures in 2D and 3D images.
+\begin{itemize}
+  \item  tracing blood vessels, roots
+  
+  \item Neurite tracing : detecting and measuring dendritic or axonic outgrowths
+  of a neuron in cell culture or in living or fixed tissue. The term neurite is
+  discussed in Sect.\ref{sec:neurite}.
+
+Neurite tracing can be done manually using common image analysis software (e. g.
+ImageJ, Adobe Photoshop), but this is very labor intensive.
+
+Fully automated programs are available (e.g. Neurolucida (Sect.\ref{sec:Neurolucidia})
+or HCA-Vision (Sect.\ref{sec:HCA-vision})) and are much less labor intensive,
+but are often cost prohibitive.
+
+An alternative is to use the semi-automated tracing program NeuronJ
+(Sect.\ref{sec:NeuronJ}).
+
+\end{itemize}
+
+
+\subsection{HCA-vision (tracing)}
+\label{sec:HCA-vision}
+
+HCA-vision is a commercial software for neurite tracing
+(Sect.\ref{sec:tracing-software-neuron-morphology}).
+
+%\section{Wis-Neuromath}
+
+% \section{Imaris}
+
+% \section{Amira}
+
+
+\subsection{ImageJ}
+\label{sec:ImageJ}
+
+
+ImageJ plugins
+\begin{itemize}
+  \item NeuronJ - Sect.\ref{sec:NeuronJ}: 
+  
+  \item NeuriteTracer - Sect.\ref{sec:NeuriteTracer}: 
+  
+  \item Simple Neurite Tracer: manual, support 3D
+  
+No: batch processing
+
+Output: number of nuclei, length of dendrites
+\end{itemize}
+
+\subsection{NeuronJ (tracing)}
+\label{sec:NeuronJ}
+
+NeuronJ is another tool for neurite tracing (Sect.\ref{sec:neurite})
+\begin{itemize}
+  \item  manual neuron tracing
+  
+  \item No: 3D support, batch processing
+  
+  \item Suitable: not too complex structures
+  
+  \item Output: length of dendrites
+  
+\end{itemize}
+
+
+\subsection{NeuriteTracer}
+\label{sec:NeuriteTracer}
+
+NeuriteTracer is designed to trace neurite (Sect.\ref{sec:neurite}) starting
+from a given soma location
+\begin{itemize}
+  \item  automatic, batch processing, require nuclei staining for detection nuclei first
+before tracing.
+  
+  \item  No: 3D support.
+  
+  \item Output: number of cells, length of dendrites.
+  
+\end{itemize}
+
+In contrast to NeuriteQuant, NeuriteTracer requires images of separated nuclei
+for quantification of average neurite length, and is thus less reliable at high
+densities of non-neuronal cells, such as in cultures of differentiating P19
+cells.
+
+\subsection{Wis Neuromath}
+\label{sec:Wis-Neuromath}
+
+automatic, batch processing.
+
+No: 3D support
+
+Features:
+\begin{itemize}
+  \item cell morphology
+  \item neurite length analysis (in tissue)
+  \item ganglion explant analysis (similar to Sholl analysis)
+\end{itemize}
+
+\subsection{Imaris (tracing, spine analysis)}
+\label{sec:Imaris}
+
+Commercial tool, automatic and manual processing.
+
+Features:
+\begin{enumerate}
+
+  \item  3D reconstruction of dendrites and spines: 3D-MIP rendering (filament
+  tracer tool embedded)
+
+  \item output: detailed spine analysis, dendrite length, volumes, thickness of
+  dendrites
+\end{enumerate}
+
+No: batch processing
+
+\subsection{Amira}
+\label{sec:Amira}
+
+Commercial tool, automatic and manual processing.
+
+Features:
+\begin{enumerate}
+
+  \item  3D reconstruction of dendrites and spines
+
+  \item output: dendrite length, volumes, thickness of
+  dendrites
+\end{enumerate}
+
+No: batch processing
+
+\subsection{-- Evers et al. (2004)}
+
+Evers et al. at Germany \citep{evers2004} have developed a tool set for
+automatic geometric reconstruction of neuronal architecture from stacks of
+confocal images.
+
+
+\subsection{NeuriteIQ}
+\label{sec:NeuriteIQ}
+
+NeuriteIQ. This tool has similar features to NeuriteTracer, but is reported to
+be more accurate.
+
+\subsection{Wu et al. (2010)}
+\label{sec:Wu-et-al.2010}
+
+The analysis algorithm of Wu et al. is optimized to detect neurites
+(Sect.\ref{sec:neurite}) with high accuracy, but it also requires more
+computational power (approximately four-fold slower than NeuriteQuant -
+Sect.\ref{sec:NeuriteQuant}), which might be disadvantageous for large-scale
+analysis, such as in high-content screening campaigns \citep{wu2010}.
+
+The program is based upon MATLAB.
+
+
+\subsection{NeuriteQuant (2011)}
+\label{sec:NeuriteQuant}
+
+This tool enables fully automated morphological analysis of large-scale image
+data from neuronal cultures or brain sections that display a high degree of
+complexity and overlap of neuronal outgrowths.
+
+The majority of the NeuriteQuant tool is implemented as an ImageJ macro
+(Sect.\ref{sec:ImageJ}), and can be easily manipulated using a simple text
+editor. Additional functionality that could not be implemented as an ImageJ
+macro was added in the form of ImageJ plugins using the programming language
+Java. The source code for these custom-made plugins is also included in the
+NeuriteQuant package.
+
+The program follows a similar approach of Wu et al.
+(Sect.\ref{sec:Wu-et-al.2010}). NeuriteQuant trades off accuracy for speed as
+compared to the method of Wu et al.
+
+
+\subsection{Vaa3D}
+\label{sec:Vaa3D}
+
+Vaa3D performs 3D, 4D and 5D reconstruction and rendering of very large image
+data sets, especially those generated using various modern microscopy methods, and
+associated 3D surface objects.
+
+Vaa3D has a rich set of functions and plugins for neuron quantification, and is
+compatible with well-established neuron analysis tools such as L-Measure.
+Vaa3D is suitable for manual, semi-automatic, and completely automated digital
+tracing. This software has been used in several large neuroscience initiatives
+and a number of applications in other domains.
+
+\subsection{-- plugin writer}
+
+Vaa3D has a simple and powerful Open Source plugin interface that allows
+extending the functionalities of the software. Specifically, a developer can
+take advantage of a tool called Vaa3D Plugin Creator (which is itself a Vaa3D
+plugin) to generate source code templates for porting algorithms or other
+functions into Vaa3D simply and effectivel
+
+\subsection{Neurolucidia (manual)}
+\label{sec:Neurolucidia}
+
+Neurolucida is a powerful tool for creating and analyzing realistic, meaningful,
+and quantifiable neuron reconstructions from microscope images
+(Sect.\ref{sec:tracing-software-neuron-morphology}). Perform detailed
+morphometric analysis of neurons, such as quantifying:
+
+\begin{itemize}
+  \item  the number of dendrites, axons, nodes, synapses, and spines
+  \item the length, width, and volume of dendrites and axons
+  \item  the area and volume of the soma
+  \item  the complexity and extension of neurons  
+\end{itemize}
+\url{http://www.mbfbioscience.com/neurolucida}
+
+Manual reconstruction using Neurolucidia:
+\url{http://research.mssm.edu/cnic/repository_manual.html}
+
+\subsection{NeuroStudio (automatic)}
+\label{sec:NeuroStudio}
+
+Automatic reconstruction using NeuroStudio:
+\url{http://research.mssm.edu/cnic/repository_automated.html}
+
+\subsection{neuroConstruct}
+\label{sec:neuroConstruct}
+
+neuroConstruct can import morphology files in GENESIS, NEURON, Neurolucida, SWC
+and MorphML format for inclusion in single cell or network models, or more
+abstract cells can also be built manually.
+
+neuroConstruct utilized an internal simulator-independent representation for
+morphologies, channel and networks; and it can generate neuronal simulations for
+the NEURON and GENESIS simulators. Nowaday, neuroConstructs use NeuroML file
+format (Sect.\ref{sec:NeuroML-file-format})
+
+\url{http://www.neuroconstruct.org/}
+
+\section{Generate virtual neuron}
+\label{sec:growth-neuron}
+
+\begin{enumerate}
+  \item neuroGEN - Sect.\ref{sec:neuroGEN}
+  
+  \item L-neuron - Sect.\ref{sec:L-neuron}
+\end{enumerate}
+
+\subsection{neuroGEN (NTS)}
+\label{sec:neuroGEN}
+
+NTS system has developed neuroGEN - an algorithm to growth neuron
+(Sect.\ref{sec:growth-neuron}) based on the concept of electric force-field
+between atoms in molecular dynamics simulation.
+
+
+\subsection{L-neuron}
+\label{sec:L-neuron}
+
+L-neuron is the project to create a virtual neuron  that are anatomically
+indistinguishable from their real counterparts.
+
+Note that different sets of statistical distributions correspond to different
+morphological families. By varying these values, the same algorithm can describe
+neurons as diverse as pyramidal, granule, Purkinje, or stellate cells.
+\url{http://krasnow1.gmu.edu/cn3/L-Neuron/index.htm}
+
+L-Neuron can output its virtual structures in a variety of formats, including
+virtual reality, graphical files, and the standard neuroanatomical coordinates
+compatible with neurophysiological simulators such as GENESIS and Neuron.
+
+L-Neuron has implemented many algorithms
+\begin{enumerate}
+  \item Lyndenmayer rewrite rules
+  
+  \item Hillman algorithm and its derivatives - Sect.\ref{sec:Hillman-PK-algorithm}
+  
+  \item Burke and colleagues
+  
+  \item L-neuron algorithm
+
+L-neuron adds stochastically the bifurcation angles and dendritic orientation
+along the appropriately fragmented branches.
+
+\end{enumerate}
+
+\subsection{Hillman/PK algorithm}
+\label{sec:Hillman-PK-algorithm}
+
+A soma has a number of dendritic tree. The number of trees per neuron is the
+first basic parameter.
+
+Each dendritic tree is generated independently. 
+
+For each tree: The simulation starts with sampling an initial stem diameter,
+taper rate, and branch length. Dendritic tree then grows is an iterative process
+depending on the branch diamter.
+\begin{itemize}
+  \item bifurcate
+  \item terminate
+\end{itemize}
+depending whether its ending diamter (which is calculated from the branch's
+initial diamter and the taper rate) is greater than a sampled diamter threshold.
+
+
+{\bf If bifurcate to occurs}, then two daughter branches  are created, whose
+initial diameters are calculated based on 
+\begin{enumerate}
+  \item dauther diameter ratio \verb!dr!: this is sampled:
+  
+  \item ending diameter of the parent branch: this is sampled
+\end{enumerate}
+
+Using formula (a variant of Rall's equation)
+\def\PK{{\text{PK}}}
+\begin{equation}
+\PK \times d_p^{1.5} = d_1^{1.5} + d_2^{1.5}
+\end{equation}
+PK is a sampled numerical parameter (usually between 1 to 2.0).
+then
+\def\dr{{\text{dr}}}
+\begin{equation}
+\begin{split}
+d_1 = d_p \sqrt[1.5]{\frac{\PK}{1+ \dr^{1.5}}} \\
+d_2 = \dr . d_1
+\end{split}
+\end{equation}
+
+The process continue with each new daugher: the new taper rate and branch length
+are sampled for that daughter branch.
+
+{\bf If terminate} (i.e. the ending diameter of the branch is less than the
+sampled threshold), the branch grows by an additional 'terminal' length and
+stops.
+
+SUMMARY: For each branch; we need to sample new value for branch length, taper
+rate, diameter threshold, daughter diameter ratio and PK (or terminal length).
+
+
+
+\section{NeuroLand}
+\label{sec:NeuroLand}
+
+\url{http://neuronland.org/NL.html}
+
+Neuronland provides free software tools for the experimental neuroscience and
+neuron mathematical modeling communities.
+
+Currently, two applications are available, both focused on facilitating the
+interchange of neuron morphology data between the diverse software packages used
+within these fields of research, as well as the preservation of such data.
+\begin{enumerate}
+  \item NLMorphologyConverter
+  
+  \item NLMorphologyViewer
+\end{enumerate}
+
+\subsection{NLMorphologyConverter}
+\label{sec:NLMorphologyConverter}
+
+It can convert from one 3D neuron morphology format to another.
+Currently 21 formats (50+ variations) are supported, including Neurolucida, SWC,
+MorphML, NeuronHOC, Genesis, NeuroZoom, Eutectics. 
+
+
+\subsection{NLMorphologyViewer}
+
+It is a simple user interface built on top of the technology developed for the
+NLMorphologyConverter
+
+
+\section{Other tools}
+
+
+\url{http://research.mssm.edu/cnic/tools.html}
+

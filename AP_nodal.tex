@@ -1,0 +1,195 @@
+
+\chapter{Models AP in nodal cells}
+\label{chap:models-ap-nodal}
+
+Automatic excitation is one of the characteristic feature of pacemaker cells,
+e.g. SA nodes. This spontaneous beating activity is triggered by a slow
+diastolic repolarization \citep{draper1951, trautwein1952, west1955}. As $\K$
+current is the one that maintain the resting potential, based on the models
+from Purkinje fibers, it was first hypothesized that a spontaneous gradual decay
+in this current causes the depolarization. However, the reconstructed K current
+from SA node is much smaller than $i_{K2}$ in Purkinje fiber. Also, the
+automatic excitation still occurs even when blocking time-dependent K current
+using $\Ba$ ions \citep{Yanagihara1980}. Thus, it was hypothesized that the slow
+inward current in the SA node control the automatic excitation. 
+
+The SA node is not homogeneous. In rabbit, the SA node is of size about 8 mm
+$\times$ 10 mm \citep{Boyett1999}. In the vertical direction it is bounded by
+the superior and inferior venae cavae, and in the horizontal direction it is
+bounded by the crista terminalis (a thick bundle of atrial muscle) and the
+interatrial septum \citep{zhang2000}. The AP is initiated at a small part of the
+SA node, the so-called leading pacemaker site which is referred to as the center
+of the SA node. Normally, the leading pacemaker site is approximately midway
+between the two venae cavae and 1-2 mm from the crista terminalis
+\citep{Bleeker1980}.
+From the center of the SA node, the Ap propagates to the periphery of the SA
+node and then onto the atrial muscle of the crista terminalis. The peripheral of
+the SA node is often called the {\it perinode} or transitional tissue. Even
+though the major function of the peripheral of the SA node is to conduct the AP
+from the leading pacemaker site to the atrial cell, the cells in the peripheral
+of the SA node also show pacemaker activity.
+
+There are differences between the peripheral region and the ring bundle
+(diastolic membrane potential near -75 mV) vs. central region (diastolic
+membrane potential only in the range -55 to -65 mV) \citep{noble1984msa}. The
+parameters in the former model is adjusted to give the less negative diastolic
+potential in the former one by using one of the following strategies
+\begin{enumerate}
+  \item reduce $i_\k$
+  \item increase background inward current $g_{b,\na}$
+  \item change the parameters determining $i_{\na\ca}$.
+\end{enumerate}
+
+Even though Purkinje fiber also has automaticity, the striking difference is
+that Purkinje fiber is extremely sensitive to [K]o, but it's fairly insensitive
+for SA node \citep{noble1984msa}. To explain for this, [K]o strongly
+affect $i_{K1}$ which is relatively unimportant in SA node, but is very
+significant in Purkinje fiber. 
+
+\citep{Wilders1991} demonstrated that the early models
+(Sect.\ref{sec:SA_node-Yanagihara1980},
+Sect.\ref{sec:SA_node_Bristow1982}, Sect.\ref{sec:SA_node_Noble1984}) have
+many drawbacks.
+
+\section{Ion concentrations}
+
+\begin{enumerate}
+  \item NOTE: [K]i = 140 mM, [Na]i = 7.5 mM, [K]o = 3 mM, [Ca]o = 2 mM
+  \citep{noble1984msa}
+\end{enumerate}
+
+\section{Yanagihara-Noma-Irisawa (rabbit - 1980)}
+\label{sec:SA_node-Yanagihara1980}
+
+\citep{Yanagihara1980} developed the model with spontaneous AP that includes 4
+ionic currents using Hodgkin-Huxley-based equations
+(Sect.\ref{sec:HH_equations}): $i_\na$ (Na current), $i_s$ (slow-inward
+current), $i_\k$ (K current), $i_h$ (delayed-inward hyperpolarization-activated
+current), and $i_1$ (time-independent leak current). \textcolor{red}{This is
+simple as there is no exchanger or ionic pumps}.
+
+The membrane circuit is formulated based on a unit membrane ($\Cm = 1 \muF$)
+\begin{equation}
+\Cm \frac{dV_m}{dt} = i_m - (i_s + i_\na + i_k + i_h + i_1)
+\end{equation} 
+with $i_m$ is the total current passing through the unit membrane. 
+
+NOTE: Unit rate constant (1/(msec)) and voltage (mV).
+
+\subsection{Ionic currents}
+
+$i_\na$ (sodium current)
+\begin{equation}
+i_\na = m^3 . h . \bar{i}_\na
+\end{equation}
+
+
+\subsection{Numerical solution}
+
+The ODEs were solved using Runge-Kutta 4-th order of approximation on digital
+computer Nicolet (model NIC-80). The time step $dt=1$ (msec) for $i_\na$.
+
+\subsection{Data input}
+
+The initial resting membrane potential is the steady-state value -60 mV. The
+values of the parameters given after 2 second of simulation is used as the
+initial inputs.
+
+
+\subsection{Data analysis}
+
+The model suggested a large contribution from $i_s $ and $i_1$, yet they are
+difficult to quantify experimentally. Thus, it was not enable to confirm the
+model's result.
+
+\section{Bristow-Clark (1982)}
+\label{sec:SA_node_Bristow1982}
+
+\citep{bristow1982mmp}
+
+\section{Noble-Noble model (SA node - 1984)}
+\label{sec:SA_node_Noble1984}
+
+~\citep{noble1984msa} modified the equations of the model developed for
+Purkinjie fiber (Sect.\ref{sec:difr-noble-purk}). 
+\begin{enumerate}
+  \item $g_\to = 0$: it has not been found in SA node
+  \item $g_{b,\na} = 0.07 \muS$: so that maximum diastolic potential
+  between -70 mV and -50 mV during pacemaker activity
+  \item $g_{b, \ca} = 0.01 \muS$:  so that the free calcium in the range
+  0.5$\muM$.
+  \item $g_{K1} = 10 \muS$: which is greatly reduced compared to the value used
+  in Purkinje fiber 900 $\muS$ \citep{difrancesco1985mcea}.
+\end{enumerate}
+
+Compared to the previous model (Sect.\ref{sec:SA_node-Yanagihara1980}), not only
+ionic currents, but also Na/K and Na/Ca exchanger are added. Nomenclature:
+\begin{itemize}
+  \item 'total second inward current': current generated by both $V_m$-gated
+  $\Ca$ channel  and $\Ca$-dependent inward currents (e.g. NCX).
+  \item 'gated Ca channel' : $V_m$-gated $\Ca$ channel only
+\end{itemize}
+
+Total membrane capacitance $\Cm = 0.006 \muF$. The specific membrane capacitance
+is $\Csc = 1 \muF/\cm^2$.
+
+
+
+
+
+\section{Hagiwara-Irisawa-Kameyama model (1988)}
+\label{sec:hagiw-iris-kamey}
+
+Hagiwara et al. \citep{hagiwara1988ctt} use the same approach as HH
+model. In particular, they also use a fast voltage-dependent gating
+variable $d_L$ and a slow voltage-dependent gating inactivating
+variable $f_L$, now adding a new variable $\gamma_{Ca,L}$ which was
+sensitive to {\it extracellular} calcium concentration.
+
+\begin{equation}
+  \label{eq:387}
+  \gamma_{Ca,L} = \frac{\gamma_{Ca,L,max}}{1+(K_m/[\ce{Ca^2+}]_o)}
+\end{equation}
+with $\gamma_{Ca,L}$ is the maximum current that flows.
+
+
+\section{Dokos et al. (19993}
+\label{sec:SA_node_Dokos1994}
+
+\citep{Dokos1993}
+
+
+\section{Demir et al. (rabbit - 1994)}
+\label{sec:SA_node_Demir1994}
+
+\citep{Demir1994}
+\begin{enumerate}
+  \item introduced $i_\na$: based on experimental data from Colatsky (rabbit
+  Purkinje fiber) with Hodgkin-Huxley based formula ($m^3h$)
+\end{enumerate}
+
+
+\section{Zhang et al. (rabbit - 2000)}
+\label{sec:SA_node_Zhang2000}
+
+
+\citep{zhang2000} changed
+\begin{enumerate}
+  \item $i_\na$: the data for SA node cells showed that the recovery from
+  inactivation can be fit better using two exponentials. So, there are three
+  gating variables $m, h, j$.
+\end{enumerate}
+
+
+\subsection{Tissue model}
+
+A one-dimensional (1D) cable was developed as a string of tissue of length (L)
+= 12.6 mm. Here, the length of the SA node is $L_s$ = 3 mm (the same as the
+distance from the center of the SA node to the atrial muscle in the rabbit), and
+the string of atrial tissue is of length 9.6 mm. 
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "mainfile"
+%%% End: 

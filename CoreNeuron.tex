@@ -1,0 +1,108 @@
+\chapter{Blue Brain project: CoreNeuron - STEPS simulator}
+\label{chap:CoreNeuron}
+
+Blue Brain project aimed to provide a simulation-based integration of
+heterogeneous data into a unified model in 2005. The different components and
+their interactions are modeled according to theire presence in a biological
+system rather than based on some hypothesis, and the resulting emergent
+properties are studied.
+
+They developed a program named {\bf CoreNeuron} - extended based on {\bf NEURON}
+software (Sect.\ref{sec:NEURON}) based on optimized data structure (reduce
+memory footprint), maximize all hardware threads, and vectorization using
+auto-vectorization techniques.
+
+In 2013, BBP at EPFL joined Human Brain Project (humanbrainproject.eu).
+Recently, there is an effort to couple STEPS simulator and CoreNeuron to build
+the first efficiently multiscale computational neuroscience model
+
+\section{CoreNeuron}
+\label{sec:CoreNeuron}
+
+CoreNeuron is developed based on NEURON, which has been demonstrated to scale
+up to 64K core counts on BlueGene/P. They simulated neocortical microcircuit
+(about 200K morphologically detailed neurons) was done using Blue Brain IV
+supercomputer, called JUQUEEN of 28 racks of BlueGene/Q (Feb, 2015), and using
+ALCF (Argonne Leadership Computing Facility) of 48 racks of BlueGene/Q (May,
+2015).
+
+
+CoreNeuron extracted the core functionality of NEURON in about 15,000 lines of
+C/C++ code, and then parallelized at 3 levels
+\begin{enumerate}
+  \item one MPI process per node:
+    that handles a set of neuron groups.
+  
+  Neurons are organized into groups so that each group has equivalent
+  computational cost, and then equi-distributed to each node using {\bf Least
+  Processing Time} algorithm.
+  
+  \item OpenMP threads:
+  
+  Each neuron group is assigned to a particular OpenMP thread to ensure data
+  locality, giving thread load imbalance under 2\%.
+  
+  \item Vectorization: All channels of the same type of all neurons in the same
+  group is solved at the same time using vectorization; before moving to the
+  next type.
+  
+  This maximize cache efficiency and vectorization.
+  
+\end{enumerate}
+
+{\bf A single thread per node is responsible for}
+initiating synchronization of neurons - through exchange of spike events.
+The synchronization is done using MPI {\bf Allgather} and {\bf AllgatherV}, i.e. 
+every neuron group receives spiking information from all other neuron groups.
+\begin{itemize}
+  \item PROS: avoid explicit storage of memory to store information about
+  network topology
+  
+  
+  \item CONS: extra work to filder out which group really connect to other group
+  to get the spike events
+  
+  So it relies on efficient implementation of the MPI collective Allgather on
+  supercomputer.
+\end{itemize} 
+
+\subsection{In memory compression: BLOSC}
+
+BLOSC open source package.
+
+\section{Distributed STEPS simulator}
+\label{sec:STEPS-simulator}
+
+STEPS simulator is used to model subcellular scale of neuronal network
+electrical activity.
+STEPS has a stochastic simulator of reaction-diffusion system which uses
+Gillespie stochastic formalism to model population of chemical species across
+reactions and diffusion events.
+
+The first MPI-based STEP simulato was showed to scale up to a few hundreds core.
+The next step is to build the distributed version of STEPS simulator that is
+expected to scale up to thousands of cores on IBM BlueGene/Q.
+
+\section{CoreNeuron + STEPS}
+
+USER CASE 1: A part of the dendrite per neuron is modeled using STEPS, while
+the rest of the neuron (channel, other synapses, etc.) is modeled using CoreNeuron. The coupling
+takes place at the level of CoreNeuron compartments.
+
+
+USER CASE 2: A single full neuron is modeled using STEPS, embedded in a circuit
+where all other neurons are represented using CoreNeuron cellular
+representation. The coupling takes place at the time of spike exchange between
+the neurons of the considered circuit.
+
+
+The simulation of inhomogeneous biological system is often dominated by the cost
+of modeling the diffusion process, and these processes can be modeled
+independently by an inexact algorithm in a procedure called {\bf operator
+splitting.}
+
+Reaction process at different subvolume can be treated independently, i.e. can
+be solved in parallel, and is being coupled by an inexact diffusion model above.
+
+
+

@@ -1,0 +1,308 @@
+\chapter{Chemical reaction - Transportation}
+\label{chap:chem-react-transp}
+
+\def\A{{\text{A}}}
+\def\B{{\text{B}}}
+\def\C{{\text{C}}}
+\def\D{{\text{D}}}
+
+The previous chapter (Chap.\ref{chap:chem-bond-quant}) discussed the mechanism
+of atom interactions at a lower level, the bonding energy of covalent and
+non-covalent bonding.
+
+In this chapter, we will look at the chemical interaction between molecules
+within a single physical compartment/volume. The change in concentration of a
+species in this compartment is the result of the reaction occurs that involve
+the given species. When multiple compartments, i.e. spatial dimension, is
+considered, then the change in concentration of the species is also under
+another effect called the diffusion part (Sect.\ref{sec:diffusion}), represented
+in the form of flux (Sect.\ref{sec:flux-across-compartments}).
+
+{\bf Thermochemistry} is the field that study how a chemical reaction occurs
+(Sect.\ref{sec:thermochemistry}).
+
+% Chemical reaction is what happens at microscopic level.
+% at a higher level. 
+Important concepts involves the {\bf time scale} of a
+process which tells whether a chemical reaction is fast, or slow. This
+property is known as the {\bf rate of reaction} and is studied under
+the field {\bf reaction kinetics}.
+
+In a chemical reaction, the energy $E$ is the internal energy $U$
+(Sect.\ref{sec:gibbs-fund-equat}), the chemical potential of the i-th species in
+the system is defined as the partial derivative of the $U$ on the number of particles in species
+i-th.
+\begin{equation}
+  \label{eq:chem_potential}
+  \mu_i = \left( \frac{\partial U}{\partial N_i} \right)_{S,V,N_{j \ne i}}
+\end{equation}
+
+We have studied the macroscopic and microscopic viewpoint of a thermodynamic
+system. At thermodynamic equilibrium, the system assumes the state with maximum
+entropy (Sect.\ref{sec:entropy}). Finding such configuration, requires
+estimating the partition function $Z$, and the Maxwell-Boltzmann distribution of
+velocities of particles in a low density system. In such systems, the effect of
+quantum mechanics were neglected.
+
+
+% In the previous chapter we have learnt the kinetics of reactions, i.e.
+% how fast different atoms/molecules interact to form a new species. In
+% this chapter, we will study the underlying mechanism of chemical
+% bonding. In order to do so, we need to know the structure of an atom
+% and new technical concepts.
+
+% \section{Wave function}
+% \label{sec:wave-function}
+
+% In quantum mechanics, the dynamics of all subatomic particles are
+% described in terms of wave functions. It maps a possible state of the
+% system into complex numbers. 
+\section{Thermochemistry}
+\label{sec:thermochemistry}
+
+
+\textcolor{red}{Hess's law (Sect.\ref{sec:Hess-law}) and the Lavoisier \&
+Laplace law (Sect.\ref{sec:Lavoisier-Laplace-law}) above are the bedrock for
+thermochemistry}.
+
+Both laws are preceded {\bf the law of conservation of energy}\footnote{[Wiki]
+The conservation of energy stated that the energy is not created or destroyed
+itself, it just transform from one form to another.}
+(Sect.\ref{sec:conservation-of-energy}) and it can be shown that the two laws
+are the direct consequences of it. However, {\it the conservation of energy does
+NOT tell us what the various forms of energy are and how energy transforms from
+one form to another}. This led to the concept of {\it affinity}
+(Sect.\ref{sec:affinity}).
+
+\subsection{-- Lavoisier and Laplace's law: {\it specific heat} and {\it latent
+heat}}
+\label{sec:Lavoisier-Laplace-law}
+
+In the 18th century (1780) Antoine Lavoisier and Pierre-Simon Laplace laid the
+foundation of {\it thermochemistry} - a branch of thermodynamics
+(Sect.\ref{sec:thermodynamics-systems}) (See the book Thermodynamics) - which
+studies the energy involved or absorbed in chemical reactions (heat into work
+and vice verse) - by showing that {\it the same amount of heat must be supplied
+to decompose a compound as would be produced on its formation}, i.e. heat
+evolved in a reaction is equal to the heat absorbed in the reverse reaction.
+
+They investigated the {\it specific} and {\it latent heat}
+(Sect.\ref{sec:latent-heat}) of a number of substances, and amount of heats
+involved in combustion.
+
+\begin{itemize}
+
+\item specific heat = heat received required to increase the system one degree
+1$^o$ in temperature.
+ 
+\item latent heat = heat receive required in order for a state transition
+  to occur (e.g. solid \ce{->} liquid)
+\end{itemize}
+
+\subsection{-- Hess's law}
+\label{sec:Hess-law}
+
+In 1840 Swiss chemist Germain Hess formulated the principle that the evolution
+of heat in a reaction is the same whether the process is accomplished in one
+step or in a number of consecutive stages. This is known as {\bf Hess's law}.
+
+Example: the heat of formation of \ce{CO2} is equal to the sum of heat of the
+formation of CO and the heat of oxidation of that amount of CO to \ce{CO2}. Hess
+employed this principle to determine indirectly the heat of formation of
+compounds from their elements, when this magnitude, as is generally the case,
+was inaccessible to direct measurement.
+
+
+
+\subsection[Berthelot and Thomsen: affinity]{Affinity: driving-force for a
+chemical reaction}
+\label{sec:affinity}
+
+To explain the microsopic aspect of chemical reaction, a theoretical foundation
+is needed.  Ilya Prigogine - {\it ''As motion was explained by Newtonian concept
+of force, chemists  want a similar concept of 'driving force' for a chemical
+change. Why do chemical reactions occur, and why do they stop at certain points?
+Chemists called the 'force' that caused chemical reactions {\bf affinity}, but
+it lacked a clear definition."} 
+
+{\bf Affinity} is the next stage to study the direction of energy transform,
+after the concept of conservation of energy was formed
+(Sect.\ref{sec:conservation-of-energy}).
+{\bf Affinity} refers to the tendency for the reaction to occur in one direction
+instead of the other\footnote{Affinity is the property of which dissimilar
+substances are capable of entering into chemical combination with each other}.
+\textcolor{red}{However, there is still no way to quantify "affinity''}.
+With that effort, the French chemist Marcellin Berthelot and the Danish chemist
+Julius Thomsen had attempted to quantify {\bf affinity} using heats of reaction
+(Sect.\ref{sec:principal-of-maximum-work}).
+
+However, this has so many exceptions (especially in reversible reactions) and
+then had been abandoned by its authors. As a result, it is now of only
+historical importance. \textcolor{red}{Nowadays, ``{\bf free energy}'' is a more
+advanced and accurate term to replace the outdated term ``affinity''}
+(Sect.\ref{sec:free-energy-direction-reaction}).
+The concept of ``free-energy'' was originally derived from thermodynamics.
+
+\subsection{-- principal of maximum work (obsolete)}
+\label{sec:principal-of-maximum-work}
+
+Berthelot proposed the {\it principal of maximum work} (in thermochemistry),
+i.e. in a pure chemical reaction (a chemical changes occurring without the
+intervention of outside energy), the reaction tends to occur in the direction
+toward the production of bodies or a system of bodies that liberate heat.
+
+Based on these and other ideas, Berthelot and Thomsen, as well as others,
+considered the {\it heat given out in the formation of a compound as a measure
+of the affinity}. 
+
+
+
+\subsection{Affinity constants: binding strength}
+\label{sec:affinity-constants}
+
+{\bf Affinity constants} are numeric values that tells the strength
+with which two molecules interact. Given an affinity constant, we can
+know an interaction is ``tight binding'' or ``weak binding''. 
+
+\subsection{-- binding constant, dissociation constant}
+\label{sec:binding-constant}
+\label{sec:dissociation-constant}
+
+\begin{itemize}
+  \item To tell the tendency in binding of two molecules, we use
+{\bf binding constant} (association constant) $K_B$. 
+
+  \item To tell the tendency in dissociation of a complex into two separate
+  molecules, we use {\bf dissociation constant} $K_D$. $K_D$ is inversely
+  related to affinity while $K_B$ is directly related to affinity.
+\end{itemize}
+
+So
+\begin{equation}
+  \label{eq:332}
+  K_D = \frac{1}{K_B}
+\end{equation}
+The unit of $K_D$ is molar (M, moles/(litres-solution)), and the unit of $K_B$
+is $M^{-1}$.  \textcolor{red}{For convenience, typically, $K_D$ is more widely
+used}.
+
+In a reaction with two {\bf rate constants} $k^+_{1}$ (binding) and
+$k^-_{1}$ (dissociation)
+\begin{equation}
+  \label{eq:333}
+  \ce{A + B <=>[k^+_1][k^-_{1}] AB}
+\end{equation}
+then 
+\begin{equation}
+  \label{eq:334}
+  K_D = \frac{k^-_1}{k^+_{1}}
+\end{equation}
+Correspondingly, the unit of $k^-_{1}$ is $\text{time}^{-1}$ while
+$k^+_{1}$ is Molar$^{-1}\text{time}^{-1}$.
+
+\begin{framed}
+  
+  High affinity means large $K_B$, which in turns equivalent to (high
+  $k^+_1$ and low $k^-_{1}$). This means that the complex formation occur
+  rapidly, while the complex dissociate slowly.
+\end{framed}
+
+
+\subsection{-- estimate dissociation constant: $K_D$}
+\label{sec:determining-k_d}
+
+{\bf IMPORTANT}: We don't have to know the forward and backward rates
+$k^+_1$, $k^-_{1}$ in order to compute $K_B$ or $K_D$. Instead, we can
+compute them directly at the equilibrium state of the reaction.  This
+is because of the fact that, at equilibrium, the concentration of each
+reactants and the complex (product) follow this equation
+\begin{equation}
+  \label{eq:335}
+  K_D = \frac{[A]_{eq}[B]_{eq}}{[AB]_{eq}}
+\end{equation}
+Based on the law of total mass conservation, $[A]_{total}=[A]+[AB]=a_t$,
+then 
+\begin{equation}
+  \label{eq:336}
+  \begin{split}
+    K_D[AB]_{eq} &= (a_t-[AB]_{eq})[B]_{eq} \\
+ \rightarrow\;\;   \frac{[AB]}{a_t} &= \frac{[B]}{[B]+K_D}
+  \end{split}
+\end{equation}
+
+The {\bf fraction bound} $[AB]/a_t$ is the fraction of A involves into the
+reaction at equilibrium. The upper bound is 1 (used all A) when [B] is
+at a great amount, i.e. at infinity. 
+
+\begin{framed}
+  The idea behind using $K_D$ is that when [B] is equal to $K_D$, the
+  fraction bound is 1/2.
+
+
+  \begin{equation}
+    \label{eq:337}
+    \frac{[AB]}{a_t} = \frac{\frac{[B]}{K_D}}{\frac{[B]}{K_D}+1}  
+  \end{equation}
+\end{framed}
+
+To determine $K_D$, the concentration of A, $a_t$ is held constant;
+while they vary [B]. For each value of [B], they obtained a value of
+[AB] at equilibrium. The curve plotting [B] vs. $[AB]/a_t$ is a hyperbola. 
+Then, $K_D$ is the tangent coefficient of the line $1/[B]$ vs. $a_t/[AB]$
+\begin{equation}
+  \label{eq:338}
+   \frac{a_t}{[AB]}= K_D\frac{1}{[B]} + 1
+\end{equation}
+
+{\bf EXPERIMENT TIPS}: To quickly measure $K_D$, it is often use a
+small concentration of A compared to $K_D$ ($a_t\ll K_D$) - ideally
+100-fold below the $K_D$. With this condition, at equilibrium, [AB] is
+thus pretty much relatively small compared to $K_D$.  In addition,
+$[B]_{total}$ covers a range from 10-fold below to 10-fold above
+$K_D$.  Knowing that $[B]_{total}=b_t=[B]_{free}+[AB]$, then at
+equilibrium, $[AB]$ is rather small compared to $[B]$ free. In the
+end, we don't have to measure [B] free at equilbrium, but we can
+assume [B] free to be equal $[B]_{total}$. Otherwise, we have to
+measure [B] free at equilibrium every time we change the concentration
+of $[B]_{total}$. 
+
+Theoretically, the fraction bound approach 1 when [B] total go to
+infinity. However, this is not true. At saturation, the fraction bound
+approach a asymptotic line at $y=f_{max}$. Thus, we have to modify
+eq.~\eqref{eq:336}
+\begin{equation}
+  \label{eq:339}
+   \frac{[AB]}{a_t} = f_{max}\frac{[B]}{[B]+K_D}
+\end{equation}
+An equivalent form that is more commonly used is
+\begin{equation}
+  \label{eq:340}
+    X_{AB}= {X_{AB}}_{max}\frac{[B]}{[B]+K_D}
+\end{equation}
+Here, $X_{AB}$ is not a concentration, instead it can be any thing
+that denote the amount of AB complex, and ${X_{AB}}_{max}$ is the maximum
+amount of $X_{AB}$ at equilibrium. 
+
+\section{Direction of reactions}
+%\section{Factors to determine the reaction}
+\label{sec:fact-determ-react}
+\label{sec:free-energy-direction-reaction}
+
+Early efforts to quantify the direction of a (chemical) reaction used {\it
+affinity} (Sect.\ref{sec:affinity}). Nowadays, to study the direction of the
+reaction, {\bf free energy} is the modern measure to use, compared to the
+obsolete one {\it affinity}.
+
+However, in between, different concepts had also been used to study the
+direction of a reaction
+\begin{enumerate}
+  \item entropy - Sect.\ref{sec:entropy}: reaction occurs in the direction of
+  increasing entropy
+  \item enthalpy - Sect.\ref{sec:enthalpy}
+\end{enumerate}
+
+
+
+\section{Speed of reactions}
+\label{sec:speed-reaction}
+

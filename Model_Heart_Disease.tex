@@ -1,0 +1,84 @@
+
+\chapter{Models of Heart Diseases}
+\label{chap:models-heart-dise}
+
+\section{Drug development}
+
+Pharmacokinetics (PK)	 - what the body does to drug
+
+Pharmacodynamics (PD) 	- what the drugs do to the body
+
+Using mathematical/statistical modeling to integrate data from different source
+into a model. Nonlinear mixed-effect model (NLME) is used to do the job, from
+highly complicated/heterogeneous studied population. 
+
+
+\subsection{GWAS}
+\label{sec:GWAS}
+
+\textcolor{red}{\bf CONTEXT}: Identify genetic risk factors for complex diseases
+like schizophrenia (Sect.\ref{sec:schizophrenia}), type II diabetes.
+
+\textcolor{red}{\bf CHOICES}: GWAS can be a good choice to identify such factors
+by studying the (multiple) genetic variants across human genome from many
+patients and found the common.
+
+Genome-wide association studies (GWAS) method searches the genome for small
+variations, called single nucleotide polymorphisms or SNPs (pronounced 'snips'),
+that occur more frequently in people with a particular disease than in people
+without the disease. Each study can look at hundreds or thousands of SNPs at the
+same time. Researchers use data from this type of study to pinpoint genes that
+may contribute to a person's risk of developing a certain disease. 
+\url{https://ghr.nlm.nih.gov/primer/genomicresearch/gwastudies}
+
+\begin{mdframed}
+
+{\bf OTHER CHOICES}:
+There have been many reported associations between traits and copy-number
+variants (CNVs) and that there are known mechanisms by which CNVs can be
+associated with disease. Results from other genome-wide surveys, including
+exome and whole-genome sequencing (WGS) studies.
+
+\end{mdframed}
+
+
+
+\textcolor{blue}{\bf Examples of successful uses}:
+\begin{enumerate}
+  \item identification of the {\it Complement Factor H} gene as a major risk
+  factor for age-related macular degeneration (AMD).
+  DNA sequence variations in this gene associated with AMD.
+  
+  \item 
+\end{enumerate}
+
+
+
+
+
+
+
+Genome Wide Association Studies: use Logistic Regression based on univariate
+model
+\begin{equation}
+\text{logit}(\pi_i) \sim \beta_0 + \beta_1 x_i
+\end{equation}
+There are different statistical methodologies to study the model
+
+GWAS is data parallel computation. Packages; GenABEL, PyCUDA, \ldots 
+
+Use SNP marker detectioin: 1.4 million SNPs from Phase III data of HapMap
+dataset. 
+
+
+How about PLINK? A popular open-source GWAS
+toolset\footnote{\url{http://research.nesc.ac.uk/node/529}}. 
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "mainfile"
+%%% End: 
+
+

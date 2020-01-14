@@ -1,0 +1,263 @@
+\chapter{Low-Level Models of STDP}
+\label{chap:Model-LowLevel_STDP}
+
+This types of model incorporate all features of intermediate models of STDP
+(Chap.\ref{chap:ModelIntermediate_STDP}), with explicitly include descriptions
+of neuronal parameters and plasticity mechanisms.
+
+A biophysical model of STDP must contain at least 2 primary ingredients:
+\begin{enumerate}
+  \item a mechanism through which the synaptic strength can exist in at least
+  one of the three state: LTP state, LTD state and basal state.
+
+To be considered as a stable state, it must be resistant to small pertubations
+(for deterministic model). Example: After applying a step pulse of $[\Ca]$
+(e.g. from 0.1$\muM$ as basal level to 0.5$\muM$) for a certain time (e.g.
+2sec), when the pulse is terminated (i.e. $[\Ca]$ back to basal level), the
+model should be able to return to the original state at the end.
+  
+  \item 
+\end{enumerate}
+
+
+
+\section{Graupner - Brunel (2007) + CaMKII - bistable switch}
+\label{sec:Graupner-Brunel-2007}
+
+
+The model incorporate CaMKII and investigate its phosphorylation effect
+and help to explain {\bf bistable chemical switches}.
+
+\section{Pi-Lisman (2008) - tristability switch}
+\label{sec:Pi-Lisman-2008}
+
+
+The key idea is that PP2A (Sect.\ref{sec:PP2A}) can form a phosphatase switch
+that could underlie the maintenance of LTD.
+
+ASSUMPTION:
+\begin{itemize}
+  \item The model did not incorporate the dynamic of $\Ca$, instead they tested
+  the model by applying different pulse level of $[\Ca]$ (step size 0.1$\muM$
+  for 2sec, and resting level $[\Ca]=0.1\muM$)
+  
+  
+\end{itemize}
+
+\subsection{Numerical analysis}
+
+The model was implemented on MatLab, and fourth-order Runge-Kutta method.
+
+\section{Urakubo et al. (2008)}
+\label{sec:Urakubo-2008}	
+
+
+\section{Carlson - Giordano (2011) - tristable switch}
+\label{sec:Carlson-Giordano-2011}
+
+The model explicitly include neuronal parameters + plasticity mechanism, based
+on Graupner-Brunel (2007) - Sect.\ref{sec:Graupner-Brunel-2007}.
+
+Based on the experimental result that the mechanism for depotentiation is not
+the same as LTD (Zhuo et al. 1999), it is expected that {\bf tristable chemical
+switch} is required to appropriately describe LTP and LTD (Pi and Lisman 2008).
+
+The model combine (1) compartmental model of postsynaptic neuron
+(Sect.\ref{sec:Shouval-2002}), (2) calcium dynamics with a tristable
+kinase/phosphastase network (Pi and Lisman, 2008).
+This is the first model to pair both STDP-induced postsynaptic $\Ca$ dynamics +
+tristable biochemical switch, that can yield LTP state, LTD state, and basal
+synaptic state.
+
+ASSUMPTION:
+\begin{itemize}
+  \item instantaneous binding of glutamate to NMDAR (using step function)
+  while glutmate unbinding is modeled via two step function
+  
+  \item 
+\end{itemize}
+
+\subsection{Mathematical model}
+
+The postsynaptic side is modeled as a single equipotential compartment with both
+NMDAR and VDCC present as source of $\Ca$ influx.
+To account for buffering, a decay term is added as a source driving $[\Ca]$ back
+to basal level (based on Sect.\ref{sec:Shouval-2002}).
+
+
+\subsection{Data analysis}
+
+
+The model show good qualitative agreement with data from
+Sect.\ref{sec:Bi-Poo_1998} for both pulse pair protocol and blockage of L-type
+VDCC protocol.
+
+
+\section{Graupner - Brunel (2012) - bistable}
+\label{sec:Graupner-Brunel-2012}
+
+A phenomenological model proposed by Graupner-Brunel to model the synaptic
+efficacy (Sect.\ref{sec:synaptic-efficacy}) as a function of $\Ca$ dynamics.
+
+The model implements two different $\Ca$-triggered pathways that can mediate
+synaptic strengths
+\begin{itemize}
+  \item LTP: via protein kinase cascades
+  \item LTD: via protein phosphatase cascades of G-protein cascades
+\end{itemize}
+
+\subsection{Hypothesis}
+
+The model hypothesize that 
+\begin{enumerate}
+  \item pre-synaptic signal trigger a smaller release of $\Ca$ on postsynaptic
+  side (as it is assumed only NMDAR open)
+  
+  \item the post-synaptic signal (e.g. bAP) triggers a bigger release of $\Ca$
+  on postsynaptic side (as it is assumed VDCC open)
+  
+  \item ignore NMDAR nonlinearity
+  \item ignore finite rise-times, i.e. assume instantaneous reaching the peak
+  \item the same decay time constant for calcium via NMDAR and VDCC
+  
+  \item there are two thresholds of $[\Ca]_i$: one ($\theta_p$) leading to
+  potentiation, and one ($\theta_d$) leading to depression
+  
+They assumed $ \theta_d < \theta_p$
+\begin{verbatim}
+Ca2+ level
+
+  ...(above) --> LTP
+theta_p
+
+   ...(between)  --> LTD
+
+theta_d
+  ...(below) --> no change
+  
+\end{verbatim}
+
+  \item the two quantitaties: $\gamma_p, \gamma_d$ measures the rate of synaptic
+  increase (or decrease)  when potentiation threshold (or depression threshold)
+  exceeds, respectively.
+  
+  
+\end{enumerate}
+%the synaptic efficacy increases
+
+
+\subsection{Mathematical model}
+
+A model of a single synapse submitted to trains of pre- and postsynaptic APs
+is developed. 
+
+\subsection{- synaptic efficacy}
+
+The state of a synapse is represented via the \textcolor{red}{synaptic efficacy
+variable} $\rho(t)$, described via first-order ODE
+
+\begin{equation}
+\tau\frac{d\rho}{dt} = \underbrace{-\rho (1-\rho)(\rho_* -
+\rho)}_{\text{first}} + 
+\underbrace{\gamma_p \times (1-\rho) \times \Phi
+[c(t)-\theta_p]}_{\text{second}} - \gamma_d \times \rho \times \Phi [c(t) -
+\theta_d] + \text{Noise}(t)
+\end{equation}
+
+  NOTE: the time constant $\tau$ of synaptic efficacy change in the order of
+  seconds to minutes; the quantities $\gamma_p, \gamma_d$ measures the rates of
+  synaptic increase/decrease when potentiation/depression thresholds are
+  exceeded, respectively.
+
+\begin{itemize}
+  
+  \item the first term on right-hand side: the dynamic of synaptic efficacy in
+  the absence of pre- and post-synaptic activity, which is modelled as a cubic
+  function (Sect.\ref{sec:cubic-function}).
+  
+  The cubic functional form is chosen so that it has 2 stable states at rest,
+  representing low efficacy ($\rho =0$, DOWN state) and high efficacy
+  ($\rho=1$, UP state). The boundary of the basin of attraction between the two
+  states is $\rho_* = 0.5$.
+  
+  \item the second term on the right-hand side: $\Ca$-dependent signaling
+  cascades leading to synaptic potentiation 
+
+\begin{mdframed}
+The simple form of the function $\Phi$ on the second and third terms on the
+right-hand side uses Heaviside function $\Phi[c-\theta]$ which get either
+ \begin{equation}
+ \Phi[c-\theta] = \left\{ \begin{array}{c}
+ 		0  \;\; \text{ if } c<\theta \\
+ 		1  \;\; \text{ if } c\ge\theta \\
+                \end{array}\right.
+ \end{equation}
+\end{mdframed}  
+
+  \item the third term on the right-hand side: $\Ca$-dependent signaling
+  cascades leading to synaptic depression
+
+
+  
+  \item the last term on the right-hand side: model the activity-dependent
+  fluctuation stemming from stochastic neurotransmitter release, stochastic
+  channel openning and diffusion.
+  
+\begin{mdframed}
+  The noise is assumed to present whenever the calcium level below the threshold
+  for potentiation and/or depression.
+  \begin{equation}
+  \text{Noise}(t) = \sigma \sqrt{\tau}\Phi[c(t) - \min(\theta_d,
+  \theta_p)]\eta(t)
+  \end{equation}
+  with $\sigma$ is the amplitude of noise, $\eta(t)$ is the Gaussian white noise
+  process with unit variance density
+\end{mdframed}
+
+\end{itemize}
+
+\subsection{- calcium dynamics}
+
+Calcium release is assumed as an instantaneous release reaching the
+peak (at the time the signal come), and then decay with a given time constant.
+There are two types of signal that can trigger the release
+\begin{itemize}
+  \item pre-synaptic signal: which trigger the release after a delay D (ms)
+  
+  \item post-synaptic signal: which trigger the release immediately
+\end{itemize} 
+
+$\Ca$ is removed from the spine via some passive process with a given time
+constant $\tau_\ca$.
+
+\def\Cpre{{\text{Cpre}}}
+\def\Cpost{{\text{Cpost}}}
+
+The postsynaptic $\Ca$ dynamics
+ \begin{equation}
+ \frac{dc}{dt} = \underbrace{- \frac{c}{\tau_\ca}}_{\text{removal}} +
+   \underbrace{\Cpre \sum_i \delta(t - t_i - D)}_{\text{NMDAR current}} +
+   \underbrace{\Cpost\sum_j \delta(t-tj)}_{\text{VDCC current}}
+ \end{equation} 
+ with $\Cpre$ is the peak of the $\Ca$ elevation under pre-synaptic signal; and
+$\Cpost$ is the peak of $\Ca$ elevation under post-synaptic signal.
+
+
+ \section{Trick}
+ 
+The time $[\Ca]_i$ above both threshold determines the time course for LTP to
+maintain. This depends on 2 factors from the model setting
+\begin{itemize}
+  \item the peak of $[\Ca]_i$ which of course higher when time of release via
+  NMDAR and via VDCC are closed to each other
+  
+  \item the decay setting $\tau_\ca$ which is 150 second = 2.5 minutes, which is
+  the larger the longer the time LTP to be maintained.
+  
+  \item the value of $\gamma_p$ and $\gamma_d$: 
+  the bigger $\gamma_p$ (and calcium transient), the more probability the
+  synaptic efficacy $\rho$ can jump from DOWN to UP state (here, it is a random
+  process due to the incorporation of Noise(t)).
+  
+  
+\end{itemize}

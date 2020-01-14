@@ -1,0 +1,107 @@
+
+\chapter{Summary of landmarks}
+\label{chap:summary-landmarks}
+
+In 1950s, Hodgkin-Huxley was the first phenomenological model of excitable cell,
+the axon of squid giant cell~\citep{hodgkin1990qdm}. This model try to replicate
+the periodic depolarization of membrane potential - called the {\bf action
+potential} (AP).  Different cell types, or cells at different regions, may have
+different AP waveform.  Its shape depends upon the characteristics and types of
+ionic fluxes across the membrane.  So, before the 90s, experimentalists try to
+discover all types of ion channels and its kinetics that may contribute to the
+AP of a cell. 
+
+The kinetics of the ionic channels, and ionic pumps/exchangers (not only in this
+stage, but later on) can be referenced in Chap. \ref{chap:voltage-gated-ionic}
+(focusing on HH-based formula), Chap.\ref{chap:Na_models} ($\Na$),
+Chap.\ref{chap:K_model} ($\K$), Chap.~\ref{chap:dhpr-models} (DHPR),
+Chap.~\ref{chap:models-pumps} (NCX, NA/K, PMCA), Chap.~\ref{chap:ryr-models}
+(RyR), Chap.~\ref{chap:ip3r-models} (IP3R). In whole-cell modelling, there are
+two classes of model: (1) reduced one, i.e. use the minimum ionic currents that
+still can reproduce the major properties of a cell; (2) detailed one, i.e.  try
+to incorporate the kinetics of all possible different ion channels.
+
+
+In cardiac cells, researchers realized that \ce{Ca^2+} play a major role to the
+contractile function of the cells. However, the influx of calcium is not enough
+to trigger the contraction~\citep{bassingthwaighte1972cme}. In 1975,
+Fabiato-Fabiato confirmed the hypothesis that ``additional \ce{Ca^2+} is release
+from internal store''~\citep{fabiato1975cic}, and there is only one calcium
+internal storage - the sarcoplasmic reticulum (SR). The mechanism, known as {\bf
+calcium-induced calcium release} (CICR), is described as follows: at the initial
+phase of AP (mostly caused by the activation of $\Na$ channels), the
+depolarization of membrane potential trigger an influx of \ce{Ca^2+} via the LCC
+will cause a local elevation of calcium concentration; these calcium bind to the
+RyR in proximity and activate the RyRs, triggering the release of \ce{Ca^2+}
+from SR~\citep{fabiato1989apr}. \textcolor{red}{``It is the trans-sarcolemmal
+calcium flux, rather than
+  the depolarization of the sarcolemma, per se, that triggers SR calcium
+  release''}
+(Stein, 1992).  Unlike AP as an all-or-none process, CICR has two important
+properties: {\it high-gain} (amplification), i.e. the smaller influx of
+\ce{Ca^2+} triggers the much higher \ce{Ca^2+} release, and {\it gradeness},
+i.e. the calcium release is proportional to the graded increase of calcium
+influx. However, it was not until 1998 that computational models incorporate
+CICR explicitly~\citep{jafri1998cad}.
+
+Early models, involving those which incorporate CICR mechanism, are
+``common-pool models''. The essential feature of a 'common pool' model
+of E-C coupling is that the entering \ce{Ca^2+} and released
+\ce{Ca^2+} occupy a common cytosolic space (i.e. there is no spatial
+localization of calcium). \citep{stern1992tec} proved that
+such models cannot reproduce ``gradeness'' property. 
+ 
+
+In 1993, Cheng-Lederer discovered that the graded increase is due to
+the release of \ce{Ca^2+} at different local region which, under
+normal condition, cannot trigger calcium wave.  So, the calcium
+elevation in the whole-cell is the summation of all these local
+calcium transience.  The elementary events of \ce{Ca^2} elevations in
+cardiac cells is called {\bf \ce{Ca^2+} spark}~\citep{cheng1993cse}.
+The \ce{Ca^2+} spark allows us to explain the important property:
+gradeness, i.e. the release of \ce{Ca^2+} from junctional SR (JSR) is
+not all-or-none but in gradeness, which can occur while \ce{Ca^2+}
+wave cannot occur. Experimental studies also confirmed that frequency
+of the sparks, per se, cannot trigger calcium wave, but the SR \ce{Ca^2+}
+- or {\bf luminal calcium} - overload can trigger calcium wave as it
+modify the sensitivities of RyRs to \ce{Ca^2+}. As a result, many
+models, though can reproduce many frequency-dependent phenomenon, need
+to be revised.
+
+It's important to incorporate a large number of calcium release site/unit (CRUs)
+into the model. Experiments show this range from 10,000 to 20,000. Since then,
+there are several models to replicate the high-gain and gradeness properties of
+\ce{Ca^2+} signalling, with the number of CRUs vary from a few hundreds to a
+realistic amount (20,000).
+
+Given that CICR is a regenerative process, it turns into the question how the
+local \ce{Ca^2+} release from SR can be terminated. There are different
+hypothesis, yet the widely accepted until nowadays is the negative feedback of
+luminal calciumm depletion. There is a bunch of models try to resolved this by
+proposing mechanism for terminating \ce{Ca^2+} sparks.
+
+Since 2000, there are demands to developed new, detailed models that
+take into the high amount of calcium release units (CRUs).  Most of
+the models are built at physiological conditions, e.g. normal heart
+rate. 
+
+Two major fluxes, $I_\Ca$, $I_\NaCa$ are modulated by intracellular
+system. Thus, a calcium system is driven by AP waveform which in turns
+depend on the dynamics of the $[\ce{Ca^2+}]_i$ itself. So, it's important to
+build the model that can reproduce the results at different AP
+waveform. This is the {\bf bidirectional coupling} between the $V_m$ and the
+calcium.
+
+\section{Apoptosis}
+
+Components of the previously mysterious process were being discovered almost
+weekly, frequent scientific meetings had little overlap in their contents, and
+it seemed that every issue of Cell, Nature, or Science had to have at least one
+paper on apoptosis.
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "mainfile"
+%%% End: 

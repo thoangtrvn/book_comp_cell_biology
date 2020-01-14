@@ -1,0 +1,355 @@
+
+\chapter{Model Synaptic Plasticity}
+\label{chap:synapse-model-interc}
+
+This chapter describes models that uses tetanic burst as synaptic input.
+Those that look into pre-synaptic and post-synaptic spikes time relationship
+in STDP (Sect.\ref{sec:STDP}) is discussed in the next chapters.
+
+Sect.\ref{sec:synaptic-strength-measure} discuss how we can model the
+(post)synaptic input, and from that we can derive the current-voltage
+relationship (Sect.\ref{sec:synapse_I-V-curve}).
+
+\section{Different forms of synaptic plasticity}
+
+%\subsection{}
+\subsection{STDP}
+
+Spike-timing-dependent plasticity (STDP) has emerged in recent years as
+the  experimentally  most  studied  form  of  synaptic  plasticity.
+
+
+\section{Model synaptic plasticity}
+\label{sec:synaptic_plasticity_model}
+
+% Based on Hebbian theory (Sect.\ref{sec:synaptic_plasticity}), the efficiency of
+% on nerve cell A on firing the next cell B can change. To model the synaptic
+% plasticity, an important variable is the efficiency $w_{ij}$, with $i,j$ are the
+% index of two connected nerve cells and cell $i$ with axon connecting to dendrite
+% of cell $j$. Hebbian theory stated that the value of $w_{ij}$ depends on
+% \begin{itemize}
+%   \item the state of presynaptic neuron $i$
+%   \item the state of postsynaptic neuron $j$
+%   \item the present efficacy $w_{ij}$
+% \end{itemize}
+% but not on the state of other neurons $k$,
+% Fig.\ref{fig:synaptic_plasticity_efficacy}. We call it
+% the connection between these neurons is {\bf potentiated}.
+% 
+% Let y be some measure of posite type at a given separation are roughly equal and
+% the activity of the postsynaptic cell, xi a measure of the opposite to
+% correlations between two same type inputs activity of the i at that separation.
+% Both of these are postulated to occur th input
+% 
+% 
+% There are different rules that can be used to explain this Hebbian learning
+% scheme ($w_{ij}$ is the weight or presynaptic $A_j$'s efficiency and
+% post-synaptic $B_i$, Fig.\ref{fig:artificial-neuron}) [NOTICE the order:
+% postsynaptic $i$ written first]
+% \begin{enumerate}
+%   \item simplest rule: the change in synaptic weight connecting
+%   presynaptic region $j$ to postsynaptic region $i$ 
+%   \begin{equation}
+%   \Delta w_{ij}= k x_i x_j
+%   \end{equation}
+%   with $k$ is the scaling factor (representing the {\it learning rate});
+%   firing rate $x_j$ of the presynaptic region, and firing rate $x_i$ of the
+%   postsynaptic region $y_i$.  
+% 
+%   
+%   \item 
+% \end{enumerate}
+% 
+% 
+% 
+% Interestingly, 
+% 
+% \url{http://www.scholarpedia.org/article/Models_of_synaptic_plasticity}
+
+Graupner and Brunel, 2012, PNAS: calcium-based bistable synaptic plasticity
+model.
+
+
+Up-regulation of NMAD receptor (NMADR) is the basis for pain synaptic
+plasticity.
+
+
+\section{Model Spike timing-dependent plasticity}
+\label{sec:spike-timing-dependent-plasticity_model}
+
+STDP focus the role of individual spike, in addition to frequency (bursting), 
+with relative time of postsynaptic firing in controling the synaptic plasticity
+(LTP and LTD) - Sect.\ref{sec:spike-timing-dependent-plasticity}.
+
+
+\subsection{'high-level': Phenomenological models}
+
+General variables that represent the net effects of the underlying mechanisms
+or by applications of 'learning rule' that changes synaptic strengths
+(Sect.\ref{sec:synaptic_plasticity_model})
+\begin{equation}
+w_{ij} = f(\Delta t)
+\end{equation}
+$\Delta t$ = the interspike interval (ISI) or time delay between pre- and
+post-synaptic spikes.
+
+Details in Chap.\ref{chap:models-phenomenological_STDP}.
+
+
+\subsection{'detail-level': Biological model}
+
+These models require explicit modelling of 
+\begin{enumerate}
+  \item back-propagating AP (bAP) - Sect.\ref{sec:bAP}
+  
+  \item neuronal potential
+  
+  \item individual ion channels
+  
+  \item chemical networks
+  
+  \item other low-level biophysical phenomena
+\end{enumerate}
+
+
+Details in Chap.\ref{chap:ModelIntermediate_STDP} and
+Chap.\ref{chap:Model-LowLevel_STDP}.
+
+
+
+
+\section{Statistical modelling transmitter release}
+\label{sec:stat-modell-transm}
+
+Consider the neuron transmitter are released in vesicles, each vesicle
+is a unit, or quantum.  Suppose one transmitter quantum cause a
+postsynaptic action $p$ (in units of potentials, conductance, or
+change transfer).  The prob. that one quantum will be released from a
+single release site after an action potential is $q$. If there are
+totally $n$ sites, then the mean amplitude of the EPSP is $npq$.
+\textcolor{red}{This is a binomial distribution}.
+
+\subsection{in CA3 cells}
+\label{sec:ca3-cells}
+
+The values of $n$ are different from statistical analysis and
+morphological counting. From statistical analysis, $n$ is in the range
+3-30, much lower than those from neuromusclar junctions and squid
+giant synapse.
+
+Consider a simple model of a synapse with $n=3$ release sites, the
+prob. for releasing a quantum successfully is $p=0.69$, and each
+quanta cause a postsynaptic potential $q=0.51$ mV. Then, the prob. for
+a transmission failure at all release site is $(1-0.69)^3=0.03$.
+
+The simple binomial model assumes the same prob. of releasing
+transmitter from all sites, at a connection between 2 cells. 
+
+A simple treatment to connectivity is: the cells are organized in
+layers (classes), and cells in one layer only connect to those in
+another layers.
+\begin{enumerate}
+\item how many cell classes
+\item {\it synaptic divergence} = the number of synapses does one cell
+  make
+\item {\it convergence} = how many synapse does one cell receive
+\item {\it connectivity} = probability that two cells from two
+  different layers are connected. How does it varies with the distance
+  between them.
+\item is synaptic connectivity (as described above) uniform for
+  similar cells (i.e. cells in the same classes).
+\end{enumerate}
+The divergence and convergence can be determined anatomically and
+physiologically. 
+
+
+\section{Bhalla - Iyengar (1999) - cAMP + CaMKII}
+\label{sec:Bhalla-Iyengar-1999}
+
+\textcolor{red}{TAKE HOME MESSAGE}:
+Simple biochemical reactions can, with appropriate coupling, be used to store
+information. Thus, the signaling pathways may constitute one locus for the
+biochemical basis for learning and memory.
+
+\citep{bhalla1999} developed a compartmental model of hippocampal CA1 neuron
+(using GENESIS software - Sect.\ref{sec:GENESIS}).
+$\Ca$ influx was modeled through NMDAR channels on the dendritic spine
+(Sect.\ref{sec:NMDAR}).
+
+Synaptic input was delivered as tetanic burst at 100 Hz, for 1 sec each,
+separated by 600s to study Hebbian learning LTP (Sect.\ref{sec:LTP}).
+
+The $\Ca$ waveform as output of the above model is fed into the kinetic model.
+
+
+They linked pathways one by one, until the entire network model of interacting
+pathways was formed. Pathways were linked by 2 forms of interactions:
+\begin{enumerate}
+  \item output (achidonic acid (AA) and diacylglycerol (DAG)) of one pathway is
+  served as input to another.
+  
+  \item enzymes whose activation was regulated by one pathway were coupled to
+  substrate belonging to other pathways.
+\end{enumerate}
+
+They studied different things, and one of them is CaMKII function in LTP, 
+as persistently activated CaMKII in the postsynaptic CA1 neuron increases
+synaptic responses (i.e. LTP).
+\begin{itemize}
+  \item CaMKII can be activated via autophosphorylation at Thr$^{286}$ even at
+  low $[\Ca]$.
+  
+mutated CaMKII with Thr$^{286}$ replaced by Ala impaired LTP.   
+\end{itemize}
+However, certain forms of LTP also requires cAMP pathway.
+cAMP is required, but it cannot change synaptic response by itself.
+Thus, the authors suggested cAMP pathway gates CaMKII signalling through the
+regulation of protein phosphastase.
+
+PROPOSED MECHANISM: With the inflow of $\Ca$, $\Ca$/calmodulin (CaM) not only
+activates CaMKII and calcineurin (CaN, or PP2B), but also elevates intracellular
+cAMP throgh CaM-dependent activation of AC1 and AC8
+(Sect.\ref{sec:AC_adenylyl_cyclase}).
+
+
+\section{Spiros (2010) - corticostriatal}
+\label{sec:Spiros-2010}
+
+\citep{spiros2010} developed a corticostriatl synapse model 
+to study activity level of postsynaptic receptor under the effect of dopamine
+(DA), a D2-receptor binding drug, two additional D2-receptor binding agents
+(metabolite and/or radioactive tracer) in a competitive binding model.
+
+The model takes into account the
+\begin{itemize}
+  \item different firing patterns of presynaptic terminal: tonic spiking and
+  high-frequency spiking
+  
+  \item effect of D2-like autoreceptor to DA release
+  
+  \item effect of  presynaptic facilitation and depression to DA release
+\end{itemize}
+
+\subsection{Mathematical model}
+
+Initially
+\begin{verbatim}
+DA_zero = 
+
+D2receptor = [D2receptor]_total  
+
+drug = [drug]_total
+
+tracer = [tracer]_total
+
+...
+\end{verbatim}
+
+Variables
+\begin{verbatim}
+DA   // free
+DAhighaffinity_D2receptor
+DAlowaffinity_D2receptor
+drug_D2receptor
+metabolite_D2receptor
+tracer_D2receptor
+
+\end{verbatim}
+
+The purpose of tracer is to incorporate the effect of radiotracer (e.g.
+C-raclopride, I-IBZM) being used.
+
+to emulate the effect of using antagonist (e.g.
+haloperidol) on D2 receptor, i.e. increased free DA 
+
+and we need to solve a set of ODEs
+\begin{verbatim}
+Example:
+d[DAhighaffinity_D2receptor]/dt = kon_DAh * [DA] * [D2receptor] 
+               - koff_DAh * [DAhighaffinity_D2receptor]
+ NOTE: koff_DAh = kon_DAh * Kd_Ah
+ Kd_Ah = 10 nM
+
+d[DAlowaffinity_D2receptor]/dt = kon_DAl * [DA] * [D2receptor] 
+               - koff_DAl * [DAhighaffinity_D2receptor]
+
+d[drug_D2receptor]/dt = kon_drug * [drug] * [D2receptor] 
+               - koff_drug * [drug_D2receptor]
+
+d[tracer_D2receptor]/dt = kon_tracer * [tracer] * [D2receptor] 
+               - koff_tracer * [tracer_D2receptor]
+   NOTE: [tracer]_total = 1 pM
+         Kd_tracer = 1.3 nM (for raclopride)
+                     0.6 nM (for IBZM)
+                     0.018 nM (for FLB457)
+
+d[DA]/dt = f(release) - f(decay) - f(reaction_loss)
+
+ // Dopaminergic neurons tend to switch between 
+ //     low-frequencity tonic firing and high-frequency bursting firing
+ // patterns
+f(release) = 1. following a user-defined set of firing patterns
+                modulated by D2-autoreceptor
+             2. time-dependent facilitation and depression
+                
+ // DA removal from the cleft is modeled
+ // as an exponential decay with rate is adjusted
+ // to match DA kinetics in various brain regions 
+ // taking into account 
+ //     1. DA diffusion
+ //     2. DAT and/or catabolic enzyme (e.g. COMT) mechanism   
+ //    tau_halflife = 30-50ms  (rodent striatal n.accucmbens)
+f(decay) = exp( - t * ln(2) / tau_halflife)
+
+f(reaction_loss) = 
+\end{verbatim}
+
+{\bf Assumption}: the binding 'on' rate of DA is diffusion limited, i.e. the
+reaction occurs quickly and depends on the size and molecular weight of the
+molecules using Stokes-Einstein equation. 
+
+\begin{verbatim}
+DA_release = s
+\end{verbatim}
+
+\subsection{Model tuning}
+
+The model was calibrated using data on DA dynamics measured with fast cyclic
+voltammetry (Sect.\ref{sec:FSCV}).
+
+
+\subsection{Analysis}
+
+{\bf Limitation}: 
+\begin{enumerate}
+  \item The model outcome is presented as the level of postsynaptic D2
+receptor activation; without taking into account any physiological intracellular
+effect or pathway activation.
+
+  \item no spatial aspect, i.e. assume all agents have perfect access to each
+  other
+  
+  CONS: this could lead to overestimation of the amount of bound receptors. 
+ 
+ BUT: For understanding the relative effects, e.g. inhibition fraction, the
+ model behavior is resonably well. Also, the space is small in the cleft, making
+ it more similar to the well-mixed solution.
+  
+  \item relation between presynaptic D2 autoreceptor and DA release after
+  stimulation: phenomenological representation, rather than an exact biological
+  way (check \ref{qi2008})
+  
+  \item 
+\end{enumerate}
+
+
+\section{Qi (2008)}
+\label{sec:Qi-2008}
+
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "mainfile"
+%%% End: 

@@ -1,0 +1,600 @@
+\documentclass[11pt]{book}
+\pdfminorversion=3
+
+\usepackage{soul, ulem, cancel} 
+%ulem --> \sout (strike-through text + math)
+%soul --> \st{} (strike-though text)
+%cancel --> in math mode only
+
+%\usepackage{draftcopy}
+
+\usepackage{cprotect} % to allow using \verb!! inside other environment variable
+%%
+% http://tex.stackexchange.com/questions/8810/how-to-include-verbatim-in-a-figure-caption
+%%\cprotect\caption{blah \verb|#$%^&| blah...}
+%%\cprotect\section{Using \verb|verbatim|}
+
+\usepackage[intlimits]{amsmath} %Never write a paper without using amsmath for its many new commands
+
+\usepackage{amssymb} %Some extra symbols
+\usepackage{stmaryrd} %Some extra symbols
+
+%%%\usepackage{pdfsync}
+\usepackage{makeidx} %If you want to generate an index automatically
+%\usepackage{graphicx} %If you want to include postscript graphics
+\ifx\pdftexversion\undefined
+\usepackage[dvips]{graphicx}
+%%%%%%%% 
+%% To include .jpg and .pnm into latex
+%%%%%%%%%%%%%%
+\DeclareGraphicsExtensions{.jpg,.eps,.pnm}
+\DeclareGraphicsRule{.jpg}{eps}{.jpg.bb}{`jpeg2ps -h #1}
+\DeclareGraphicsRule{.pnm}{eps}{.pnm.bb}{`pnmtops #1}
+\else
+\usepackage{graphicx}
+\fi 
+
+ 
+\usepackage{epsfig}
+\usepackage{epstopdf}
+
+\usepackage{color}  %Add color capabilities to fonts,e.g. \color{blue}{text something}
+\usepackage{listings} % Add typeset programs (programming code) within LaTeX.
+
+\usepackage{tabularx}
+\usepackage{ucs}
+%\usepackage[T1]{fontenc}
+%\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} 
+
+ 
+\usepackage{chemarr}  % provide long arrows
+\usepackage{chemfig}  % complicated equations
+ 
+\usepackage{verbatim}
+\usepackage{fancyvrb}  %% \begin{Verbatim} .. \end{Verbatim}
+
+%\usepackage[version=3]{mhchem} %% \ce{}, \cee{}
+\usepackage[version=4]{mhchem} %% \ce{} ONLY
+
+
+ 
+% \usepackage{tocstyle}
+% \usetocstyle{standard}
+% \settocfeature{raggedhook}{\raggedright}
+
+\PassOptionsToPackage{hyphens}{url}
+%\usepackage[hypertex, dvips]{hyperref}       % does not work
+%\usepackage[breaklinks=true, linktocpage]{hyperref}
+\usepackage[breaklinks=true, colorlinks=true, linktocpage=true]{hyperref}      
+
+% with LaTeX2HTML
+            % usage \href{URL}{text}
+% \hypersetup{
+%    colorlinks   = true, %Colours links instead of ugly boxes
+%    urlcolor     = blue, %Colour for external hyperlinks
+%    linkcolor    = blue, %Colour of internal links
+%    citecolor   = red %Colour of citations
+%  } 
+%   \makeatletter
+%     \def\@pnumwidth{2em}
+%     \def\@tocrmarg {3.5em} % Also advisable    
+%   \makeatother
+%http://tex.stackexchange.com/questions/244570/long-title-in-table-of-content-doesnt-break-properly
+%              
+\usepackage{breakurl}  % used with dvips, not with pdflatex
+\usepackage{breakcites}
+%\usepackage{mystyle} %Create your own file, mystyle.sty where you put all your own \newcommand statements, for example.
+%\usepackage{url}
+\usepackage[hyphens]{url}
+           % usage \url{URL}
+%\newcommand*{\brokenurl}[2]{\href{#1#2}{\texttt{#1}}\par\nopagebreak\href{#1#2}{\texttt{#2}}}
+% \newcommand*{\brokenurlwithoutpar}[2]{\href{#1#2}{\texttt{#1}}\\*\href{#1#2}{\texttt{#2}}}
+%% \brokenurl{http://www.kurzweilai}{.net/the-law-of-accelerating-returns}
+
+           
+\usepackage[all]{hypcap}
+%\graphicspath{{./images/}}
+
+\usepackage[stable]{footmisc}
+\usepackage{framed}
+\usepackage[square]{natbib} %% \citep, \citet, \citealt, \citealp
+%% \citet[chap. 2]{jon90} 	    -->    	Jones et al. (1990, chap. 2)
+%% \citep[chap. 2]{jon90} 	    -->    	(Jones et al., 1990, chap. 2)
+%% \citep[see][chap. 2]{jon90} 	    -->    	(see Jones et al., 1990, chap. 2)
+%% \citealt{jon90} 	    -->    	Jones et al. 1990
+%% http://merkel.zoneo.net/Latex/natbib.php
+\usepackage[style=2]{mdframed}
+
+\usepackage{multicol}
+
+\usepackage{float} % to make figure not float, by adding [H] option to figure,
+% i.e. 
+% \begin{figure}[H]
+% \caption{This is a caption}
+% \includegraphics[width=0.5cm]{example-image-a}
+% \end{figure}
+
+\usepackage{caption}
+\usepackage{capt-of}
+
+\usepackage{tikz}
+
+\newcommand{\pie}[1]{%
+\begin{tikzpicture}
+ \draw (0,0) circle (1ex);\fill (1ex,0) arc (0:#1:1ex) -- (0,0) -- cycle;
+\end{tikzpicture}%
+}
+
+\lstset{
+  basicstyle=\ttfamily,
+  keywordstyle=\bfseries,
+  showstringspaces=false,
+  columns = fullflexible,
+  mathescape = false,
+  prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+  commentstyle=\color{red},
+  stringstyle=\ttfamily
+  % language=R
+}
+
+%\usepackage{arev} % for card-like filled symbol (but it will change the
+% document font): \varheart and \vardiamond
+%\usepackage{txfonts}
+\usepackage{amssymb} % \blacklozenge
+
+%The beamer package includes some code in the multimedia add-on which does not use Flash to embed anything, 
+%and which is not about to be deprecated. (It's also not about to have new features added, but that is different!)
+% https://tex.stackexchange.com/questions/50844/media9-and-flash-free-os-environments
+% movie15 is superseded by media9 package
+% The author of both movie15 and media9, Alexander Grahn, has recently provided some useful information to fix a bug in multimedia
+\usepackage{movie15}
+\usepackage{fancyhdr}
+\thispagestyle{empty}
+\renewcommand{\headrulewidth}{0.0pt}
+\thispagestyle{fancy}
+%\lhead{}
+%\chead{}
+%\rhead{Submitted to ISSTA'04}
+\lfoot{}
+\cfoot{\it Tuan Hoang-Trong}
+\rfoot{}
+
+\usepackage{wasysym} %% \Circle (white circle), \CIRCLE (black filled circle)
+
+\usepackage{import} 
+
+%\usepackage{appendix}
+
+%\includeonly{chaptr2} %If you just want to process chaptr2.tex
+%\includeonly{Apdx_Laws, MonteCarlo, Apdx_MarkovChain, ComplexSystem}
+% \includeonly{Terminology, Introductory,
+% VoltageGated_IonicCurrent,ModelIonChannel,AP_Purkinje}
+
+
+%\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\vect}[1]{\vec{#1}}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+
+% \makepagestyle{mystyle}% Define 'mystyle' page style
+%   \makeevenfoot{mystyle}{\textcopyright\ Tuan Hoang-Trong}{\thepage}{}% Even
+%   % page footer
+%   \makeoddfoot{mystyle}{}{\thepage}{\textcopyright\ PhD candiate}% Odd page
+%   % footer
+%\pagestyle{myheadings}% Set page style to 'mystyle'
+%\markright{Tuan Hoang-Trong \hfill BCB-GMU \hfill}
+%%http://en.wikibooks.org/wiki/LaTeX/Page_Layout
+\fancyhf{}
+%\fancyhead[C]{\includegraphics[height=40mm,width=
+% \textwidth]{AbstractHeader.jpg}}
+%\fancyfoot[R]{\bfseries{\thepage}}
+%\fancyfoot[C]{RESTRICTED DISTRIBUTION}
+\fancyhead[C]{Tuan Hoang-Trong \hfill BCB-GMU \hfill}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength\headheight{14.111pt}
+
+
+\newcommand\reaction[1]{\begin{equation}\ce{#1}\end{equation}}
+\newcommand\reactionnonumber[1]%
+{\begin{equation*}\ce{#1}\end{equation*}}
+
+\usepackage{tocloft}% http://ctan.org/pkg/tocloft
+%\setlength{\cftsubsecnumwidth}{4em}% Set length of number width in ToC for
+% \subsection
+\setlength{\cftchapnumwidth}{3em}% Set length of number width in ToC for
+\setlength{\cftsecnumwidth}{4em}% Set length of number width in ToC for
+% \section
+\setlength{\cftsubsecnumwidth}{6em}% Set length of number width in ToC for \subsection
+\makeatother
+
+\pagestyle{fancy}
+\makeindex
+
+
+
+\import*{../}{abbreviations.tex}
+
+
+\begin{document}
+
+\include{macro}
+
+\author{Tuan, Hoang-Trong}
+\title{Computational Cell Biology}
+\date{Jan, 2009 - Jan, 2017}
+
+\lstset{language={R}, numbers=left, numberstyle=\tiny,
+  stepnumber=5, numbersep=5pt, keywordstyle=\color{blue}}
+% \lstset{language={[95]Fortran}, numbers=left, numberstyle=\tiny,
+%   stepnumber=5, numbersep=5pt, keywordstyle=\color{blue}}
+
+\frontmatter
+%\addtocontents{toc}{\protect\sloppy}
+\tableofcontents
+% \addtocontents{lof}{\protect\sloppy}
+% \listoffigures
+% \addtocontents{lot}{\protect\sloppy}
+% \listoftables
+%\include{preface}
+
+\mainmatter
+
+What to read
+\begin{enumerate}
+  \item ``syntillas'' (miniature of $\Ca$ release in the
+  terminal of hypothalamic neuron) \citep{crescenzo2004}
+\end{enumerate}
+
+\include{What_to_do}
+
+\part{Biological cell as a dynamical system}
+
+% TODO: update Cm -> C (total membrane capacitance), Csc -> Cm (specific
+% membrane capacitance)
+
+\include{Terminology}
+\include{Introductory}
+\include{Dynamics_IonFlux}
+%%%\include{Membrane_ElectricalPropagation}
+\import*{../BioMedical_Research/}{MedicalPhysics}
+
+\part{Chemical reaction - Chemical kinetics}
+\import*{../BioPhysics_Thermo_Stat/}{ChemicalBond}
+\include{ChemicalReaction}
+\import*{../BioPhysics_Thermo_Stat/}{DeterministicReactionKinetics}
+\import*{../BioPhysics_Thermo_Stat/}{StochasticReactionKinetics}
+
+\part{Bio-BioChem}
+\include{BioChemIntro}
+\import*{../BioPhysics_Thermo_Stat/}{Amino-Acids}
+\include{Enzymes}
+\include{Enzyme_Kinetics}
+\include{Proteins_overview}
+%%\import*{../BioPhysics_Thermo_Stat/}{StochasticReactionKinetics}
+%%\import*{../BioPhysics_Thermo_Stat/}{BioMembrane}
+\include{BioMembrane}
+%\include{BuffersEndogenous}
+\include{EndoplasmicReticulum}
+%%\include{Calcineurin} - moved into another file
+\include{Calmodulin}
+\include{GeneEditing}
+
+\part{Imaging}
+\include{PreclinalImaging}
+\include{Measure_Calcium_Imaging_Tech}
+
+
+\part{Channel models}
+%%\include{SingleCellModelling} - deleted moved content
+%%merged into ChannelKinetics -\include{VoltageGated_IonicCurrent}
+\include{ChannelKinetics}
+\include{QuB_Express}
+\import*{../BioPhysics_Thermo_Stat/}{Cl-channels.tex}
+
+\include{Na-channels}
+\include{Na_models}
+%\import*{../BioPhysics_Thermo_Stat/}{K-channels.tex}
+\include{K-channels}
+\include{K_models}
+%\import*{../BioPhysics_Thermo_Stat/}{Ca_channels.tex}
+\include{Ca_channels}
+%\include{VDCC_intro}
+\include{DHPR_models}
+
+%%\import*{../BioPhysics_Thermo_Stat/}{IP3-gated.tex}
+\include{IP3-gated}
+\include{IP3R_Models}
+%\import*{../BioPhysics_Thermo_Stat/}{RyR_channels.tex}
+\include{RyR_channels}
+\include{RyR_Models}
+
+\include{CNG_channels}
+\include{Ih_models} 
+\include{Other_Models}
+
+\part{Pump/Exchanger}
+
+\include{PumpTransporter}
+\include{Na_Ca_Exchanger}
+\include{Na_K_pump}
+\include{PMCA_models}
+\include{SERCA_Models}
+
+
+\part{Second Messenger Systems}
+\include{SecondMessenger}
+\include{CalciumSignalling}
+\include{cAMP}
+\include{beta_adrenegic}
+\include{CarcinogenicSignalingPathways}
+
+\part{Energy metabolism}
+\include{Energetic_Energy}
+%\include{Mitochondria} -- merged
+%\include{BrainEnergy}  -- merged
+
+\part{0. Modeling cells}
+\include{ModelingSingleCell}
+%\include{Dynamics_Voltage} - merged
+\include{ExcitableCell_Model}
+\include{NonExcitableCell}
+\include{SpatialModeling}
+
+\part{1. Cardiac cells}
+\label{part:cardiac_cells}
+
+\include{Electrophysiology_Heart}
+%\include{MuscleCell} -- merged
+%%\include{CardiacCellularStructure}
+\include{Calcium_cardiac_cell}
+\include{Model_singlecell}
+
+\part{Cardiac diseases}
+\include{Cardiac_diseases}
+% TODO: Plan to move ECG.tex from Heart_Physiology to here
+\import*{../Heart_Physiology/}{ECG_EKG}
+\import*{../Heart_Physiology/}{HeartDiseases}
+\import*{../Heart_Physiology/}{HeartAttacks}
+\import*{../Heart_Physiology/}{CHF}
+\import*{../Heart_Physiology/}{Hypertrophy}
+\import*{../Heart_Physiology/}{ContractileFunction}
+%\import*{../Heart_Physiology/}{Arrhythmia}
+\import*{../Heart_Physiology/}{Antiarrhythmic_drugs}
+
+\part{Cardiac myocyte: compartmental model}
+\label{part:compartmental_model}
+
+\include{AP_Purkinje}
+\include{AP_nodal}
+\include{AP_atrial}
+\include{AP_myocardial}
+\include{Sparkology}
+\include{AP_myocardial_new}
+\include{CompMethods_Cardiac}
+\include{Model_metabolism}
+\include{Model_force-calcium}
+
+\part{Cardiac myocyte: spatial models}
+\label{part:spatial_modeling}
+
+\include{Calcium_waves_IP3R}
+\include{Calcium_waves}
+\include{3D_cells}
+%\include{SystemBiol_myocardial}
+
+%\include{Spatial_Heart}
+
+\part{Modeling tissue/whole-heart}
+\label{part:whole-heart}
+
+\include{Cardiac_Electrophysiology}
+\include{Simple_SingleCell_Models}
+\include{ComplexSystem}
+%\include{ComputationalMethod_Models}
+\include{Tissue_model}
+\include{Cardiac_Mechanics}
+\include{Visualization}
+
+\part{2. Smooth Muscle}
+\include{SmoothMuscle}
+
+\part{3. Non-excitable cells}
+\include{Endothelial_cell}
+
+\part{4. Brain}
+\include{Brain}
+%%merged \include{PNS}
+\include{CellsinBrain}
+\include{Brain_circuitry}
+\include{Brain_waves}
+%%\include{BrainEnergy} - migrated
+\include{NeuroMarker}
+\include{Brain-Behavior}
+
+\part{Electrophysiology of Neurons}
+\include{Neuron_Electrophysiology}
+\include{NeuronMorphology}
+%\include{BrainStructure}
+\include{Neurons_Components} 
+\include{Neuron_ChannelReceptor} %channels + receptors
+\include{SynapseStructure}
+\include{Memory}
+%%deleted - \include{NeuronArtificial}
+
+\part{Neurological Diseases}
+\include{NeuroDiseases}
+\include{InheritedNeurological_Diseases}
+\include{ChronicPain}
+\include{EpilepsySeize}
+\include{MotorDysfunction}
+
+\part{Drugs}
+\include{Drugs}
+
+\part{Presynaptic Models}
+\include{Presynaptic_Model}
+
+\part{Postsynaptic Models}
+\include{Postsynaptic_Model}
+\include{GABAR_Model}
+\include{AMPAR_Model}
+\include{NMDAR_Model}
+
+\part{Neurons models}
+\include{NeuronInputOutput}
+\include{NeuronModel_Pointneuron}
+\include{NeuronModel_Propagation}
+\include{Neuron_BurstingBehavior}
+\include{DendriteModel}
+\include{SynapseModel}
+\include{PhenomenologicalModel_STDP}
+\include{IntermediateModel_STDP}
+\include{LowLevelModel_STDP}
+
+\part{Neuron-type models}
+The very first computational model for the neuron was developed for
+squid giant axon. However, the membrane of the squid axon is a poor encoder, as
+it fires only over a narrow range of frequencies regardless of the
+widely-varrying currents of the stimulus.
+
+By contrast, most neuronal cell bodies (in both vertebrate and invertebrate
+animals) can fire over a far wider range of frequencies and can respond to small
+changes in input currents with significant changes in firing frequency. We will
+go into different neuronal types in the next chapters.
+
+Interestingly, some other invertebrate axons can fire over a wide frequency
+range and have a richer repertoire of ion channel types, as do at least some
+mammalian axons [Debanne, 2004].
+% Debanne, D. Information processing in the axon.
+% Nature Rev. Neurosci. 5, 304-316 (2004).
+
+\include{MotoNeurons}
+\include{PyramidalNeurons}
+\include{MSN_neurons}
+\include{InhibitoryNeurons}
+\include{RelayNeurons}
+%%deleted \include{ReinforcementLearningTheories}
+\include{InferiorOlive_Neurons}
+\include{GranuleCells}
+\include{Astrocytes}
+
+\part{Model Neuron networks} 
+%\include{Network_Neurons} - merged into Memory.tex
+\include{CortexNetwork}
+\include{StriatumNetwork}
+%%\include{CA3_network}
+\include{ModelFunctionalBrainDynamics}
+
+\part{3. Body}
+\include{Glands_EndocrineSystem}
+\include{Kidney}
+\include{Liver}
+
+\part{Studies}
+\include{Summary}
+\include{Alternans}
+
+%\part{Tissue and Whole-heart modeling}
+%\include{Model_Heart_Disease}
+\part{Software}
+\label{part:Modeling-Software}
+
+\include{NeuronModeling_Software}
+\include{MGS} 
+\include{MGS_GSL}
+\include{MGS_MDL}
+\include{NTS}
+\include{CoreNeuron}
+\include{PhylogeneticTree} 
+
+\part{Cell motility}
+
+Theoretical methods have been successfully applied to other areas of cell biology as well,
+such as gene networks (7), cell metabolism (8, 9), molecular motors (10, 11), cell signaling
+(12), chemotaxis (13), cell cycle (14), calcium dynamics (15), cell motility (16), and others.
+(Slepchenko, Loew, 2010).
+
+\part{Brain-inspired hardware}
+\include{NeuroMorphic}
+\include{SYNAPSE_Project.tex}
+
+
+\part{Numerical Recipes}
+\import*{../Fortran_manual/}{RootEquation}
+\import*{../Fortran_manual/}{RootSetEquations}
+\import*{../Fortran_manual/}{UnconstrainedOptimization}
+\import*{../Fortran_manual/}{Regression}
+\import*{../Fortran_manual/}{Interpolation}
+%\import*{../Fortran_manual/}{Calculus}  %//find the error in this file and fix
+% it
+\import*{../Probability/}{Differentiation}
+\import*{../Fortran_manual/}{Integration}
+\import*{../Fortran_manual/}{ODE}
+\import*{../MatLab_Manual/}{ODE}
+\import*{../Fortran_manual/}{PDE}
+\import*{../Fortran_manual/}{ReactionDiffusion}
+\import*{../Fortran_manual/}{MatrixVector}
+
+\appendix
+\part{Appendix}
+%\import*{../GPU_Computing/}{ODE}
+\include{Apdx_Phenomena}
+\include{Apdx_params}
+\include{Apdx_Experiment-Model}
+\include{Experiments}
+\include{Apdx_Laws}
+%\include{Apdx_IonChannels}
+%removed\include{Apdx_DiffEquation}
+%%\include{Apdx_MarkovChain} - moved to Probability book
+\include{AgentbasedModel}
+\include{MultiAgentSystem}
+%\include{MonteCarlo}  - merged
+\import*{../Probability/}{MarkovChain.tex}
+\include{PhasePlane}
+\include{Bifurcation}
+\include{Apdx_Imaging}
+\include{XPPAUT}
+\include{Writing_Simulator}
+%%merged-\include{ParamEstimate}
+\import*{../Python_Manual/}{DEAP}
+
+
+\import*{../BioPhysics_Thermo_Stat/}{Heat}
+\import*{../BioPhysics_Thermo_Stat/}{System-State}
+
+
+\part{Source code of the books}
+\label{chap:source-code-books}
+
+\include{SourceCode}
+
+
+Digitalis and its analogue improve pace-maker activity in Purkinjefibers and
+shorten AP in ventricuar muscle. This can be explained by reducing $\Ca$ current
+
+Evidence that subplasmalemmal $\Ca$ changes differently (i.e. more rapidly) from
+bulk myoplasmic calcium \citep{etter1994, himpens1994,stehno_bittel1994}
+
+\backmatter 
+ 
+% %\include{glossary}
+% %\include{notat}
+\printindex %Make an index AUTOMATICALLY
+
+%The style you want to use for references.
+% %\bibliographystyle{harvard}
+% % amsalpha, decsci, development, unsrtnat
+\bibliographystyle{biophysj}
+% Use short or long Journal names
+% %\bibliography{../longtitles, ../ref_computational_cb} %The files
+\bibliography{shorttitles,ref_computational_cb,../ref_thermo_stat}
+ 
+\end{document}
+% 
+% 
+% %%% Local Variables: 
+% %%% mode: latex
+% %%% TeX-master: t
+% %%% End: 

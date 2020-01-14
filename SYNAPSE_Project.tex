@@ -1,0 +1,152 @@
+\chapter{DARPA's SyNAPSE project: IBM's TrueNorth neural net chip}
+\label{chap:SYNAPSE}
+
+The SyNAPSE project is DARPA's program that aims to develop a
+neuromorphic system (Sect.\ref{chap:NeuroMorphic-Computing}), i.e. a multi-chip
+on a single board, using IBM's TrueNorth chip model.
+
+{\bf SyNAPSE = Systems of Neuromorphic Adaptive Plastic Scalable Electronics.}
+
+The ultimate vision of the DARPA SyNAPSE program is to build a cognitive
+computing architecture with $10^{10}$ neurson and $10^{14}$ synapses. This
+approximates the number of neurons and synapses that are estimated to be present
+in the human brain.
+
+\section{TrueNorth chip}
+\label{sec:TrueNorth-chip}
+
+TrueNorth core (digital 'neurosynaptic' core)
+\begin{itemize}
+  \item as in 2011: 1 kHz clock $\sim$ 1ms biological time-step. An internal 1
+  MHz clock was used for other processing.
+
+\begin{enumerate}
+  \item a core is a system with 256 leaky integrate-and-fire 'neurons'
+  arranged in 16x16 array.
+  
+In total: a core has 256 axons, 256 dendrites feeding to 256 neurons.
+
+The leaky IaF dynamics is characterized  by  configurable parameters sufficient
+to produce a rich repertoire of dynamic and functional behavior.
+A neuron on any TrueNorth core can connect  to  an  axon  on  any  TrueNorth 
+core  in  the  network; when the neuron fires it sends a spike message to the
+axon.
+    
+  \item a single leaky IaF 'neuron' is connected with another neuron via 4
+  programmable synapse (simple binary synapses), i.e. there are total 4x256x256
+  = 262,144 synapses per core.
+\end{enumerate}
+
+  \item as a non-Von Neuman architecture, the computation and memory units of
+  this chip are tightly integrated, i.e. memory are associated with individual
+  cores.
+  
+NOTE: Computation ("neurons"), memory ("synapses"), communication ("axons",
+"dendrites") are mathematically abstracted away from biological detail towards
+engineering goals of maximizing function (utility, applications), minimizing
+cost (power, area, delay), and minimizing design complexity of hardware
+implementation.
+  
+
+\end{itemize}
+
+In 2012: IBM started working on inter-core communication to build a large
+on-chip network of these cores (a communication  network  to  other  TrueNorth 
+cores  in  the  system).  A TrueNorth chip is an interconnected and
+communicating  network  of  extremely large numbers  of neurosynaptic  cores.
+\begin{itemize}
+  \item As of 2013: a TrueNorth chip has 4096 TrueNorth cores
+  
+  \item  each  core  integrates computation  (neurons),  memory  (synapses), 
+  and  intra-core communication  (axons)
+  
+  \item each  core  is  event-driven  (as  opposed  to  clock-driven),
+  reconfigurable, and consumes ultra-low power.
+
+TrueNorth chip operates at lower temperatures and less power because it operates
+only when it needs, rather than all the time.
+
+  \item cores operate  in  parallel  and  send  unidirectional  messages  to 
+  one another;  that  is,  neurons  on  a  source  core  send  spikes  to
+axons on a target core.
+
+{\it A neuron on any TrueNorth core can connect  to  an  axon  on  any 
+TrueNorth core  in  the  network; when the neuron fires it sends a spike message to the
+axon.  TrueNorth  cores  are synced in a semi-synchronous fashion, i.e. each
+core has its own internal faster clock (1MHz), and it receives  a slow clock
+tick at 1000 Hz to discretize neuron dynamics in 1-millisecond time steps.
+
+When a TrueNorth core receives a tick from the slow clock, it cycles through
+each of its axons.
+
+For  each  axon,  if  the  axon  has  a  spike  ready  for  delivery  at the
+current time step in its buffer, each synaptic value on the horizontal  synaptic
+ line  connected  to  the  axon  is  delivered to  its  corresponding 
+post-synaptic  neuron  in  the  TrueNorth core. If the synapse value for a
+particular axon-neuron pair is non-zero,  then  the neuron  increments its 
+membrane potential by  a  (possibly  stochastic)  weight  corresponding  to  the
+ axon type.  After  all  axons  are  processed,  each  neuron  applies  a
+configurable,  possibly  stochastic  leak,  and  a  neuron  whose membrane 
+potential  exceeds  its  threshold  fires  a  spike.  Each spike  is  then 
+delivered  via  the  communication  network  to its  corresponding  target 
+axon.  An  axon  that  receives  a  spike schedules  the  spike  for  delivery 
+at  a  future  time  step  in  its buffer.  The  entire  cycle  repeats  when 
+the  TrueNorth  core receives the next tick from the slow clock.}
+\url{http://www.modha.org/blog/SC12/SC2012_Compass.pdf}
+
+\end{itemize}  
+
+This has 10 billion 'neurons' - more than 10 percent of a human brain. It ran
+about 1,500 times more slowly than an actual brain. Further, it required several
+megawatts of power, compared with just 20 watts of power used by the biological
+brain.
+
+
+
+\section{Other cricisms}
+
+Yann Le Cun has critized about this project ``
+{\it TrueNorth implements networks of integrate-and-fire spiking neurons. This
+type of neural net that has never been shown to yield accuracy anywhere close to
+state of the art on any task of interest (like, say recognizing objects from the
+ImageNet dataset)}''.
+\footnote{\url{https://www.facebook.com/yann.lecun/posts/10152184295832143}}
+
+Yann's main cricisim was that ``Spiking neurons have binary outputs (like
+neurons in the brain). The advantage of spiking neurons is that you don't need
+multipliers (since the neuron states are binary). But to get good results on a
+task like ImageNet you need about 8 bit of precision on the neuron states. To
+get this kind of precision with spiking neurons requires to wait multiple cycles
+so the spikes "average out". This slows down the overall computation.''
+
+
+\section{Application}
+
+One of the big thing for a new architecture is to be able to demonstrate
+the performance gain from real-world applications using such new systems.
+
+\subsection{Compass}
+
+Compass, also developed by IBM, is software that simulates the TrueNorth
+architecture. \footnote{\url{http://www.modha.org/blog/SC12/SC2012_Compass.pdf}}
+
+Compass is a multi-threaded, massively-parallel functional simulator.
+Compass is also a parallel compiler that can map a network of long-distance
+neural pathways in the macaque monkey brain to TrueNorth.
+
+
+Compass has been used to demonstrate numerous applications of the TrueNorth
+architecture, such as optic flow, attention mechanisms, image and audio
+classification, multi-modal image audio classification, character recognition,
+robotic navigation, and spatio-temporal feature extraction.  
+
+\url{http://www.artificialbrains.com/darpa-synapse-program#truenorth-compass}
+
+
+\subsection{Cafee?} 
+
+The effort to test if the machine learning tool - Cafee - can be utilized
+efficiently on TrueNorth chip or not was also initiated.
+
+
+

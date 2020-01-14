@@ -1,0 +1,288 @@
+\chapter{Models of Functional Brain Dynamics}
+
+Build a model of functional brain dynamics derived from brain structural
+constraints for understanding and predicting fMRI resting state activity from
+healthy controls’ and post concussion syndrome (PCS) patients’ DTI data.
+
+
+Use optimization over novel transformations of DTI collected from healthy
+controls and PCS patients to match the subject-specific default mode network
+(DMN) from fMRI data
+
+Once optimized and validated, we will compare the optimization’s predicted
+functional modes to PET-Tau scans from suspected CTE patients
+(Sect.\ref{sec:PET-tau-scan}). The goal is to determine if pathological
+functional modes in patient DTI predict CTE.
+
+
+STEP 1: first work with the population dMRI data (aka diffusion tensor imaging (DTI) data) from
+the human connectome project (HCP).
+\begin{verbatim}
+
+sMRI data [nifti format]      ---[using Freesurfer]----> 
+                             cortical surface + 
+                             region mapping
+
+
+dMRI data [DSI fotmat] (averaged-for-population (first), or individual (better)) 
+           ----[MRtrix pipeline, DSI Studio]-->   cortical tractogram networks (tracts)
+\end{verbatim}
+
+dMRI data (formerly called DTI, which is indeed just a technique to analyze dMRI
+data) can help to predict where in cortex degradation occurs during the course
+of disease.
+
+
+
+STEP 2: initially focus on using fMRI resting state data from healthy controls
+to validate the optimization (see below for optimization explain).
+
+
+Optimize the extraction DMN functional model from DTI/tractogram
+\begin{verbatim}
+ cortical tractogram networks +
+ cortical surface +
+ region mapping
+   ----[Laplacian]---> 
+         ----[eigen-value-decomposition]----> Harmonics (i.e. a vector)
+              -[using fMRI data]--->  DMN (aka fMRI correlation)
+              -[using PET data]---->  PET correlation
+\end{verbatim}
+Harmonics of low values represent slowing changes quantities; high values = fast change quantities.
+
+The resulting optimization techniques will form the basis for target validation
+against resting state fMRI from various stages of PCS.
+
+fMRI data from healthy control subjects in the resting-state (rs-fMRI) as
+validation targets for optimizing corticocortical tractogram networks derived
+from DTI.
+
+
+GOAL: tractograms from different subjects have high correlation to each other
+when optimized for maximal correspondence between one functional mode and the
+corresponding patient DMN.
+
+
+STEP 3: Finally, we will interpret PET-Tau data based on the model (see last
+line in the above diagram).
+Uses previous optimizations of PCS patient DTI tractograms to analyze PET-Tau
+scans (HOW the optimizations can be used for a different data type).
+
+After concussion, you can
+\begin{enumerate}
+  \item recover quickly
+  \item post-concussion syndromes: suicide suceptibility, light sensitive, 
+  \item (if repeated cucussions): lead to death
+  
+  The brain swelling (at 2nd concussion, on next Monday, after the first one on
+  Friday), leading to sudden death.
+  
+\end{enumerate}
+
+
+How PET data is used
+\begin{verbatim}
+SUVR Image (using reference: cerebellum grey)
+   ---->     Spatial normalization: fMRI co-registered with PET
+      -->  smoothed
+         ----> ...
+\end{verbatim}
+
+
+\begin{enumerate}
+  \item how many cortical surface regions
+  
+  \item do PET has mapping to the above regions?
+  
+  \item quality of tracts extracted?
+  
+  \item 
+\end{enumerate}
+
+\section{CTE}
+\label{sec:CTE}
+
+Chronic Traumatic Encephalopathy (CTE) is a degenerative brain disease found in
+athletes, military veterans, and others with a history of repetitive brain
+trauma.
+% https://www.gq.com/story/the-concussion-diaries-high-school-football-cte
+
+
+\section{Default Mode Network (DMN): is it task-negative network?}
+\label{sec:Default-Mode-Network}
+
+Though the DMN was originally noticed to be deactivated in certain goal-oriented
+tasks and is sometimes referred to as the task-negative network, it can also
+appear in task-positive recordings (Sect.\ref{sec:DMN-task-positive-network}).
+
+The DMN has been shown to be negatively correlated with other networks in the
+brain such as attention networks.
+
+Evidence has pointed to disruptions in the DMN of people with Alzheimer's and
+autism spectrum disorder.
+
+
+\subsection{What is DMN?}
+
+Hans Berger, the inventor of the electroencephalogram, was the first to propose the idea that the brain is constantly busy. 
+\begin{enumerate}
+  \item  in 1929 he showed that the electrical oscillations detected by his device do not cease even when the subject is at rest. 
+
+% Raichle, Marcus (March 2010). "The Brain's Dark Energy". Scientific American: 44–49.
+
+  \item In the 1950s, to the surprise of the researchers, Louis Sokoloff and his
+  colleagues noticed metabolism in the brain stayed the same when a person went
+  from a resting state to performing effortful math problems suggesting active
+  metabolism in the brain must also be happening during rest
+  
+
+  \item  In the 1970s, Ingvar and colleagues observed blood flow in the front
+  part of the brain became the highest when a person is at rest.
+  
+%Buckner, R. L.; Andrews-Hanna, J. R.; Schacter, D. L. (2008). "The Brain's Default Network: Anatomy, Function, and Relevance to Disease". Annals of the New York Academy of Sciences. 1124 (1): 1–38. doi:10.1196/annals.1440.011. PMID 18400922.
+  
+Around the same time, intrinsic oscillatory behavior in vertebrate neurons was
+observed in cerebellar Purkinje cells, inferior olivary nucleus and thalamus (Llinas, 2014).
+
+%Llinas, R. R. (2014). "Intrinsic electrical properties of mammalian neurons and CNS function: a historical perspective". Front Cell Neurosci. 8: 320. doi:10.3389/fncel.2014.00320. PMC 4219458 Freely accessible. PMID 25408634.
+
+  \item In 1988s, the finding of the relative independence of blood flow and
+  oxygen consumption during changes in brain activity which provided the
+  physiological basis of fMRI (Peterson et al., 1988).
+  
+%Petersen, SE; Fox PT; Posner MI; Mintun M; Raichle ME (1988). "Positron emission tomographic studies of the cortical anatomy of single-word processing". Nature. 331 (6157): 585–589. doi:10.1038/331585a0. PMID 3277066.
+
+  \item Raichie and colleagues found that the brain's energy consumption is
+  increased by less than 5\% of its baseline energy consumption while performing
+  a focused mental task
+  
+%Raichle, M. E.; MacLeod, A. M.; Snyder, A. Z.; Powers, W. J.; Gusnard, D. A.; Shulman, G. L. (2001-01-16). "A default mode of brain function". Proceedings of the National Academy of Sciences of the United States of America. 98 (2): 676–682. doi:10.1073/pnas.98.2.676. ISSN 0027-8424. PMC 14647 Freely accessible. PMID 11209064.
+
+
+  
+
+%Kiviniemi, Vesa J.; Kantola, Juha-Heikki; Jauhiainen, Jukka; Hyvärinen, Aapo; Tervonen, Osmo (2003). "Independent component analysis of nondeterministic fMRI signal sources". NeuroImage. 19: 253–260. doi:10.1016/S1053-8119(03)00097-1. PMID 12814576.
+
+\end{enumerate}
+
+A baseline or control state is fundamental to the understanding of most complex
+systems. Defining a baseline state in the human brain, arguably our most complex
+system, poses a particular challenge.
+\begin{enumerate}
+  
+    \item Raichle suggested that they can find this baseline state for the brain
+    activity, and coined the term "default mode" in 2001 to describe resting
+    state brain function (Raichle et al., PNAS, 2001)
+    
+    This is defined in terms of the brain oxygen extraction fraction or OEF.
+    
+% Raichle et al. A default mode of brain function, PNAS (2001)
+
+%Raichle, Marcus E.; Snyder, Abraham Z. (2007). "A default mode of brain function: A brief history of an evolving idea". NeuroImage. 37 (4): 1083–90. doi:10.1016/j.neuroimage.2007.02.041. PMID 17719799.
+
+In the beginning to mid 2000s, researches labeled the default mode network as the task negative network. 
+
+%Fox, Michael D.; Snyder, Abraham Z.; Vincent, Justin L.; Corbetta, Maurizio; Van Essen, David C.; Raichle, Marcus E. (2005-07-05). "The human brain is intrinsically organized into dynamic, anticorrelated functional networks". Proceedings of the National Academy of Sciences of the United States of America. 102 (27): 9673–9678. doi:10.1073/pnas.0504136102. ISSN 0027-8424. PMC 1157105 Freely accessible. PMID 15976020.
+
+  
+\end{enumerate}
+
+\subsection{Task-induced deactivation of brain region}
+
+Researchers have also frequently encountered task-induced decreases in regional
+brain activity even when the control state consists of lying quietly with eyes
+closed or passively viewing a stimulus.
+
+Interestingly, using PET scans, in 1990s, researchers began to notice that when a person
+is involved in perception, language, and attention tasks the same brain areas
+become less active compared to passive rest, and labeled these areas as becoming
+“deactivated”.
+
+The fact that many brain areas decreases appear to be largely task independent,
+varying little in their location across a wide range of tasks. This may be the result of 'lacking' oxygen or energy supply,
+as the result of these energy substrates are being drawn in to be used by the brain regions that become
+
+
+\subsection{How DMN is represented?}
+
+A baseline state of the normal adult human brain in terms of the {\bf brain oxygen
+extraction fraction} or OEF. The OEF is defined as the ratio of oxygen used by
+the brain to oxygen delivered by flowing blood and is remarkably uniform in the
+awake but resting state (e.g., lying quietly with eyes closed).
+
+OEF is extracted regionally throughout the brain, based on quantitative
+metabolic and circulatory measurements from positron-emission tomography (Sect.\ref{sec:PET}).
+
+
+The default mode network is most commonly defined with resting state data by
+putting a seed in the posterior cingulate cortex and examining which other brain
+areas most correlate with this area.
+
+
+
+
+
+\subsection{Why DMN?}
+
+The default mode network has been hypothesized to be relevant to disorders
+including Alzheimer's disease, autism, schizophrenia, depression, chronic pain,
+posttraumatic stress disorder and others.
+
+If the default mode network is altered, this can change the way one perceives
+events and their social and moral reasoning, thus making a person more
+susceptible to major depressive-like symptoms.
+
+
+%Buckner, R. L.; Andrews-Hanna, J. R.; Schacter, D. L. (2008). "The Brain's Default Network: Anatomy, Function, and Relevance to Disease". Annals of the New York Academy of Sciences. 1124 (1): 1–38. doi:10.1196/annals.1440.011. PMID 18400922.
+
+%Akiki, Teddy J.; Averill, Christopher L.; Wrocklage, Kristen M.; Scott, J. Cobb; Averill, Lynnette A.; Schweinsburg, Brian; Alexander-Bloch, Aaron; Martini, Brenda; Southwick, Steven M.; Krystal, John H.; Abdallah, Chadi G. (2018). "Default mode network abnormalities in posttraumatic stress disorder: A novel network-restricted topology approach". NeuroImage. 176: 489–498. doi:10.1016/j.neuroimage.2018.05.005. ISSN 1053-8119.
+
+
+People with Alzheimer's disease show a reduction in glucose (energy use) within
+the areas of the default mode network. These reductions start off as slight
+decreases in mild patients and continue to large reductions in severe patients.
+Disruptions in the DMN begin even before individuals show signs of Alzheimer's disease
+
+DMN is thought to be disrupted in individuals with autism spectrum disorder.
+Studies have shown worse connections between areas of the DMN in individuals
+with autism, especially between the mPFC (involved in thinking about the self
+and others) and the PCC (the central core of the DMN). 
+The more severe the autism, the less connected these areas are to each other.
+It is, however, not clear if this is a cause or a result of autism.
+
+%Washington, Stuart D.; Gordon, Evan M.; Brar, Jasmit; Warburton, Samantha; Sawyer, Alice T.; Wolfe, Amanda; Mease-Ference, Erin R.; Girton, Laura; Hailu, Ayichew (2014-04-01). "Dysmaturation of the default mode network in autism". Human Brain Mapping. 35 (4): 1284–1296. doi:10.1002/hbm.22252. ISSN 1097-0193. PMC 3651798 Freely accessible. PMID 23334984.
+
+%Yerys, Benjamin E.; Gordon, Evan M.; Abrams, Danielle N.; Satterthwaite, Theodore D.; Weinblatt, Rachel; Jankowski, Kathryn F.; Strang, John; Kenworthy, Lauren; Gaillard, William D. (2015-01-01). "Default mode network segregation and social deficits in autism spectrum disorder: Evidence from non-medicated children". NeuroImage: Clinical. 9: 223–232. doi:10.1016/j.nicl.2015.07.018. PMC 4573091 Freely accessible. PMID 26484047.
+
+Lower connectivity between brain regions was found across the default network in
+people who have experienced long term trauma, such as childhood abuse or
+neglect, and is associated with dysfunctional attachment patterns.
+
+
+Among people experiencing posttraumatic stress disorder, lower activation was
+found in the posterior cingulate gyrus compared to controls, and severe PTSD was
+characterized by lower connectivity within the DMN.
+
+
+Hyperconnectivity of the default network has been linked to rumination in first-episode depression,
+and chronic pain.
+
+%Zhu, X; Wang, X; Xiao, J; Liao, J; Zhong, M; Wang, W; Yao, S (2012). "Evidence of a dissociation pattern in resting-state default mode network connectivity in first-episode, treatment-naive major depression patients". Biological Psychiatry. 71 (7): 611–7. doi:10.1016/j.biopsych.2011.10.035. PMID 22177602.
+
+
+
+
+
+
+\subsection{task-positive network}
+\label{sec:DMN-task-positive-network}
+
+The DMN (Sect.\ref{sec:Default-Mode-Network}) can be active in other
+goal-oriented tasks such as social working memory or autobiographical tasks
+
+
+
+
+\section{DTI (Diffusion Tensor Imaging)}
+\label{sec:DTI}
+

@@ -1,0 +1,229 @@
+\chapter{Phenomenological models of STDP}
+\label{chap:models-phenomenological_STDP}
+
+Because of strong competition between inputs, the postsynaptic firing rate in
+these models: Sect.\ref{sec:Blum-Abbott_1996},
+Sect.\ref{sec:Gerstner-1996_neural-learning-rule}, Sect.\ref{sec:Eurich-1999},
+Sect.\ref{sec:Kistler-vanHemmen_2000}, is independent of synaptic input rate.
+Also, these learning rules are unstable and require hard (upper and lower)
+bounds on the synaptic weight. The synaptic weights are driven to these bounds
+and obtain a bimodal distribution, which is unlikely to reflect the weight
+distribution in biological neurons.
+
+
+
+\section{Blum-Abbott (1996)}
+\label{sec:Blum-Abbott_1996}
+
+
+\section{Gerstner (1996) - neural learning rule}
+\label{sec:Gerstner-1996_neural-learning-rule}
+
+The model was built based on {\it auditory system of the barn owl} with neurons
+in the laminar nucleus. Barn owl uses auditory system to detect prey, i.e.
+azimuthal sound with time resolution less than 5$\mus$.
+This is achieved based on {\bf phase locking}: {\it spikes occur preferentially
+at a certain phase - termed 'mean phase', at frequency up to 8 kHz}.
+
+\section{Eurich et al. (1999)}
+\label{sec:Eurich-1999}
+
+\section{Kistler- van Hemmen (2000)}
+\label{sec:Kistler-vanHemmen_2000}
+
+\section{van Rossum (2000) - Hebbian learning}
+\label{sec:vanRossum-2000}
+
+van Rossum's learning rule claimed to generates a stable, unimodal, positively
+skewed distribution of synaptic weights that closely resembles the distribution
+of quantal amplitudes measured from central neuron.
+\begin{itemize}
+  \item the weights depend on their correlation with other inputs, so that learning occurs
+through cooperation between inputs
+
+  \item LTP if presynaptic spike occurs before EPSP
+  
+  \item LTD if presynaptic spike occurs after EPSP
+  
+  \item The conductance change decreases
+  approximately exponentially to the time delay $\delta t$ between pre-synaptic
+  and postsynaptic spikes.
+   
+  \item  competition is almost absent, and must be introduced independently by
+  implementing {\bf activity-dependent synaptic scaling}.  The scaling does not
+  change the shape or the stability of the weight distribution
+\end{itemize}
+
+\subsection{Hypothesis analysis}
+
+Assumption:
+\begin{itemize}
+  \item symmetric time delay $\tau_{STDP}$
+  
+  \item independence between pairing events
+  
+  \item to reproduce fluctuation in the potentiation and depression weights:
+  random variable of conductance is added. They assumed fluctuations are
+  multiplicative
+  
+NOTE: The idea that weak synapse has strong
+  fluctuation, and strong synapse has weak fluctuation was rejected as it does
+  not seem to correspond to the data.
+  
+  
+\end{itemize}
+
+
+Model data: extracted from experimental data of Bi and Poo (1998)
+\citep{bi1998} (Sect.\ref{sec:Bi-Poo_1998})
+yet with some changes
+\begin{itemize}
+  \item In Bi and Poo (1998): the time delay is asymmetric: $34\pm 13$ ms for
+  depression and $17\pm 9$ ms for potentiation.
+  
+  In van Rossum model: it is assumed symmetric with the same time constant
+  $\tau_\STDP = 20$ ms.
+  
+  \item Based on 60 pairing times, the chage at one single pairing was
+  calculated by dividing the recorded change for 60 (implicitly assuming
+  independent between events)
+\end{itemize}
+
+\subsection{Mathematical model}
+
+The synaptic strength (conductance) $w$
+\begin{itemize}
+  \item potentiation: $w <- w + w_p$
+  
+  \item depression: $w <- w + w_d$
+\end{itemize}
+
+INITIAL FORMULA:
+\begin{gather}
+w_p = c_p e^{-\delta t/\tau_\STDP} \\
+w_d = -c_d e^{\delta t/tau_\STDP}
+\end{gather}
+with $c_p = 0.003$ (pS), and $c_d=7$ (pS) - the average amount of relative
+potentiation and depression, respectively, after one pairing.
+
+As fluctuation in the amount of depression and potentiation is important, i.e. a
+noisy quantity. A random variable for conductance value is added to the weights
+after every pairing.
+
+{\bf REVISED FORMULA}
+\begin{equation}
+\begin{split}
+\label{eq:vanRossum_formula-2000}
+w_p &= (c_p + v. w) e^{-\delta t/\tau_\STDP} \\
+w_d &= (-c_d + v.w) e^{\delta t/tau_\STDP}
+\end{split}
+\end{equation}
+with $v$ is a Gaussian random variable with zero mean (SD is extracted from
+data $\sigma = 0.015$)
+
+
+{\bf activity-dependent synaptic scaling}: the precise mechanism behind activitydependent
+scaling is not known. It is  a mechanism that adjusts the synaptic
+weights to regulate the postsynaptic activity.
+Activity-dependent scaling scales the weights to prevent too low or too high
+activity levels. The scaling is thought to be multiplicative and independent
+of presynaptic activity. Initially, a simple implementation was used
+\begin{equation}
+\frac{dw(t)}{dt} = \beta w(t) \left[ a_{goal} - a(t) \right]
+\label{eq:active-dependent-scaling-simple}
+\end{equation}
+with $a_{goal}$ is the desired postsynaptic activity (set to at 20 Hz), and 
+$\beta$ = a constant determine the strength of the scaling. $a(t)$ is a
+slow-varying sensor which increases with every postsynaptic spike and decays 
+exponentially between spikes
+\begin{equation}
+\tau \frac{da(t)}{dt} = -a(t) + \sum_i \delta(t-t_i)
+\end{equation}
+with $t_i$ are all spike times. The biological constant $\tau$ of the sensor is
+unknown, yet it is expected to be slow, so $\tau = 100$ sec was used.
+
+As the equations \ref{eq:vanRossum_formula-2000} pulls the weights, which may
+lead to a residual deviation of the weight off the goal value. To avoid this
+residual (such errors), an {\bf integral controller} is used to replace
+eq.\ref{eq:active-dependent-scaling-simple}
+\begin{multline}
+\label{eq:active-dependent-scaling-integral-controller}
+\frac{dw(t)}{dt} =  \beta w(t) \left[ a_{goal} - a(t) \right] +
+    \gamma w(t) \int^t_0 dt' \left[a_{goal} - a(t')\right] 
+\end{multline}
+with $\gamma$ is another constant
+
+
+\subsection{Numerical method}
+
+The model was simulated by incorporating into a single cell neuron model with
+receiving random inputs. 
+
+The neuron model is {\bf leaky integrate and fire} neuron with 100 M$\Omega$
+input resistance, 20 ms time constant, -60 mV resting potential, -50mV firing
+threshold. NOTE: They reset the membrane potential back to resting potential
+after each firing.
+
+The neuron receives input from 25 inhibitory and 100 excitatory synapses.
+\begin{itemize}
+  \item inhibitory synapse: reversal potential -70 mV, with time constant 5ms
+  
+The inhibitory synapses are not plastic but are fixed at a conductance
+of 2000 pS and are stimulated with Poisson trains (i.e. a burst of spike
+following Poisson distribution) of 20 Hz.
+
+  \item excitatory synapse: reversal potential 0 mV, with time constant 5ms.
+  
+The excitatory synapses also receive Poisson input.
+Then to implement plasticity, a proper formula in equation
+\ref{eq:vanRossum_formula-2000} was used, depending on the time synaptic event
+before or after the postsynaptic spike at each excitatory synapse.
+
+\end{itemize}
+
+NOTE: To introduce correlation across synaptic input: 
+Correlation is implemented by randomly distributing N Poisson trains among the
+inputs. Every time step the Poisson trains are redistributed.
+NOTE: For every synaptic event there is a chance 1/N, that it is shared by
+another synapse, i.e. a cross-correlation coefficient between trains
+\begin{equation}
+C(\Delta t) = \frac{1}{N}\delta (\Delta t)
+\end{equation}
+
+
+
+
+\subsection{Code}
+
+Code for generating Poisson spike trains:
+\url{https://praneethnamburi.wordpress.com/2015/02/05/simulating-neural-spike-trains/}
+
+
+\subsection{Analysis}
+
+As with any feedback system, oscillations readily occur.
+
+\section{Rubin et al. (2000)}
+
+Rubin et al. (2000) has a similar approach to calculate weight distribution like
+that of van Rossum (2000) - Sect.\ref{sec:vanRossum-2000}
+
+\section{Pfister - Gerstner (2006)}
+
+Previous STDP models are based on pair-based STDP learning rules, i.e. one
+pre- and one post-synaptic spike. Thus, they cannot reproduce recent triplet and
+quadruplet experiments.
+
+The paper examine triplet experiments: a rule which considers sets of three
+spikes, i.e., two pre and one post or one pre and two post) and compare it to
+classical pair-based STDP learning rules.
+
+ 
+
+\section{Experimental data}
+
+\subsection{Bi-Poo (1998) - experiments}
+\label{sec:Bi-Poo_1998}
+
+
+STDP protocol: synaptic events and postsynaptic events are paired for 60 times.

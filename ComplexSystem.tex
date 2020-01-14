@@ -1,0 +1,516 @@
+
+\chapter{Complex System}
+\label{chap:complex-system}
+
+\section{Introduction}
+\label{sec:introduction-5}
+
+Something that is ``complex'' is a whole made up of complicated and
+interrelated parts. The essential difference between a simple and a
+complex system can be expressed in the term ``interwoven'' or
+``interconnected''. Thus, it is particularly important to know not
+only the behavior of parts but also how they act together to form the
+behavior of a whole in a complex system.
+
+If parts of the systems are complex, then it seems intuitive that the
+whole system should be complex. However, this is not the only
+possibility. Even if parts of the system behave simple, they may
+interact in some way that the behavior of the whole system is
+complex. This is called {\bf emergent complexity}.  On the other hand,
+there is the situation that the collective behavior of the complex
+parts is simple. This is called {\bf emergent simplicity}. It mean
+that at the smaller scale, the system behave in a complex way, yet in
+a larger scale, all the complex details are hidden. For example: the
+orbit of the Earth around the Sun is in a ellipsis trajectory, while
+those of the parts of the Earth is really complex.
+
+\subsection{Emergent properties}
+\label{sec:emergent-properties}
+
+{\bf Emergent properties} are properties that doesn't exist in a
+single part, yet only emerge when different parts act together. 
+
+For example: a single particle doesn't have pressure or temperature;
+yet when we have many particles together, pressure and temperature
+becomes relevant. 
+
+We can have {\it local emergent property} as well as
+{\it global emergent property}.  One very important characteristic of
+emergent properties is that emergent properties cannot be studied by
+physically taking a part of the system and looking at that part
+(reductionism). They must be studied from the system as a whole.
+
+\subsection{Complexity}
+\label{sec:complexity}
+
+A system, at different scales or levels of detail required in the
+description, may have different complexity. The number of states can
+tells us the complexity of a system. This requires us to enumerate all
+possible states of a system.
+
+At the macro level, the state of a system is identified by its
+position and momentum. We know that position and momentum are real
+numbers whose specification may require an infinite number of
+bits. Thus, the question is ``Is it possible to quantify all states of
+a system?''.  The answer is yes, and comes from {\it quantum physic}.
+\begin{itemize}
+\item At the microscopic level, the states are indistinguishable unless they
+differ by a discrete amount in position and momentum. We call that a
+{\bf quantum difference} given by Planck's constant $h=6.626068 \times
+10^{-34}$ m$^2$ kg/s.
+\item Thus, at indistinguishable states, the system has a unique
+  entropy value which is the information needed to specify the state
+  of the system. NOTICE that this entropy is defined for microscopic
+  states. 
+\end{itemize}
+
+One common interpretation of entropy is the measure of uncertainty of
+a system. Thus, a system with largest entropy when it reaches
+equilibrium, i.e. when it lost all information about initial
+conditions except the conserved ones. This may suggest that the most
+complex system is a system in equilibrium. However, this is not
+correct as equilibrium systems have no spatial structure and do not
+change over time; while complex systems have internal structure and
+this structure change over time. The reason for this misleading is
+that we confuse between the definition of entropy for microscopic
+state of the system (which has no internal structure) and that of
+entropy for macroscopic states of the system (which has substantial
+internal structure).
+
+The entropy is the connection between the microscopic representation
+and macroscopic representation of a system. One definition of entropy
+is
+\begin{eqnarray}
+\label{eq:entropy}
+  S = k_B \ln(\Omega) = k \ln(2) I
+\end{eqnarray}
+with $I = \log_2(\Omega)$; the Boltzmann constant $k_B=1.381\times
+10^{-23}$ Joule/Kelvin and $\Omega$ is the number of microscopic
+states. 
+
+In information theory, if we use N bits from the binary system to
+represent the state of a system, then
+\begin{eqnarray*}
+  \Omega = 2^N
+\end{eqnarray*}
+In summary, the complexity profile is a function of the scale of
+observation.  The information needed to describe the system at a
+higher scale must be a subset of information required to describe the
+system at a smaller scale which requires more detail, or more
+information.
+
+
+\subsection{Summary}
+\label{sec:summary}
+
+Much of the analysis makes use of differential equations, which
+assumes the smoothness of the system in behavior and local details
+doesn't matter for the behavior of the system. In certain cases, when
+the system involves through a certain of discrete step, using
+difference equation is easier to solve than differential
+equation. Such approach can be achieved using the so-called
+{\bf iterative maps}.  A special case of iterative maps is the Markov
+chain. In many complex systems, an alternate approach is the static
+models, e.g. {\bf fractals}, or dynamical models, e.g.
+{\bf cellular automata}.
+
+Normally, we use computer simulation to study a complex system. Among
+the computer simulation techniques are {\bf cellular automata} and
+{\bf Monte Carlo}.
+
+\section{Iterative maps (deterministic)}
+\label{sec:iterative-maps}
+
+If $s(t)$ denotes the state of the system at time $t$; $s(\cdot)$ is a
+general variable of arbitrary dimension. Then, the function $f(\cdot)$
+relating the evolving of the states in the system is called an {\bf
+  iterative map}
+\begin{eqnarray}
+  \label{eq:253}
+  s(t) = f(s(t-\delta t))
+\end{eqnarray}
+with $\delta t$ is the time step. It means that the state at the
+current time depends, at most, on the state of the system at the
+previous time. For simplicity, we will use $\delta t = 1$.
+
+Iterative maps is discrete, and deterministic. The two common types of
+maps with $s$ a real variable are: linear maps and non-linear maps
+(with quadratic is the widely used). 
+
+\subsection{Binary iterative maps}
+\label{sec:binary-iter-maps}
+
+If the system has only two possible states $s=\pm 1$, then $f$ is
+called {\bf binary iterative maps}.
+
+\subsection{Linear iterative maps}
+\label{sec:line-iter-maps}
+
+There are different form of linear iterative maps:
+\begin{enumerate}
+\item {\bf constant map}: 
+  \begin{eqnarray}
+    \label{eq:253}
+    s(t) = s_0
+  \end{eqnarray}
+  with $s_0$ is a constant. The constant map is the special case of
+  the linear iterative map with unit coefficient $v=0$. The constant
+  map is also the special case of multiplicative iterative map with $g=1$.
+
+\item {\bf linear iterative map with unit coefficient}
+  \begin{eqnarray}
+    \label{eq:253}
+    s(t) = s(t-1) + v 
+  \end{eqnarray}
+
+\item {\bf multiplicative iterative map}: describe growth or decay
+  \begin{eqnarray}
+    \label{eq:253}
+    s(t) = g\times s(t-1)
+  \end{eqnarray}
+or
+\begin{eqnarray*}
+  s(t0 = g^ts_0= e^{\ln(g)t} s_0
+\end{eqnarray*}
+Depending on the value of $g$, this relation can be exponential growth
+or decay. 
+
+\end{enumerate}
+
+\subsection{Nonlinear iterative maps}
+\label{sec:nonl-iter-maps}
+
+\begin{enumerate}
+\item {\bf quadratic iterative map}: 
+  \begin{eqnarray}
+    \label{eq:253}
+    s(t) = s(t-1)\times (1-s(t-1))
+  \end{eqnarray}
+or
+\begin{eqnarray}
+  \label{eq:253}
+  f(s) = a\times s\times (1-s)
+\end{eqnarray}
+This map is very widely used to describe the dynamics of a complex system.
+\end{enumerate}
+
+\subsection{When to use iterative maps}
+\label{sec:when-use-iterative}
+
+Looking at eq.\ref{eq:253}, dynamical systems can be represented using
+iterative maps only when the state of the system at time $t$ depend
+only on the previous state, not the time. The evolution of the system
+is {\it deterministic}, given a specific initial condition. The system
+evolve in a discrete time manner. 
+
+The deterministic property can be removed by allowing $s(\cdot)$
+describe not only the present state of the system, but also (either of
+the following)
+\begin{enumerate}
+\item the state of the system + all other factors that might affect
+  its evolution in time
+\item the state of the system at present time + sufficient many
+  previous times
+\item the probability that a system in a particular state
+  $\rightarrow$ {\bf stochastic iterative maps}.
+\end{enumerate}
+
+\section{Stochastic iterative maps}
+\label{sec:stoch-iter-maps}
+
+{\bf Stochastic iterative maps} (or stochastic maps, for short) is
+used to describe a complex system using iterative maps, in which the
+transition to the next state given the current state cannot be
+predicted with a complete certainty. This characteristic of the system
+is normally represented as the time evolution of one or more random
+variables.
+
+For simplicity, suppose the system is represented by a random variable
+$s$, described by its probability distribution $P_s(s')$ which is the
+likelihood that $s$ has the value $s'$. If $s$ is a continuous
+variable, then $P_s(s')ds'$ is the probability that $s$ resides
+between $s'$ and $s'+ds'$.
+
+The transition probabilities from a state at a particular time to the
+next discrete times are written
+\begin{eqnarray}
+  \label{eq:253}
+  P_s[s'(t)|s'(t-1)]
+\end{eqnarray}
+One constraint is that
+\begin{eqnarray}
+  \label{eq:253}
+  \sum_{s''}P_s(s''|s') = 1
+\end{eqnarray}
+Then the probability for the system being at state $s'$ at time $t$,
+regardless of the state at the previous time, is
+\begin{eqnarray}
+  \label{eq:253}
+  P_s(s';t) = \sum_{s''}P_s(s'|s'')P_s(s'';t-1)
+\end{eqnarray}
+which can be written in the form of the so-called
+{\it master equation}. The procedure is given as follows
+\begin{equation}
+  \label{eq:334}
+  \begin{split}
+    P_s(s';t) &= P_s(s';t-1) + \left(\sum_{s''}P_s(s'|s'')P_s(s'';t-1)
+      -P_s(s';t-1)\right) \\
+    &= P_s(s';t-1) + \left(\sum_{s''\ne s'}P_s(s'|s'')P_s(s'';t-1) +
+      P_s(s'|s')P_s(s';t-1)  -P_s(s';t-1)\right) \\
+    &= P_s(s';t-1) + \left(\sum_{s''\ne s'}P_s(s'|s'')P_s(s'';t-1) +
+      (1-\sum_{s''\ne s'}P_s(s''|s')) P_s(s';t-1)  -P_s(s';t-1)\right)
+    \\
+    &= P_s(s';t-1) + \left(\sum_{s''\ne s'}P_s(s'|s'')P_s(s'';t-1) 
+      -\sum_{s''\ne s'}P_s(s''|s')) P_s(s';t-1) \right)
+  \end{split}
+\end{equation}
+or
+\begin{eqnarray}
+  \label{eq:335}
+  P_s(s';t) - P_s(s';t-1) = \sum_{s''\ne s'} \left(P_s(s'|s'')P_s(s'';t-1) 
+      - P_s(s''|s')) P_s(s';t-1) \right)
+\end{eqnarray}
+which can be written in the continuum form
+\begin{eqnarray}
+  \label{eq:336}
+  \frac{P_s(s';t) - P_s(s';t-1)}{\Delta t} = \sum_{s''\ne s'} \left(
+    \frac{P_s(s'|s'')}{\Delta t} P_s(s'';t-\Delta t)  -
+    \frac{P_s(s''|s')}{\Delta t} P_s(s';t-\Delta t) \right)
+\end{eqnarray}
+When the limiting $\Delta t \rightarrow 0$ is meaningful, then the
+ratio $P_s(s'|s'')/\Delta t$ is the rate transition $R_s(s'|s'')$,
+then we have
+\begin{eqnarray}
+  \label{eq:337}
+   \dot{P}_s(s';t) = \sum_{s''\ne s'} \left(
+    R_s(s'|s'') P_s(s'';t)  -
+    R_s(s''|s') P_s(s';t) \right)
+\end{eqnarray}
+For simplicity, we can remove the subscript
+\begin{eqnarray}
+  \label{eq:338}
+    \dot{P}(s';t) = \sum_{s''\ne s'} \left(
+    R(s'|s'') P(s'';t)  -
+    R(s''|s') P(s';t) \right)
+\end{eqnarray}
+which can be interpreted as ``the rate of change of a probability of a
+particular state is the total rate at which the probability is being
+added into that state from all other state, minus the total rate at
+which the probability is leaving that state''. Here, the probability
+is acting like a fluid that is flowing to and from the state of
+interest, and the rate of change of the probability is acting as the
+rate of the density change of the fluid. 
+
+% Such systems are called {\bf Markov chains}.
+
+{\bf Example}: If the system has only two possible states, then
+$P_s(1)$ is the prob. that $s=1$, and $P_s(-1)$ is the prob. that
+$s=-1$.
+
+\section{Cellular Automata (CA)}
+\label{sec:cellular-automata-ca}
+
+{\bf Cellular Automata} is a way to represent a complex system in
+which all degrees of freedom are explicitly represented.
+This representation are appealing simple, yet capture a rich variety
+of behavior.
+
+CA are convenient for computer simulation and parallel computer
+simulation in particular.
+
+A system that we need to represent (simulate) is distributed in
+space. Thus, the idea of CA is that parts closed to each other have
+more interaction than with those far apart.
+
+\subsection{Deterministic CA}
+\label{sec:deterministic-ca}
+
+We use a set of variables to describe the state at a given instant of
+time in a particular cell; say for 3D
+\begin{eqnarray}
+  \label{eq:418}
+  s(i,j,k; t) = s(x_i,y_j,z_k; t)
+\end{eqnarray}
+The time dependence of the cell variables is given by the iterative rule
+\begin{eqnarray}
+  \label{eq:419}
+  s(i,j,k; t) = R(\{ s(i'-i, j'-j, k'-k; t-1)\})
+\end{eqnarray}
+where the rule $R$ is shown as a function of the values of all
+variables at the previous time instant, with position relative to that
+of the cell $s(i,j,k; t-1)$.
+
+\subsection{Stochastic CA}
+\label{sec:stochastic-ca}
+
+\section{Thermodynamics and Statistical Mechanics}
+\label{sec:therm-stat-mech}
+
+Newtonian mechanics describes the effect of forces on
+objects. Thermodynamics describes the effect of heat transfer on
+objects.
+
+The laws of Newtonian mechanics simply describe the abstract concept
+of an object as a point mass with no internal structure and, in the
+simplest form, friction is ignored. The analogous abstraction for
+thermodynamics laws are objects in equilibrium and (even better)
+homogeneous. 
+
+The macroscopic parameters (state functions) that can be used to
+describe the state of the system in thermodynamics are: internal
+energy $U$, temperature $T$, entropy $S$, pressure $P$, the mass (here
+is the number of particles) $N$, and volume
+$V$\footnote{For magnets, we also have magnetization $M$ and magnetic
+  field $H$}. Other relevant parameters may be added if necessary.
+As in thermodynamics, a system may be composed of several parts; the
+actions between them can be either work or heat transfer.
+
+The equations that relate the macroscopic quantities are known as
+zeroth, first, and second laws of thermodynamics.
+
+{\bf NOTE}: Even the description of equilibrium is so rich and varied
+that it's still an active research today.  So, what's the definition
+of equilibrium that we use? Thermodynamics make use of a particular
+type of equilibrium known as {\bf thermal equilibrium}. When two
+systems are brought closed to each other and they only transfer heat
+to each other\footnote{they are said to be in {\bf thermal contact}},
+after a long period of time, both will be in equilibrium, i.e. the
+same temperature; such equilibrium is called thermal equilibrium. We
+can extend the definition to two systems that are not in thermal
+contact, i.e. ``any two systems are in thermal equilibrium with each
+other if they do not change their (macroscopic) state when they are
+brought into thermal contact''. 
+
+{\bf NOTE}: Thermal equilibrium doesn't imply the two systems are
+homogeneous, e.g. they may have different pressure.
+\begin{enumerate}
+\item Zeroth law: if two systems are in thermal equilibrium with the
+  third, then they are in thermal equilibrium with each other. {\it it
+    means that the material isn't matter, nor how big or how many are
+    the systems that are in contact}.
+
+  A {\bf thermal reservoir} (bath) is a very big system in which its
+  temperature doesn't change when it's in contact with the system of
+  interest, even though the reservoir forms a thermal equilibrium with
+  the system by transferring or receiving heat from the system.
+
+The (macroscopic) state of an isolated system in equilibrium can be
+completely represented by 3 parameters: energy, mass and volume $(U,
+N, V)$\footnote{for magnet, we must add M}.
+
+All quantities (state functions) that are proportional to the size of
+the system is called {\bf extensive parameters}. {\bf Intensive
+  parameters} are properties that do not change with the size of the
+system, at a given pressure and temperature. NOTICE: the ratio of two
+extensive quantities is an intensive quantity.  
+
+\item First law: The energy of an isolated system is conserved. For a
+  system, when the number of particles is fixed, the two macroscopic
+  processes that can change the energy of the system are: work and
+  heat transfer.
+  \begin{eqnarray*}
+    dU = W + Q
+  \end{eqnarray*}
+with 
+\begin{eqnarray*}
+  W = -PdV
+\end{eqnarray*} 
+the negative sign means that for work applying on the system, it
+increases the energy; for work done by the system, it decreases the
+energy. 
+
+\item Second law: which essentially is the definition and description
+  of properties of entropy. In deed, it describes the key aspects of
+  the relationships between equilibrium state and non-equilibrium
+  states. In particular, a non-equilibrium system must undergo an
+  irreversible process toward equilibrium. Thus, {\bf entropy} $S$ is
+  a quantity that will help describe such (natural) process. There are
+  three properties:
+  \begin{enumerate}
+  \item For a change toward equilibrium, $dS \ge 0$.
+
+  \item  The entropy is only affected by heat transfer and not by work.
+
+  \item It is extensive 
+    \begin{eqnarray*}
+      S = \sum_\alpha S^\alpha
+    \end{eqnarray*}
+    with $S^\alpha$ is the entropy of the component $\alpha$.
+
+    Entropy is a state function, thus $S=S(U,N,V)$ in equilibrium. 
+    \item If $N$ and $V$ are fixed, then the change in $S$ with
+      increasing energy $U$ is always positive
+      \begin{eqnarray*}
+        \left(\frac{\partial S}{\partial U}\right)_{N,V} \ge 0
+      \end{eqnarray*}
+
+  \end{enumerate}
+
+  Heat transfer is related to the entropy via 
+  \begin{eqnarray*}
+    dQ = TdS
+  \end{eqnarray*}
+
+\end{enumerate}
+
+\subsection{Macroscopic state vs. microscopic state}
+\label{sec:macr-state-vs}
+
+A macroscopic system is assumed to have a very large number of
+particles $N$ (e.g., at a scale of $10^{23}$) in a volume
+$V$. Normally, we allow $N\rightarrow \infty, V\rightarrow \infty$,
+yet the ratio $n=N/V$ remain constant. This is called
+{\bf thermodynamic limit}. Thus, the microscopic study of the whole
+system can is performed via a local (smaller) part.  As extensive
+properties are proportional to the size of the system and the
+intensive properties are independent of the size of the system, the
+local properties are unaffected by subdivision. Particularly, this
+local part will have the same temperature $T$ and pressure $P$ with
+the whole system, while the extensive parameters are now $(\alpha U,
+\alpha N, \alpha V)$.
+
+We will use $E$ rather than $U$ to describe the energy of the system
+at a microscopic level. For a given macroscopic state, there can be
+many microscopic states. This is a key assumption:
+{\it all possible microscopic states of the system occur with equal
+  probability}. The number of microscopic states is denoted as
+$\Omega(U,N,V)$.
+
+A specific definition for entropy, based on eq.~\eqref{eq:entropy}
+\begin{eqnarray}
+  \label{eq:420}
+  S = k_B \ln(\Omega(E,N,V))
+\end{eqnarray}
+with $k_B$ is Boltzmann constant.
+
+
+Statistical mechanics aims to explain the laws of thermodynamics using
+Newtonian mechanics at the microscopic level.
+Then, an object is examined as a composition of a set of number of
+particles. The kinetics motions of such particles are related to
+temperature; and heat transfer is the transfer of Newtonian energy
+from one object to another.
+
+
+\section{Monte Carlo simulation}
+\label{sec:monte-carlo-simul}
+
+The deterministic dynamics of a system can be represented in the form
+of differential equations or deterministic cellular automata (CA). 
+
+The effect of external influences, not incorporated in the parameters
+of the model, may be modeled using stochastic variables (stochastic
+interative maps).
+
+
+\section{References}
+\label{sec:references}
+
+
+\begin{enumerate}
+\item Devaney, ``A first course in Chaotic Dynamical Systems''
+\end{enumerate}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "mainfile"
+%%% End: 

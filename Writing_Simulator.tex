@@ -1,0 +1,299 @@
+\chapter{Writing a Simulator}
+
+
+Simulation is the imitation of the operation of a real-world process or system
+over time. This include
+\begin{itemize}
+  \item building a mathematical model for the system, i.e. in the forms of ODE
+  and/or PDE and/or algebraic equations.
+  
+  The models have time-evolving parameters
+  that represent key characteristics of different parts of the physical system.
+   
+  \item writing a code, choose the right numerical methods to solve such
+  ODE/PDE.
+  
+  The several packages/libraries have been developed which make writing
+  simulating code easier. The packages started as a domain-specific packages;
+  and then become generic, which can be applied to different fields.
+  
+  These packages support: Monte Carlo simulation, stochastic modeling,
+  multimethod modeling.
+  
+  \item run the simulation, giving an initial condition, i.e. initial values for
+  all parameters
+   
+   \item (optional) a visualization toolkit showing the dynamical changes in the
+   system.
+\end{itemize}
+
+There are different levels of simulation:
+\url{https://en.wikipedia.org/wiki/Simulation}
+
+
+\section{Types of simulators}
+
+\subsection{Discrete-event simulators}
+\label{sec:discrete-event-simulator}
+
+A discrete-event simulatior (DES) models the operation of a system as a
+discrete sequence of events in time.
+\begin{itemize}
+  \item  Each event occurs at a particular instant in time and marks a change of
+  state in the system
+  
+  \item Between two consecutive events, no change in the system is assumed. So
+  if it know the time for the next event, it can directly jump in time from one
+  event to the next. This is in contrast to continuous simulation
+  (Sect.\ref{sec:continuous-simulator}) where you need to keep track the
+  system dynamics over time.
+  
+  Because discrete-event simulations do not have to simulate every time slice,
+  they can typically run much faster than the corresponding continuous simulation.
+\end{itemize}
+
+The system is modeled via a number of components:
+\begin{enumerate}
+  \item {\bf States}: a set of variables whose values captures the different
+  states of the system
+  
+  The number of these variables in {\bf States} is called the dimension of the
+  system.
+  
+  \item {\bf Clock}:
+  to keep track the current simulation time (in whatever measurement units
+  suitable for the system, e.g second, hours, month\ldots)
+   
+  \item {\bf Event}: an event is described by the tuple: 
+  \begin{itemize}
+    \item Instantaneous event: (time at which it
+  occurs, the code representing the type of event)
+  
+    \item Interval-based event model: 
+    If the event takes some times, we need to
+    have a time interval:
+  (giving the start time, the end time of each event, the code representing the
+  type of event)
+  \end{itemize}
+  
+  To simulate the randomness of the time the event to occur, the simulation
+  needs to generate random variables of various kinds, depending on the system
+  model. The simulation that has randomness, is called {\bf Monte Carlo
+  simulation}.
+  
+  When studying any system, we need to study its characteristics at
+  steady-state. However, one of the problems with the random number
+  distributions used in discrete-event simulation is that the steady-state
+  distributions of event times may not be known in advance. As a result, the
+  initial set of events placed into the pending event set will not have arrival
+  times representative of the steady-state distribution. This problem is
+  typically solved by {\bf bootstrapping the simulation model}.
+  
+  Bootstrapping means we temporarily substitute the empirical probability
+  distribution induced by the sample for the probability distribution defined by
+  the population.
+  
+% Here, it refers to a technique to bring the distribution of event times of
+% system approaches the steady state.
+  First, we bootstrap the initial data points by carefully choose an initial
+  sets of pending events with realistic times. Then, these events, upon
+  simulated by the program, will schedule additional events, and with time, the
+  distribution of event times approaches the steady state.
+  \footnote{\url{https://en.wikipedia.org/wiki/Bootstrapping\#Discrete_event_simulation}}
+  
+  When we analyze the result, at each simulation, we ignore (disregard) the
+  events that occur before the steady state is reached.
+  
+  \item {\bf Activity}:
+  
+  NOTE: You can have the concept of {\bf Activity} which is a sequence of
+  events. 
+  
+
+  \item {\bf Current event}: 
+  Depending on the type of programs
+  \begin{itemize}
+    \item {\it single-thread program}: only one current event
+    
+    \item {\it multi-threaded program} or {\bf program supporting an
+    interval-based event model}: it may have multiple current events
+    
+    In both cases, there are significant problems with synchronization between
+    current events.
+  \end{itemize}
+  
+    
+  \item {\bf Event list}:
+  A list of simulation events {\bf Event} which is a list of {\bf pending
+  events}
+  that need to be simulated. 
+  
+  This is often programmed as a {\bf  priority queue, sorted by event time}.
+  So, regardless of the order in which events are added to the event set, they
+  are removed in strictly chronological order. \textcolor{red}{The popular
+  general-purpose priority queue algorithms}: splay tree, skip lists, calendar
+  queue, ladder queues.
+  
+\end{enumerate}
+IN SUMMARY: A common exercise in learning how to build discrete-event
+simulations is to model a queue. The random variables that need to be
+characterized to model this system stochastically is the arrival time of the
+event.
+
+A common goal is to study the {\bf Statistics} of the system via the model, e.g.
+analyzing the variance or the mean of the system's output at steady-state by
+running the simulation several times, each time uses a different bootstraps,
+and at steady-state each time the data point(s) are collected
+\begin{verbatim}
+(at steady-state)
+run-1    data1(1)   data2(1) ...
+run-2    data1(2)   data2(2) ..
+......
+.....
+Statistics: mean(data1), mean(data2)
+           variance(data1), ...
+           ...
+\end{verbatim}
+
+Example the number of bootstraps required, i.e. the number of simulation to get
+a good statistics as given in
+\url{http://www.researchgate.net/post/How_many_bootstraps_can_I_do_from_a_sample_of_N_elements}
+\begin{enumerate}
+  
+  \item How many [unique] bootstrap samples can be formed from a sample of N
+  elements [where each of the N elements is distinct]?
+  
+  
+  \item for highly skewed data, none of the bootstrap methods work well with
+  less than about 30 samples
+  
+  \item to get confidence intervals for the mean, 100 bootstrap samples would be
+  sufficent, 
+  
+  \item for a confidence interval of the standard deviation you need more,
+  like 500. 
+  
+  \item But for a statistic like the cost-effectiveness ratio I use 50.000 since
+  the underlying distribution of the statistic is Cauchy (because the
+  denominator can be zero, the function contains a discontinuity).
+  
+  \item If one is interested in the complete distribution of the statistic, not
+  in its confidence intervals only, a large number of samples is needed to get a
+  proper and precise impression (This occurs if one wants to determine
+  outlyers).
+  
+\end{enumerate}
+\url{http://www.amstat.org/publications/jse/v13n3/wood.html}
+
+\subsection{Continuous simulators}
+\label{sec:continuous-simulator}
+
+A {\bf continuous-event simulator} is called an activitity-based simulator;
+It continuously tracks the system dynamics over time; and the time is broken 
+up into small time slices and the system state is updated according to the 
+different activities happening in the time slice.
+
+\subsection{Process-oriented discrete-event simulators}
+
+We also have {\bf process-based simulator}, i.e.
+each event in a system corresponds to a separate process, where a process is
+typically simulated by a thread in the simulation program.
+
+In this case, the discrete events, which are generated by threads, would cause
+other threads to sleep, wake, and update the system state.
+
+\subsection{}
+
+\section{Simulation frameworks}
+
+
+There are two important criteria before analyzing a simulation model:
+\begin{enumerate}
+  \item wait until it reaches stead-state
+  
+  So the simulation designer must decide when the simulation will end. 
+  
+  
+  \item repeat several time, to get the mean behavior at steady-state 
+\end{enumerate}
+
+Regardless of the framework we use, the logic of the simulation engine is 
+\begin{itemize}
+  \item {\bf Start}
+  \begin{enumerate}
+  \item Initialize ending-condition to FALSE
+  
+  The ending-condition can be (1) the number of iteration, (2) the maximum time
+  to reach, (3) the mean squared-error below a certain threshold, \ldots
+  
+  
+  \item Initialize system state variables (with some initial value that is
+  suppose to be closed to the steady-state)
+  
+  \item Initialize clock (usually starts at simulation time zero)
+  
+  
+  \item Depending on system
+  \begin{itemize}
+    \item Discrete-event simulation: Schedule an initial event (i.e. put some
+    initial event into the Events list)
+
+    \item Continuous simulation: Either using fixed time-step or dynamic
+    time-step
+    
+    
+   \end{itemize}
+  \end{enumerate}
+  
+  \item {bf Timing-loop}: Do-loop or while-loop
+  \begin{verbatim}
+  While (ending condition is FALSE)
+  {
+    generate next-event time (usig PSEUDO-RANDOM)
+    set clock to next-event time
+    do next-event and remove the Event-list
+    update statistics
+  }
+  \end{verbatim}
+  
+  \item {\bf Ending}: generate statistical report
+\end{itemize}
+
+
+
+\subsection{Agent-based framework}
+
+
+An {\bf agent-based framework} for performance modeling of an optimistic
+parallel discrete event simulator (Sect.\ref{sec:discrete-event-simulator}) is
+another example for a discrete event simulation.
+
+
+
+
+
+\section{C++ SIM: process-based}
+
+C++SIM, a set of  C++ class definitions  that mimic the process-based 
+simulation facilities of SIMULA and the SIMSET routines.
+
+The  co-routine facility of Simula   is implemented by various threads
+(and others).  Classes  are    provided  for various   random   number
+distributions.
+
+\url{https://github.com/codehaus/javasim}
+
+\section{SimPy: process-oriented discrete-event}
+\label{sec:SimPy}
+
+{\bf SimPy} is 
+a  process-oriented discrete-event simulation.
+
+Processes in SimPy are simple Python generator functions and are used to model
+active components like customers, vehicles or agents. 
+
+\section{Markov chain: finite-state machine of ion channel gating}
+
+\url{https://en.wikipedia.org/wiki/Discrete_event_simulation}
+
+\url{https://en.wikipedia.org/wiki/Finite-state_machine}
